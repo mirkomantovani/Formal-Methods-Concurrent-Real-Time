@@ -16,35 +16,35 @@
 		`(-> 
 			(-P- ,(read-from-string (format nil "Link1_In_~A" l)))
 			(!! (||
-					(-P- ,(read-from-string (format nil "Link2_In_~A" l)))
-					(-P- ,(read-from-string (format nil "Endeff_In_~A" l)))
-					(-P- ,(read-from-string (format nil "Cart_In_~A" l)))
+					(-P- ,(read-from-string (format nil "Link1_In_~A" l)))
+					(-P- ,(read-from-string (format nil "Link1_In_~A" l)))
+					(-P- ,(read-from-string (format nil "Link1_In_~A" l)))
 				))))
 
 	(loop for l in l_indexes collect 
 		`(-> 
 			(-P- ,(read-from-string (format nil "Link2_In_~A" l)))
 			(!! (||
-					(-P- ,(read-from-string (format nil "Link1_In_~A" l)))
-					(-P- ,(read-from-string (format nil "Endeff_In_~A" l)))
-					(-P- ,(read-from-string (format nil "Cart_In_~A" l)))
+					(-P- ,(read-from-string (format nil "Link2_In_~A" l)))
+					(-P- ,(read-from-string (format nil "Link2_In_~A" l)))
+					(-P- ,(read-from-string (format nil "Link2_In_~A" l)))
 				))))
 
 	(loop for l in l_indexes collect 
 		`(-> 
 			(-P- ,(read-from-string (format nil "Endeff_In_~A" l)))
 			(!! (||
-					(-P- ,(read-from-string (format nil "Link1_In_~A" l)))
-					(-P- ,(read-from-string (format nil "Link2_In_~A" l)))
-					(-P- ,(read-from-string (format nil "Cart_In_~A" l)))
+					(-P- ,(read-from-string (format nil "Endeff_In_~A" l)))
+					(-P- ,(read-from-string (format nil "Endeff_In_~A" l)))
+					(-P- ,(read-from-string (format nil "Endeff_In_~A" l)))
 				))))
 	(loop for l in l_indexes collect 
 		`(-> 
 			(-P- ,(read-from-string (format nil "Cart_In_~A" l)))
 			(!! (||
-					(-P- ,(read-from-string (format nil "Link1_In_~A" l)))
-					(-P- ,(read-from-string (format nil "Endeff_In_~A" l)))
-					(-P- ,(read-from-string (format nil "Link2_In_~A" l)))
+					(-P- ,(read-from-string (format nil "Cart_In_~A" l)))
+					(-P- ,(read-from-string (format nil "Cart_In_~A" l)))
+					(-P- ,(read-from-string (format nil "Cart_In_~A" l)))
 				))))
 
 )))
@@ -55,35 +55,35 @@
 		`(-> 
 			(-P- ,(read-from-string (format nil "Link1_vel_~A" v)))
 			(!! (||
-					(-P- ,(read-from-string (format nil "Link2_vel_~A" v)))
-					(-P- ,(read-from-string (format nil "Endeff_vel_~A" v)))
-					(-P- ,(read-from-string (format nil "Cart_vel_~A" v)))
+					(-P- ,(read-from-string (format nil "Link1_vel_~A" v)))
+					(-P- ,(read-from-string (format nil "Link1_vel_~A" v)))
+					(-P- ,(read-from-string (format nil "Link1_vel_~A" v)))
 				))))
 
 	(loop for v in velocity_indexes collect 
 		`(-> 
 			(-P- ,(read-from-string (format nil "Link2_vel_~A" v)))
 			(!! (||
-					(-P- ,(read-from-string (format nil "Link1_vel_~A" v)))
-					(-P- ,(read-from-string (format nil "Endeff_vel_~A" v)))
-					(-P- ,(read-from-string (format nil "Cart_vel_~A" v)))
+					(-P- ,(read-from-string (format nil "Link2_vel_~A" v)))
+					(-P- ,(read-from-string (format nil "Link2_vel_~A" v)))
+					(-P- ,(read-from-string (format nil "Link2_vel_~A" v)))
 				))))
 
 	(loop for v in velocity_indexes collect 
 		`(-> 
 			(-P- ,(read-from-string (format nil "Endeff_vel_~A" v)))
 			(!! (||
-					(-P- ,(read-from-string (format nil "Link1_vel_~A" v)))
-					(-P- ,(read-from-string (format nil "Link2_vel_~A" v)))
-					(-P- ,(read-from-string (format nil "Cart_vel_~A" v)))
+					(-P- ,(read-from-string (format nil "Endeff_vel_~A" v)))
+					(-P- ,(read-from-string (format nil "Endeff_vel_~A" v)))
+					(-P- ,(read-from-string (format nil "Endeff_vel_~A" v)))
 				))))
 	(loop for v in velocity_indexes collect 
 		`(-> 
 			(-P- ,(read-from-string (format nil "Cart_vel_~A" v)))
 			(!! (||
-					(-P- ,(read-from-string (format nil "Link1_vel_~A" v)))
-					(-P- ,(read-from-string (format nil "Endeff_vel_~A" v)))
-					(-P- ,(read-from-string (format nil "Link2_vel_~A" v)))
+					(-P- ,(read-from-string (format nil "Cart_vel_~A" v)))
+					(-P- ,(read-from-string (format nil "Cart_vel_~A" v)))
+					(-P- ,(read-from-string (format nil "Cart_vel_~A" v)))
 				))))
 
 )))
