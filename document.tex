@@ -1,0 +1,40 @@
+\documentclass[a4paper]{article}
+
+\title{Project of Formal Methods}
+\author{Aldeghi Gabriele \\
+  Mirko Mantovani \and
+  Sacco Alessio \\
+  Sonzogni Stefano}
+
+\usepackage{amsmath}
+
+% The other logical operators are: \lnot, \land, \lor, \iff
+\DeclareMathOperator{\imply}{\Rightarrow}
+\DeclareMathOperator{\future}{Future}
+\DeclareMathOperator{\past}{Past}
+\DeclareMathOperator{\lastsOp}{Lasts}
+\newcommand{\lasts}{\lastsOp_{ee}}
+\DeclareMathOperator{\lastedOp}{Lasted}
+\newcommand{\lasted}{\lastedOp_{ei}}
+\DeclareMathOperator{\always}{Always}
+\DeclareMathOperator{\sometimeFuture}{SometimeFut}
+\DeclareMathOperator{\sometimePast}{SometimePast}
+\DeclareMathOperator{\withinOp}{Within}
+\newcommand{\within}{\withinOp_{ee}}
+\DeclareMathOperator{\uptonow}{UpToNow}
+\DeclareMathOperator{\becomes}{Becomes}
+\DeclareMathOperator{\nexttime}{NextTime}
+\DeclareMathOperator{\lasttime}{LastTime}
+\DeclareMathOperator{\until}{Until}
+\DeclareMathOperator{\since}{Since}
+
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section{Section}
+\begin{equation*}
+\lasttime(F, t) = \past(F, t) \land \lasted(\lnot F, t)
+\end{equation*}
+\end{document}
