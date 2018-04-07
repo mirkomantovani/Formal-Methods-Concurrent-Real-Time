@@ -2,3 +2,5 @@
 *.toc
 *.aux
 *.pdf
+*.gz
+*.out

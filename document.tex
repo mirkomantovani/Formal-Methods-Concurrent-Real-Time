@@ -1,12 +1,26 @@
 \documentclass[a4paper]{article}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[bookmarks=true]{hyperref}
 
-\title{Project of Formal Methods}
+
+
+
+
+\title{Politecnico di Milano\\
+Formal Methods for Concurrent \\
+and \\
+Real-time Systems\\
+Homework project\\
+\textbf{Collaborative Robotics Modeling }}
 \author{Aldeghi Gabriele \\
-  Mirko Mantovani \and
+  Mantovani Mirko \and
   Sacco Alessio \\
   Sonzogni Stefano}
+ \date{\today}
+ 
 
-\usepackage{amsmath}
+
 
 % The other logical operators are: \lnot, \land, \lor, \iff
 \newcommand{\liff}{\iff}
@@ -32,10 +46,69 @@
 
 \begin{document}
 \maketitle
-\tableofcontents
+\begin{center}
+	\includegraphics[width=7cm]{images/polimi-logo}
+\end{center}
+\clearpage
+{\hypersetup{hidelinks}\tableofcontents}
+\clearpage
 
-\section{Section}
+\section{Formalization of the problem}
+\subsection{Problem description}
+brief description
+
+scheme with areas subdivision
+\subsection{Definitions and Acronyms of Components}
+\begin{itemize}
+	\item \textbf{R}:\@ The whole KUKA mobile robot
+	\item \textbf{O}:\@ The Operator that works in the same environment of the Robot and interacts with it
+	\item \textbf{L}:\@ The entire Layout in which Robot and Operator work
+	\item \textbf{BA}:\@ The Bin Area (top-right)
+	\item \textbf{WP}:\@ The single WorkPiece which is transported by the robot
+	\item \textbf{HDI}:\@ The Human Device Interface used by the Operator to control the Robot
+\end{itemize}
+
+\subsection{Constants?}
+\begin{itemize}
+	\item \textbf{N}:\@ The capacity of the local bin of the Robot
+\end{itemize}
+\subsection{World discretization}
+
+\subsubsection{Human body parts}
+\begin{itemize}
+	\item \textbf{Head area}:\@ Highly sensitive areas
+	\item \textbf{Arms area}:\@ Very delicate areas
+	\item \textbf{Waist area}:\@ Delicate areas
+	\item \textbf{Legs area}:\@ 
+\end{itemize}
+
+\subsubsection{O-R relative speed}
+\begin{itemize}
+	\item \textbf{None}:\@ 
+	\item \textbf{Low}:\@ 
+	\item \textbf{Medium}:\@ 
+	\item \textbf{High}:\@ 
+\end{itemize}
+
+\subsubsection{Layout areas}
+\begin{itemize}
+	\item \textbf{..}:\@ ..
+\end{itemize}
+
+\subsection{Sensors? signals?}
+\clearpage
+\section{Archi-TRIO model}
+
+
+
+
+\clearpage
+\section{TRIO specification}
 \begin{equation*}
 \lasttime(F, t) = \past(F, t) \land \lasted(\lnot F, t)
 \end{equation*}
+
+\section{Model checking}
+
+
 \end{document}
