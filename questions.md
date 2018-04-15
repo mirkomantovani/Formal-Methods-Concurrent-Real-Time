@@ -1,1 +1,2 @@
 - sarebbe meglio utilizzare l'automa di Mealy o quello di Moore per modellizare l'FSM relativo al comportamente del robot?
+- se il robot non arriva a prendere i pezzi dallo scaffale, si deve muovere o l'operatore deve spostare il vassoio che contiene i pezzi?
