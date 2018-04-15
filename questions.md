@@ -1,0 +1,1 @@
+- sarebbe meglio utilizzare l'automa di Mealy o quello di Moore per modellizare l'FSM relativo al comportamente del robot?
