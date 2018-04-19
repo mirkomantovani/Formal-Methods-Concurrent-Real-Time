@@ -4,3 +4,7 @@
   * variabili con macro aree: (posizione corrente, posizione obiettivo, distanza operatore, velocità di approccio)
   * variabili con griglia: (posizione corrente, posizione obiettivo, distanza operatore, velocità robot, velocità operatore, equazioni della posizione
 - il robot quando arriva working station, prende il pezzo e lo mette sul pallet. Deve aspettare che l'operatore gli dia il via libera oppure può metterlo direttamente sulla conveyor belt?
+- Do we need to impose that the robot starts his actions (e.g. if O presses start button then robots starts picking up pieces, when it's full it starts moving towards the tombstone and so on)? Or for instance the robot has his predefined actions and workflow and we only need to make sure that the interaction with the human is safe enough?
+- Level of detail of R actions? (openHand, locateWP, closeHand or pickUpWP)
+- Is the only input (if the workflow is proceding smoothly) that O has to provide to the robot the one of telling it that the WP reshape phase is completed and it can be put on the conveyor belt? What happens if O does not signal this? (e.g. WP becomes useless and is eliminated, time limit after which the R stops working on that piece)
+- Is it required/useful to start modeling via class diagrams (ArchiTRIO style), FSA? Temporal Petri Nets? How many TRIO classes do we define?
