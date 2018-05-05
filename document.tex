@@ -61,11 +61,12 @@ scheme with areas subdivision
 \subsection{Definitions and Acronyms of Components}
 \begin{itemize}
 	\item \textbf{R}:\@ The whole KUKA mobile robot
+	\item \textbf{EE}:\@ The End-Effector of the robot's arm
 	\item \textbf{O}:\@ The Operator that works in the same environment of the Robot and interacts with it
 	\item \textbf{L}:\@ The entire Layout in which Robot and Operator work
 	\item \textbf{BA}:\@ The Bin Area (top-right)
 	\item \textbf{WP}:\@ The single WorkPiece which is transported by the robot
-	\item \textbf{HDI}:\@ The Human Device Interface used by the Operator to control the Robot
+	\item \textbf{HID}:\@ The Human Interface Device used by the Operator to control the Robot
 \end{itemize}
 
 \subsection{Constants?}
@@ -97,6 +98,15 @@ We discretized the layout in such a way that the most important and critical are
 \begin{figure}[htp] 
 \includegraphics[width=\textwidth]{images/layout} 
 \caption{Subdivision of the layout, highlighted areas are the most dangerous ones} 
+\label{fig:layout} 
+\end{figure}
+
+\clearpage
+The most critical areas are the ones with indices from 1 to 12, particular attention must be paid to L\textsubscript0 too, since it is where the EE and O could be working together. 
+
+\begin{figure}[htp] 
+\includegraphics[width=\textwidth]{images/layoutnames} 
+\caption{Names of the splitted layout and various areas} 
 \label{fig:layout} 
 \end{figure}
 
