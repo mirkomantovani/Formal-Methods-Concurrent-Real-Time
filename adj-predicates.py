@@ -21,7 +21,7 @@ if __name__ == "__main__":
 			for i in range(1, len(row)):
 				column = i - 1
 				if row[i] == '0':
-					output += " (not {})".format(pred(row[i], column))	
+					output += " (not {})".format(pred(row[0], column))	
 				elif row[i] == '1':
-					output += " {}".format(pred(row[i], column))	
+					output += " {}".format(pred(row[0], column))	
 		print("(and {})".format(output))
