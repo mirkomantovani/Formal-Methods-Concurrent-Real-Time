@@ -2,8 +2,7 @@
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage[bookmarks=true]{hyperref}
-
-
+\usepackage[left=2cm, right=2cm]{geometry}
 
 
 
@@ -129,5 +128,24 @@ The most critical areas are the ones with indices from 1 to 12, particular atten
 
 \section{Model checking}
 
+\section{Appendix A: area modeling}
 
+\begin{align*}
+&\neg Adj(L0, L0) \land Adj(L0, L1) \land Adj(L0, L2) \land Adj(L0, L3) \land Adj(L0, L4) \land \neg Adj(L0, L5) \land \neg Adj(L0, L6) \\
+&\land \neg Adj(L0, L7) \land \neg Adj(L0, L8) \land \neg Adj(L0, L9) \land \neg Adj(L0, L10) \land \neg Adj(L0, L11) \land \neg Adj(L0, L12) \\
+&\land \neg Adj(L0, L13) \land \neg Adj(L0, L14) \land \neg Adj(L0, L15) \land \neg Adj(L0, L16) \land \neg Adj(L0, L17) \land \neg Adj(L0, L18) \\
+&\land \neg Adj(L0, L19) \land \neg Adj(L0, L20) \land \neg Adj(L0, L21) \land \neg Adj(L0, L22) \land \neg Adj(L0, L23) \land \neg Adj(L0, L24) \\
+&\land \neg Adj(L0, L25) \land \neg Adj(L0, L26) \land \neg Adj(L0, L27) \land \neg Adj(L0, L28) \land Adj(L1, L0) \land \neg Adj(L1, L1) \land Adj(L1, L2) \\
+&\land \neg Adj(L1, L3) \land \neg Adj(L1, L4) \land Adj(L1, L5) \land Adj(L1, L6) \land \neg Adj(L1, L7) \land \neg Adj(L1, L8) \land \neg Adj(L1, L9) \\
+&\land \neg Adj(L1, L10) \land \neg Adj(L1, L11) \land \neg Adj(L1, L12) \land \neg Adj(L1, L13) \land \neg Adj(L1, L14) \land \neg Adj(L1, L15) \\
+&\land \neg Adj(L1, L16) \land \neg Adj(L1, L17) \land \neg Adj(L1, L18) \land \neg Adj(L1, L19) \land \neg Adj(L1, L20) \land \neg Adj(L1, L21) \\
+&\land \neg Adj(L1, L22) \land \neg Adj(L1, L23) \land \neg Adj(L1, L24) \land \neg Adj(L1, L25) \land \neg Adj(L1, L26) \land \neg Adj(L1, L27) \\
+&\land \neg Adj(L1, L28) \land Adj(L2, L0) \land Adj(L2, L1) \land \neg Adj(L2, L2) \land Adj(L2, L3) \land \neg Adj(L2, L4) \land Adj(L2, L5) \\
+&\land Adj(L2, L6) \land Adj(L2, L7) \land \neg Adj(L2, L8) \land \neg Adj(L2, L9) \land \neg Adj(L2, L10) \land \neg Adj(L2, L11) \\
+&\land \neg Adj(L2, L12) \land \neg Adj(L2, L13) \land \neg Adj(L2, L14) \land \neg Adj(L2, L15) \land \neg Adj(L2, L16) \land \neg Adj(L2, L17) \\
+&\land \neg Adj(L2, L18) \land \neg Adj(L2, L19) \land \neg Adj(L2, L20) \land \neg Adj(L2, L21) \land \neg Adj(L2, L22) \land \neg Adj(L2, L23) \\
+&\land \neg Adj(L2, L24) \land \neg Adj(L2, L25) \land \neg Adj(L2, L26) \land \neg Adj(L2, L27) \land \neg Adj(L2, L28) \land Adj(L3, L0) \\
+&\land \neg Adj(L3, L1) \land Adj(L3, L2) \land \neg Adj(L3, L3) \land Adj(L3, L4) \land \neg Adj(L3, L5) \land Adj(L3, L6) \\
+&\ldots 
+\end{align*}
 \end{document}
