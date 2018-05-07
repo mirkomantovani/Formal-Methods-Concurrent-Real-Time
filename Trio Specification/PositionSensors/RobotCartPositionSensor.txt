@@ -6,26 +6,12 @@
 -- must be adjacent to at least one position of the robot in the past.
 
 
-class RobotPositionSensor; 
-    inherits PositionSensor
-	
-	visible Center;
+class RobotCartPositionSensor; 
+    inherits RobotPositionSensor
 	
 	temporal domain integer;
-	
-	TD items
-		Center({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
-			     L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
-			     L20, L21, L22, L23, L24, L25, L26, L27, L28});
 		
 	axioms
-	
-		-- The Center is unique
-		centerUnique: \exists x (\forall y != x (\neg Center(y)) && Center(x))
-			
-		-- The Center predicate must be unique from the positions
-		centerDifferentFromPosition:
-			\forall x (Center(x) && \neg Position(x))
 			
 		-- The Position predicate can be true only for areas adjacent to the Center
 		positionAdjacent:
@@ -35,4 +21,4 @@ class RobotPositionSensor;
 		doNotTeleport:
 			\forall x (Becomes(\neg Position(x)) && -> \exists y (Past(adjacent(x,y),-1)) )   
 			
-end RobotPosition.
+end RobotCartPositionSensor.

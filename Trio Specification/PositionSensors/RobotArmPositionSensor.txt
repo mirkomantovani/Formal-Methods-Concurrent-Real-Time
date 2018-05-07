@@ -1,0 +1,16 @@
+-- TODO: the Center of the arm must be linked with the center of the
+-- 		 cart!
+
+class RobotArmPositionSensor;
+	inherits RobotPositionSensor
+	
+	TI items
+		consts armAreas: integer;
+	
+	axioms:
+		-- PROBLEM: how can we fix the maximum amount of positions that the arm
+		-- 		    can have? -> This number should be three
+		noMoreThanArmAreas:
+		
+		
+end RobotArmPositionSensor.

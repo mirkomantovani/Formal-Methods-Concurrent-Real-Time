@@ -1,0 +1,30 @@
+-- This class is a subclass of PositionSensor and specifies a new predicate for the
+-- sensor that will be used for on the robot. The new predicate center will be defined
+-- for the cart and arm of the robot, and it will specify which is its center.
+-- For the cart it will be its actual center position, while for the arm it will be the 
+-- point attached to the cart.
+-- We will need to bind the Center of the arm with the Center of the Cart to maintain
+-- the coherence in the model.
+
+class RobotPositionSensor;
+	inherits PositionSensor
+	
+	visible Center;
+	
+	temporal domain integer;
+	
+	TD items
+		Center({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
+			     L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
+			     L20, L21, L22, L23, L24, L25, L26, L27, L28});
+	
+	axioms
+	
+		-- The Center is unique
+		centerUnique: \exists x (\forall y != x (\neg Center(y)) && Center(x))
+			
+		-- The Center predicate must be unique from the positions
+		centerDifferentFromPosition:
+			\forall x (Center(x) && \neg Position(x))
+			
+end RobotPositionSensor.
