@@ -3,20 +3,36 @@ class RobotPositionSensor;
 	
 	visible RobotPosition; 
     
+	-- pndv6iiiii
+	
 	temporal domain integer;
 	
 	TD items 
-		predicates move; 
-		vars       RobotPosition: {L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
+		predicates RobotPosition: {L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
 								   L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
 								   L20, L21, L22, L23, L24, L25, L26, L27, L28};
-	
+								   
+				   adjenct(RobotPosition, RobotPosition);
+		
 	axioms
 		
-		vars t: real; -- the time independent variables, implicitly universally quantified
+		var t: natural
 		
-		-- comments in the form of natural language sentences are highly recommended
-		adjencyAreas: -- This is the formula that appears into the document's appendix.
-					  -- Specifies which areas are adjacent one with another
+		-- This is the formula that appears into the document's appendix.
+		-- Specifies which areas are adjacent one with another
+		adjency: 
+			\forall x, y (adjenct(x,y) -> ... )
+				 
 		
-end *class name*.
+		-- with this axiom we say that every active predicate of the robot position must
+		-- be adjacent, each one with all the others
+		-- The predicate adjacent returns true if two labels are adjacent, false otherwise
+		compactRobot:
+			\forall x ( RobotPosition(x) -> 
+				\forall(y != x) (adjacent(RobotPosition(x), RobotPosition(y))) 
+		
+		-- An area occupied by the robot must be adjacent with an area occupied by the robot in the past
+		doNotTeleport:
+			\forall x (RobotPosition(x) -> \exists y (Past(adjacent(x,y),-1)) )   
+			
+end RobotPosition.
