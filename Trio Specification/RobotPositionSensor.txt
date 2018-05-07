@@ -1,18 +1,35 @@
--- 
+-- The robot has a center position, and from that position it can be present only in
+-- adjacent areas from the center. The Position predicate represent these adjacent
+-- position, while the center predicate specify the current central position of the robot.
+-- Another condition we need to supply is the fact that the robot cannot "teleport".
+-- This condition is guaranteed by the fact that any new position that the robot assumes
+-- must be adjacent to at least one position of the robot in the past.
+
 
 class RobotPositionSensor; 
     inherits PositionSensor
 	
+	visible Center;
+	
 	temporal domain integer;
+	
+	TD items
+		Center({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
+			     L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
+			     L20, L21, L22, L23, L24, L25, L26, L27, L28});
 		
-	axioms			 
-		
-		-- with this axiom we say that every active predicate of the robot position must
-		-- be adjacent, each one with all the others
-		-- The predicate adjacent returns true if two labels are adjacent, false otherwise
-		compactRobot:
-			\forall x ( Position(x) -> 
-				\forall(y != x) (adjacent(Position(x), Position(y))) 
+	axioms
+	
+		-- The Center is unique
+		centerUnique: \exists x (\forall y != x (\neg Center(y)) && Center(x))
+			
+		-- The Center predicate must be unique from the positions
+		centerDifferentFromPosition:
+			\forall x (Center(x) && \neg Position(x))
+			
+		-- The Position predicate can be true only for areas adjacent to the Center
+		positionAdjacent:
+			\forall x (Position(x) -> \exists y (Center(y) && adjacent(Center(y), Position(x)) ) )
 		
 		-- An area occupied by the robot must be adjacent with an area occupied by the robot in the past
 		doNotTeleport:

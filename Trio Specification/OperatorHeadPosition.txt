@@ -1,0 +1,8 @@
+class OperatorHeadPosition
+	inherits PositionSensor
+	
+	axioms
+		-- The head can be only in one area at each time
+		headIsUnique: \exists x (\forall y != x (\neg Position(y)) && Position(x))
+			
+end OperatorHeadPosition.
