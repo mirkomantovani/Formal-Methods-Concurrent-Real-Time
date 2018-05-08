@@ -1,0 +1,8 @@
+class RobotController
+	-- RobotController needs to ensure that
+	-- 1. the contacts between Operator and Robot can happen only when the Robot is still or is moving very slowly
+	-- 1.1. a contact between Operator's head and Robot can happen only when the Robot is still
+	-- 1.2. a contact between Operator's arm and Robot can happen only when the speed is slow
+	-- 1.3. a contact between Operator's body and Robot can happen only when the speed is slow
+	-- 2. the Robot needs to avoid to entrap the Operator between itself and a wall
+end RobotController.
