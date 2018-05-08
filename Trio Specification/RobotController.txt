@@ -5,4 +5,64 @@ class RobotController
 	-- 1.2. a contact between Operator's arm and Robot can happen only when the speed is slow
 	-- 1.3. a contact between Operator's body and Robot can happen only when the speed is slow
 	-- 2. the Robot needs to avoid to entrap the Operator between itself and a wall
+
+	-- TODO: missing the exported variables
+
+	temporal domain integer;
+
+	TD items
+
+		predicates
+			do({
+				PickUpFromShelf,
+				DropToBin,
+				GoToWorkingArea,
+				PickFromBin,
+				DropToTombstone,
+				PickFromTombstone,
+				DropToConveyorBelt,
+				GoToShelfArea
+			});
+
+		variables
+			currentAction({
+				PickUpFromShelf,
+				DropToBin,
+				GoToWorkingArea,
+				PickFromBin,
+				DropToTombstone,
+				PickFromTombstone,
+				DropToConveyorBelt,
+				GoToShelfArea
+			}),
+			HDICommand({
+				None,
+				Emergency
+			});
+
+		axioms
+			vars t: real;
+
+			-- the actions must be done in the correct order
+			correctActionOrder:
+			(currentAction == PickUpFromShelf => Until(currentAction == PickUpFromShelf, currentAction == DropToBin))
+			&&
+			(currentAction == DropToBin => (Until(currentAction == DropToBin, currentAction == GoToShelfArea) ||
+												    Until(currentAction == DropToBin, currentAction == PickUpFormShelf) ||
+													Until(currentAction == DropToBin, currentAction == GoToWorkingArea)))
+			&&
+			(currentAction == GoToWorkingArea => (Until(currentAction == GoToWorkingArea, currentAction == PickFromBin)))
+			&&
+			(currentAction == PickFromBin => Until(currentAction == PickFromBin, currentAction == DropToTombstone))
+			&&
+			(currentAction == DropToTombstone => Until(currentAction == DropToTombstone, currentAction = PickFromTombstone))
+			&&
+			(currentAction == PickFromTombstone => Until(currentAction == PickFromTombstone, currentAction = DropToConveyorBelt))
+			&&
+			(currentAction == DropToConveyorBelt => Until(currentAction == DropToConveyorBelt, currentAction == PickFromBin) ||
+														  Until(currentAction == DropToConveyorBelt, currentAction == GoToShelfArea))
+			&&
+			(currentAction == GoToShelfArea => Until(currentAction == GoToShelfArea, currentAction == PickUpfromShelf);
+
+
 end RobotController.
