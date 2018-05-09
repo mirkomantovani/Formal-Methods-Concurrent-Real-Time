@@ -21,8 +21,7 @@ class RobotPositionSensor;
 	axioms
 	
 		-- The Center is unique
-		centerUnique: \exists x (\forall y != x (\neg Center(y)) && Center(x))
-			
+		centerUnique: \forall x (Center(x) \implies (\forall y (y != x \implies \neg Center(y))))			
 		-- The Center predicate must be unique from the positions
 		centerDifferentFromPosition:
 			\forall x (Center(x) && \neg Position(x))
