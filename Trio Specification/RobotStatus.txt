@@ -1,0 +1,11 @@
+class RobotStatus
+
+	temporal domain integer;
+
+	visible targetCartSpeed, targetEndEffectorSpeed;
+
+	TD items:
+		targetCartSpeed({None, Low, Medium, High}),
+		targetEndEffectorSpeed({None, Low, Medium, High});
+
+end RobotStatus.
