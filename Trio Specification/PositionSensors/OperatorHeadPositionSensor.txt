@@ -3,6 +3,6 @@ class OperatorHeadPosition
 	
 	axioms
 		-- The head can be only in one area at each time
-		headIsUnique: \exists x (\forall y != x (\neg Position(y)) && Position(x))
+		headIsUnique: \exists x (Position(x) && \forall y (y != x \implies \neg Position(y)));
 			
 end OperatorHeadPosition.

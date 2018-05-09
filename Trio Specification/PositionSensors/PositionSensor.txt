@@ -14,7 +14,7 @@ class PositionSensor
 		
 		-- This is the formula that appears into the document's appendix.
 		-- Specifies which areas are adjacent one with another
-		adjency: 
+		adjacency: 
 			\forall x, y (adjenct(x,y) -> ... ) 
 		
 end PositionSensor.
