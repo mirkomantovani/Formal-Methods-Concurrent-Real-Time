@@ -40,6 +40,8 @@ class RobotController
 				Emergency
 			});
 
+		modules RobotStatus;
+
 		axioms
 			vars t: real;
 
@@ -63,6 +65,20 @@ class RobotController
 														  Until(currentAction == DropToConveyorBelt, currentAction == GoToShelfArea))
 			&&
 			(currentAction == GoToShelfArea => Until(currentAction == GoToShelfArea, currentAction == PickUpfromShelf);
+
+			-- the change in currentAction must be preceeded by a do request
+			correctInit:
+			(Becomes(currentAction == PickUpFromShelf) <=> do(PickUpFromShelf)) &&
+			(Becomes(currentAction == DropToBin) <=> do(DropToBin)) &&
+			(Becomes(currentAction == GoToWorkingArea) <=> do(GoToWorkingArea)) &&
+			(Becomes(currentAction == PickFromBin) <=> do(PickFromBin)) &&
+			(Becomes(currentAction == DropToTombstone) <=> do(DropToTombstone)) &&
+			(Becomes(currentAction == PickFromTomstone) <=> do(PickFromTombstone)) &&
+			(Becomes(currentAction == DropToConveyorBelt) <=> do(DropToConveyorBelt)) &&
+			(Becomes(currentAction == GoToShelfArea) <=> do(GoToShelfArea));
+
+			-- during emergency mode, the robot needs to be stopped immediately
+			emergencyMode: (HDICommand == Emergency) => (RobotStatus.TargetCartSpeed == None) && (RobotStatus.TargetEndEffectorSpeed == None);
 
 
 end RobotController.
