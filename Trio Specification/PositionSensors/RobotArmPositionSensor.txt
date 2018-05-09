@@ -25,11 +25,6 @@ class RobotArmPositionSensor;
 	};
 	
 	axioms:
-		-- all the positions occupied by link3 are adjacient to the others (at most it occupies 4 squares)
-		link3:
-			\forall x (link3(x) \implies
-				(\forall y link3(y) \implies adjacient(x, y)));
-
 		-- all the position occupied by link2 are adjacient to the others (at most it occupies 4 squares)
 		link2:
 			\forall x (link2(x) \implies
@@ -54,7 +49,7 @@ class RobotArmPositionSensor;
 
 		-- link3 starts from the center of the robot
 		link3FromCenter:
-			\exists x (link3(x) && RobotCenter(x));
+			\forall x (link3(x) \implies RobotCenter(x));
 
 		-- end effector occupies only one position at a time
 		only1EndEffector:
