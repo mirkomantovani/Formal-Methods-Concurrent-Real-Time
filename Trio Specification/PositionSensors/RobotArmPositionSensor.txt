@@ -18,7 +18,15 @@ class RobotArmPositionSensor;
 			-- end effector is the "hand" of the robot
 			endEffector({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
 			     L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
-			     L20, L21, L22, L23, L24, L25, L26, L27, L28});
+			     L20, L21, L22, L23, L24, L25, L26, L27, L28}),
+			-- signal if the pick action has been completed successfully
+			pickedUp(),
+
+			-- signal to model the fact that the robot is holding a piece
+			holding(),
+
+			-- signal to model the fact that the robot has dropped the piece it was holding
+			dropped();
 
 	connection: {
 		"RobotPositionSensor.Center": "RobotCenter"
@@ -54,5 +62,13 @@ class RobotArmPositionSensor;
 		-- end effector occupies only one position at a time
 		only1EndEffector:
 			\forall x (endEffector(x) \iff \neg \exists y (x != y && endEffector(y)));
+
+		-- only one of pickedUp(), holding() and dropped() can be true in each instant
+		onlyOne:
+			(pickedUp() \implies \neg holding() && \neg dropped())
+			&&
+			(holding() \implies \neg pickedUp() && \neg dropped())
+			&&
+			(dropped() \implies \neg pickedUp() && \neg holding());
 		
 end RobotArmPositionSensor.
