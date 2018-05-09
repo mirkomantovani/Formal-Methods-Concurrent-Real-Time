@@ -70,5 +70,8 @@ class RobotArmPositionSensor;
 			(holding() \implies \neg pickedUp() && \neg dropped())
 			&&
 			(dropped() \implies \neg pickedUp() && \neg holding());
+
+		-- holding() holds between pickedUp() and dropped()
+		Becomes(\neg pickedUp()) && Until(holding(), dropped());
 		
 end RobotArmPositionSensor.
