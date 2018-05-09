@@ -49,7 +49,7 @@ class RobotArmPositionSensor;
 
 		-- link3 starts from the center of the robot
 		link3FromCenter:
-			\forall x (link3(x) \implies RobotCenter(x));
+			\forall x (link3(x) \iff RobotCenter(x));
 
 		-- end effector occupies only one position at a time
 		only1EndEffector:
