@@ -35,15 +35,24 @@ class RobotController
 				DropToConveyorBelt,
 				GoToShelfArea
 			}),
+
+			-- None -> Proceed normally with the execution
+			-- Emergency -> Stop the robot and wait for the HDICommand to return to None
+			-- Continue -> when the robot has placed a piece on the tombstone, it needs to wait for the lavoration to be done and for the operator to signal that the lavoration has terminated.
 			HDICommand({
 				None,
-				Emergency
+				Emergency,
+				Continue 
 			});
 
 		modules RobotStatus;
 
 		axioms
 			vars t: real;
+
+			-- the current action is unique
+			uniqueAction:
+				\forall x (currentAction == x \implies (\neg y currentAction == y && x != y));
 
 			-- the actions must be done in the correct order
 			correctActionOrder:
