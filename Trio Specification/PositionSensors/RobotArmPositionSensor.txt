@@ -33,15 +33,15 @@ class RobotArmPositionSensor;
 	};
 	
 	axioms:
-		-- all the position occupied by link2 are adjacient to the others (at most it occupies 4 squares)
+		-- all the position occupied by link2 are adjacent to the others (at most it occupies 4 squares)
 		link2:
 			\forall x (link2(x) \implies
-				(\forall y link2(y) \implies adjacient(x, y)));
+				(\forall y link2(y) \implies adjacent(x, y)));
 
-		-- all the position occupied by link1 are adjacient to the others (at most it occupies 4 squares)
+		-- all the position occupied by link1 are adjacent to the others (at most it occupies 4 squares)
 		link1:
 			\forall x (link1(x) \implies
-				(\forall y link1(y) \implies adjacient(x, y)));
+				(\forall y link1(y) \implies adjacent(x, y)));
 
 		-- link3 is connected to link2
 		connection32:
@@ -53,11 +53,33 @@ class RobotArmPositionSensor;
 
 		-- link1 is connected to the end effector
 		endEffectorOnLink1:
-			\exists x (link1(x) && \neg(link2()));
+			\exists x (link1(x) && endEffector(x));
 
 		-- link3 starts from the center of the robot
 		link3FromCenter:
 			\forall x (link3(x) \iff RobotCenter(x));
+
+		/*
+		-- link3 starts from the center of the robot
+		link3FromCenter: \forall x (link3(x) \iff RobotCenter(x));
+
+		-- link 2 is connected to link3
+		connection32: \forall x \forall y (link2(x) \implies link3(x) ||
+			(x != y && link3(y) && adjacent(x, y)));
+
+		-- link1 is connected to link2
+		connection21: \forall x \forall y (link1(x) \implies link2(x) ||
+			(x != y && link2(y) && adjacent(x, y)));
+
+		-- end effector is on link1
+		endEffectorOnLink1: \forall x (endEffector(x) \iff link1(x));
+
+		-- link2 is unique
+		uniqueLink2: \forall x \forall y (x != y && link2(x) \implies \neg \link2(y));
+
+		-- link1 is unique
+		uniqueLink1: \forall x \forall y (x != y && link1(x) \implies \neg \link1(y));
+		*/
 
 		-- end effector occupies only one position at a time
 		only1EndEffector:
