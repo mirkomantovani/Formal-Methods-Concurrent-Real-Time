@@ -3,27 +3,34 @@
 -- for the cart and arm of the robot, and it will specify which is its center.
 -- For the cart it will be its actual center position, while for the arm it will be the 
 -- point attached to the cart.
--- We will need to bind the Center of the arm with the Center of the Cart to maintain
+-- We will need to bind the center of the arm with the center of the Cart to maintain
 -- the coherence in the model.
 
 class RobotPositionSensor;
 	inherits PositionSensor
 	
-	visible Center;
+	visible center;
 	
 	temporal domain integer;
 	
 	TD items
-		Center({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
+		center({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
 			     L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
 			     L20, L21, L22, L23, L24, L25, L26, L27, L28});
 	
 	axioms
 	
-		-- The Center is unique
-		centerUnique: \forall x (Center(x) \implies (\forall y (y != x \implies \neg Center(y))))			
-		-- The Center predicate must be unique from the positions
-		centerDifferentFromPosition:
-			\forall x (Center(x) && \neg Position(x))
-			
+		-- The center is unique
+		centerUnique: \forall x (center(x) \implies (\forall y (y != x \implies \neg center(y))))			
+
+		-- The center of the robot must be in one of the position occupied by the robot
+		centerInRobot: \forall x (center(x) \implies position(x));
+
+		-- Each area that is occupied by the robot must be adjacent to the center
+		positionRelativeToCenter:
+			\forall y forall x (center(y) \implies (position(x) \iff adjacent(x, y));
+
+		-- Each position that is occupied by the robot is either adjacent to another position or is adjacent to a position that is adjacent to that one
+		maximumDistancePosition: \forall x \forall y (position(x) && position(y) \implies
+			adjacent(x, y) || \exists z (position(z) && adjacent(x, z) && adjacent(z, y)));
 end RobotPositionSensor.
