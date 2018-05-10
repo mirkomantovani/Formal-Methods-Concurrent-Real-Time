@@ -5,19 +5,20 @@ class RobotController
 	-- 1.2. a contact between Operator's arm and Robot can happen only when the speed is slow
 	-- 1.3. a contact between Operator's body and Robot can happen only when the speed is slow
 	-- 2. the Robot needs to avoid to entrap the Operator between itself and a wall
-
+	
 	-- TODO: missing the exported variables
-
+ 
 	temporal domain integer;
+	
 
 	TD items
 
 		predicates
 			do({
 				PickUpFromShelf,
-				DropToBin,
+				DropToLocalBin,
 				GoToWorkingArea,
-				PickFromBin,
+				PickFromLocalBin,
 				DropToTombstone,
 				PickFromTombstone,
 				DropToConveyorBelt,
@@ -27,15 +28,15 @@ class RobotController
 		variables
 			currentAction({
 				PickUpFromShelf,
-				DropToBin,
+				DropToLocalBin,
 				GoToWorkingArea,
-				PickFromBin,
+				PickFromLocalBin,
 				DropToTombstone,
 				PickFromTombstone,
 				DropToConveyorBelt,
 				GoToShelfArea
 			}),
-
+			
 			-- None -> Proceed normally with the execution
 			-- Emergency -> Stop the robot and wait for the HDICommand to return to None
 			-- Continue -> when the robot has placed a piece on the tombstone, it needs to wait for the lavoration to be done and for the operator to signal that the lavoration has terminated.
@@ -56,21 +57,22 @@ class RobotController
 
 			-- the actions must be done in the correct order
 			correctActionOrder:
-			(currentAction == PickUpFromShelf => Until(currentAction == PickUpFromShelf, currentAction == DropToBin))
+			(currentAction == PickUpFromShelf => Until(currentAction == PickUpFromShelf, currentAction == DropToLocalBin))
+			&&  
+			-- why the first until? we have to suppose the shelf is always full
+			(currentAction == DropToLocalBin => (Until(currentAction == DropToLocalBin, currentAction == GoToShelfArea) ||
+												    Until(currentAction == DropToLocalBin, currentAction == PickUpFormShelf) ||
+													Until(currentAction == DropToLocalBin, currentAction == GoToWorkingArea)))
 			&&
-			(currentAction == DropToBin => (Until(currentAction == DropToBin, currentAction == GoToShelfArea) ||
-												    Until(currentAction == DropToBin, currentAction == PickUpFormShelf) ||
-													Until(currentAction == DropToBin, currentAction == GoToWorkingArea)))
+			(currentAction == GoToWorkingArea => (Until(currentAction == GoToWorkingArea, currentAction == PickFromLocalBin)))
 			&&
-			(currentAction == GoToWorkingArea => (Until(currentAction == GoToWorkingArea, currentAction == PickFromBin)))
-			&&
-			(currentAction == PickFromBin => Until(currentAction == PickFromBin, currentAction == DropToTombstone))
+			(currentAction == PickFromLocalBin => Until(currentAction == PickFromLocalBin, currentAction == DropToTombstone))
 			&&
 			(currentAction == DropToTombstone => Until(currentAction == DropToTombstone, currentAction = PickFromTombstone))
 			&&
 			(currentAction == PickFromTombstone => Until(currentAction == PickFromTombstone, currentAction = DropToConveyorBelt))
 			&&
-			(currentAction == DropToConveyorBelt => Until(currentAction == DropToConveyorBelt, currentAction == PickFromBin) ||
+			(currentAction == DropToConveyorBelt => Until(currentAction == DropToConveyorBelt, currentAction == PickFromLocalBin) ||
 														  Until(currentAction == DropToConveyorBelt, currentAction == GoToShelfArea))
 			&&
 			(currentAction == GoToShelfArea => Until(currentAction == GoToShelfArea, currentAction == PickUpfromShelf);
@@ -78,9 +80,9 @@ class RobotController
 			-- the change in currentAction must be preceeded by a do request
 			correctInit:
 			(Becomes(currentAction == PickUpFromShelf) <=> do(PickUpFromShelf)) &&
-			(Becomes(currentAction == DropToBin) <=> do(DropToBin)) &&
+			(Becomes(currentAction == DropToLocalBin) <=> do(DropToLocalBin)) &&
 			(Becomes(currentAction == GoToWorkingArea) <=> do(GoToWorkingArea)) &&
-			(Becomes(currentAction == PickFromBin) <=> do(PickFromBin)) &&
+			(Becomes(currentAction == PickFromLocalBin) <=> do(PickFromLocalBin)) &&
 			(Becomes(currentAction == DropToTombstone) <=> do(DropToTombstone)) &&
 			(Becomes(currentAction == PickFromTomstone) <=> do(PickFromTombstone)) &&
 			(Becomes(currentAction == DropToConveyorBelt) <=> do(DropToConveyorBelt)) &&
@@ -93,7 +95,30 @@ class RobotController
 			instantaneousDo: \forall x (do(x) => Futr(\neg do(x), 1));
 
 			-- precondition of PickUpFromShelf is that the robot has space in the local bin and is at the shelf
-			prePickUpFromShelf: TODO;
+			prePickUpFromShelf:
+				Becomes(currentAction == PickUpFromShelf) => \neg binFull && atShelf
+			
+			-- precondition for the currentAction to be PickFromLocalBin,DropToTombstone,PickFromTomstone, DropToConveyorBelt is that R is at the WA
+			preActionsAtWorkingArea:
+				(Becomes(currentAction == PickFromLocalBin) => atWorkingArea) &&
+				(Becomes(currentAction == DropToTombstone) => atWorkingArea) &&
+				(Becomes(currentAction == PickFromTomstone) => atWorkingArea) &&
+				(Becomes(currentAction == DropToConveyorBelt) => atWorkingArea) &&
+			
+			-- precondition for the currentAction to be PickFromLocalBin is that the local bin is not empty
+				Becomes(currentAction == PickFromLocalBin) => \neg binEmpty
+			
+			-- precondition for the currentAction to be PickFromTombstone is that the WP is finished
+			TODO
+			
+			-- precondition for the currentAction to be GoToWorkingArea is that the local bin is full
+			preGoToWorkingArea:
+				Becomes(currentAction == GoToWorkingArea) => binFull && Until(binFull,PickFromLocalBin)
+
+			-- precondition for the currentAction to be GoToShelfArea is that the local bin is empty
+			preGoToShelfArea:
+				Becomes(currentAction == GoToShelfArea) => binEmpty && Until(binEmpty,DropToLocalBin)
+			
 
 
 end RobotController.
