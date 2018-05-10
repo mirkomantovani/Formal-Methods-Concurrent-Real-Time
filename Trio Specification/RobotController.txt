@@ -89,5 +89,11 @@ class RobotController
 			-- during emergency mode, the robot needs to be stopped immediately
 			emergencyMode: (HDICommand == Emergency) => (RobotStatus.TargetCartSpeed == None) && (RobotStatus.TargetEndEffectorSpeed == None);
 
+			-- do is an instantaneous event (lasts only one time instant)
+			instantaneousDo: \forall x (do(x) => Futr(\neg do(x), 1));
+
+			-- precondition of PickUpFromShelf is that the robot has space in the local bin and is at the shelf
+			prePickUpFromShelf: TODO;
+
 
 end RobotController.
