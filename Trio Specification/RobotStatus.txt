@@ -2,10 +2,41 @@ class RobotStatus
 
 	temporal domain integer;
 
-	visible targetCartSpeed, targetEndEffectorSpeed;
+	visible targetCartSpeed, targetEndEffectorSpeed, binEmpty, binFull, addPieceToBin, removePieceFromBin;
 
 	TD items:
-		targetCartSpeed({None, Low, Medium, High}),
-		targetEndEffectorSpeed({None, Low, Medium, High});
+		predicates
+			binEmpty(),
+			binFull(),
+			addPieceToBin(),
+			removePieceFromBin();
 
+		vars
+			targetCartSpeed({None, Low, Medium, High}),
+			targetEndEffectorSpeed({None, Low, Medium, High}),
+			binStatus({Empty, 1, 2, Full});
+
+	axioms
+
+		-- bin empty
+		binEmpty() \iff binStatus(Empty);
+
+		-- bin full
+		binFull() \iff binStatus(Full);
+
+		-- ordering of bin status
+		binStatus(Empty) && addPieceToBin() \implies \exists x (Becomes(binStatus(1), x));
+		binStatus(1) && addPieceToBin() \implies \exists x (Becomes(binStatus(2), x));
+		binStatus(2) && addPieceToBin() \implies \exists x (Becomes(binStatus(Full), x));
+		binStatus(Full) && removePieceFromBin() \implies \exists x (Becomes(binStatus(2), x));
+		binStatus(2) && removePieceFromBin() \implies \exists x (Becomes(binStatus(1), x));
+		binStatus(1) && removePieceFromBin() \implies \exists x (Becomes(binStatus(Empty), x));
+
+		-- binStatus is unique at each instant
+		uniqueBinStatus: \forall x \forall y (binStatus(x) && x != y \implies \neg binStatus(y));
+
+		-- addPieceToBin() and removePieceFromBin are instantaneous events
+		singleInstantEvents:
+		(addPieceToBin() \implies Futr(\neg addPieceToBin(), 1));
+		(removePieceFromBin() \implies Futr(\neg removePieceFromBin(), 1));
 end RobotStatus.

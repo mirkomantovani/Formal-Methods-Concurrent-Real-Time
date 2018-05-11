@@ -77,7 +77,7 @@ class RobotController
 			&&
 			(currentAction == GoToShelfArea => Until(currentAction == GoToShelfArea, currentAction == PickUpfromShelf);
 
-			-- the change in currentAction must be preceeded by a do request
+			-- the change in currentAction must be preceded by a do request
 			correctInit:
 			(Becomes(currentAction == PickUpFromShelf) <=> do(PickUpFromShelf)) &&
 			(Becomes(currentAction == DropToLocalBin) <=> do(DropToLocalBin)) &&
@@ -96,7 +96,7 @@ class RobotController
 
 			-- precondition of PickUpFromShelf is that the robot has space in the local bin and is at the shelf
 			prePickUpFromShelf:
-				Becomes(currentAction == PickUpFromShelf) => \neg binFull && atShelf
+				Becomes(currentAction == PickUpFromShelf) => \neg RobotStatus.binFull() && atShelf
 			
 			-- precondition for the currentAction to be PickFromLocalBin,DropToTombstone,PickFromTomstone, DropToConveyorBelt is that R is at the WA
 			preActionsAtWorkingArea:
@@ -106,19 +106,20 @@ class RobotController
 				(Becomes(currentAction == DropToConveyorBelt) => atWorkingArea) &&
 			
 			-- precondition for the currentAction to be PickFromLocalBin is that the local bin is not empty
-				Becomes(currentAction == PickFromLocalBin) => \neg binEmpty
+				Becomes(currentAction == PickFromLocalBin) => \neg RobotStatus.binEmpty()
 			
 			-- precondition for the currentAction to be PickFromTombstone is that the WP is finished
 			TODO
 			
 			-- precondition for the currentAction to be GoToWorkingArea is that the local bin is full
 			preGoToWorkingArea:
-				Becomes(currentAction == GoToWorkingArea) => binFull && Until(binFull,PickFromLocalBin)
+				Becomes(currentAction == GoToWorkingArea) => RobotStatus.binFull() && Until(RobotStatus.binFull() ,PickFromLocalBin)
 
 			-- precondition for the currentAction to be GoToShelfArea is that the local bin is empty
 			preGoToShelfArea:
-				Becomes(currentAction == GoToShelfArea) => binEmpty && Until(binEmpty,DropToLocalBin)
-			
+				Becomes(currentAction == GoToShelfArea) => RobotStatus.binEmpty() && Until(RobotStatus.binEmpty() ,DropToLocalBin)
 
-
+			-- when the bin is full, the robot must go to the tombstone
+			binIsFull:
+				Becomes(RobotStatus.binFull()) \implies do(GoToWorkingArea);
 end RobotController.
