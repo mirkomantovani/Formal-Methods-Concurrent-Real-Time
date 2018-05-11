@@ -32,11 +32,20 @@ class RobotStatus
 		binStatus(2) && removePieceFromBin() \implies \exists x (Becomes(binStatus(1), x));
 		binStatus(1) && removePieceFromBin() \implies \exists x (Becomes(binStatus(Empty), x));
 
+		-- a piece can be added to the local bin only if there is enough capacity
+		addPieceToBin() \implies \neg binStatus(Full);
+
+		-- a piece can be removed from the local bin only if there is at least one in the bin
+		removePieceFromBin() \implies \neg binStatus(Empty);
+
 		-- binStatus is unique at each instant
 		uniqueBinStatus: \forall x \forall y (binStatus(x) && x != y \implies \neg binStatus(y));
 
-		-- addPieceToBin() and removePieceFromBin are instantaneous events
+		-- addPieceToBin() and removePieceFromBin() are instantaneous events
 		singleInstantEvents:
 		(addPieceToBin() \implies Futr(\neg addPieceToBin(), 1));
 		(removePieceFromBin() \implies Futr(\neg removePieceFromBin(), 1));
+
+		-- binStatus stays constant if there is no action performed
+		constantBin: \forall x (binStatus(x) && \neg (addPieceToBin() || removePieceFromBin()) \implies Futr(binStatus(x), 1));
 end RobotStatus.
