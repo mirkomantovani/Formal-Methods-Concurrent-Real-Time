@@ -79,14 +79,7 @@ class RobotController
 
 			-- the change in currentAction must be preceded by a do request
 			correctInit:
-			(Becomes(currentAction == PickUpFromShelf) <=> do(PickUpFromShelf)) &&
-			(Becomes(currentAction == DropToLocalBin) <=> do(DropToLocalBin)) &&
-			(Becomes(currentAction == GoToWorkingArea) <=> do(GoToWorkingArea)) &&
-			(Becomes(currentAction == PickFromLocalBin) <=> do(PickFromLocalBin)) &&
-			(Becomes(currentAction == DropToTombstone) <=> do(DropToTombstone)) &&
-			(Becomes(currentAction == PickFromTomstone) <=> do(PickFromTombstone)) &&
-			(Becomes(currentAction == DropToConveyorBelt) <=> do(DropToConveyorBelt)) &&
-			(Becomes(currentAction == GoToShelfArea) <=> do(GoToShelfArea));
+			\forall x (Becomes(currentAction == x) \iff do(x));
 
 			-- during emergency mode, the robot needs to be stopped immediately
 			emergencyMode: (HDICommand == Emergency) => (RobotStatus.TargetCartSpeed == None) && (RobotStatus.TargetEndEffectorSpeed == None);
@@ -97,6 +90,14 @@ class RobotController
 			-- precondition of PickUpFromShelf is that the robot has space in the local bin and is at the shelf
 			prePickUpFromShelf:
 				Becomes(currentAction == PickUpFromShelf) => \neg RobotStatus.binFull() && atShelf
+
+			-- DropToLocalBin requires the robot to be holding a piece and the local bin not to be full
+			preDropToLocalBin:
+				Becomes(currentAction == DropToLocalBin) => \neg RobotStatus.binFull() && RobotStatus.holding();
+
+			-- GoToWorkingArea requires the robot to have the local bin full and not hold any piece
+			preGoToWorkingArea:
+				Becomes(currentAction == GoToWorkingArea) => RobotStatus.binFull() && \neg RobotStatus.holding();
 			
 			-- precondition for the currentAction to be PickFromLocalBin,DropToTombstone,PickFromTomstone, DropToConveyorBelt is that R is at the WA
 			preActionsAtWorkingArea:
@@ -106,18 +107,14 @@ class RobotController
 				(Becomes(currentAction == DropToConveyorBelt) => atWorkingArea) &&
 			
 			-- precondition for the currentAction to be PickFromLocalBin is that the local bin is not empty
-				Becomes(currentAction == PickFromLocalBin) => \neg RobotStatus.binEmpty()
+				Becomes(currentAction == PickFromLocalBin) => \neg RobotStatus.binEmpty() && \neg RobotStatus.holding();
 			
 			-- precondition for the currentAction to be PickFromTombstone is that the WP is finished
 			TODO
 			
-			-- precondition for the currentAction to be GoToWorkingArea is that the local bin is full
-			preGoToWorkingArea:
-				Becomes(currentAction == GoToWorkingArea) => RobotStatus.binFull() && Until(RobotStatus.binFull() ,PickFromLocalBin)
-
 			-- precondition for the currentAction to be GoToShelfArea is that the local bin is empty
 			preGoToShelfArea:
-				Becomes(currentAction == GoToShelfArea) => RobotStatus.binEmpty() && Until(RobotStatus.binEmpty() ,DropToLocalBin)
+				Becomes(currentAction == GoToShelfArea) => RobotStatus.binEmpty() && \neg RobotStatus.holding();
 
 			-- when the bin is full, the robot must go to the tombstone
 			binIsFull:
