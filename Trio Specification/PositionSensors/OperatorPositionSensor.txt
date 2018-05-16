@@ -1,0 +1,22 @@
+class OperatorPositionSensor
+
+    temporal domain integer;
+
+    modules Arm: OperatorArmPositionSensor,
+            Leg: OperatorLegPositionSensor,
+            Body: OperatorBodyPositionSensor,
+            Head: OperatorHeadPositionSensor;
+
+    axioms
+        -- head is on the body
+        headOnTheBody: \forall x (Body.position(x) \implies Head.position(x));
+
+        -- the elbow is attached to the body
+        elbowConnectedToBody: \forall x (Arm.elbow(x) \implies
+            Body.position(x) || \exists y (Body.position(y) && adjacent(x, y)));
+
+        -- the leg is attached to the body
+        legConnectedToBody: \forall x (Body.position(x) \implies
+            (Leg.position(x) || \exists y (Leg.position(y) && adjacent(x, y))));
+
+end OperatorPositionSensor.
