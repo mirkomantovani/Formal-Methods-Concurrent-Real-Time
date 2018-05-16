@@ -1,7 +1,28 @@
 class OperatorArmPositionSensor
-	inherits PositionSensor
+        inherits PositionSensor
+
+        TD items
+                predicates
+                        elbow({L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
+			        L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
+				L20, L21, L22, L23, L24, L25, L26, L27, L28 }),
+                        hand({L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
+			        L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
+				L20, L21, L22, L23, L24, L25, L26, L27, L28 });
 	
 	axioms
-        -- the arm can be in only one area at a time
-        uniquePosition: \forall x \forall y (position(x) && position(y) \implies x == y);
+                -- hand occupies only one area
+                uniqueHand:
+                        \forall x \forall y (hand(x) && x != y \implies \neg hand(y));
+                        \exists x (hand(x));
+
+                -- elbow occupies only one area
+                uniqueElbow:
+                        \forall x \forall y (elbow(x) && x != y \implies \neg elbow(y));
+                        \exists x (elbow(x));
+                
+                -- elbow and hand are in the same area or they are at most adjacent
+                handLinkedToElbow:
+                        \forall x \forall y (hand(x) && elbow(y) \implies
+                                (x == y) || adjacent(x, y));
 end OperatorArmPositionSensor.
