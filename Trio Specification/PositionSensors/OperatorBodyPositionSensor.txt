@@ -1,7 +1,7 @@
 class OperatorBodyPositionSensor
 	inherits PositionSensor
 
-    visible position;
+    visible position, bodyIn1, bodyIn2, bodyIn4;
 	
     temporal domain integer;
 
@@ -34,5 +34,5 @@ class OperatorBodyPositionSensor
                     (bodyIn1() \implies \neg (bodyIn2() || bodyIn4())) &&
                     (bodyIn2() \implies \neg (bodyIn1() || bodyIn4())) &&
                     (bodyIn4() \implies \neg (bodyIn1() || bodyIn2()));
-                     
+
 end OperatorHeadPositionSensor.
