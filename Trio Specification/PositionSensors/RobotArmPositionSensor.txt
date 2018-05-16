@@ -1,5 +1,4 @@
-class RobotArmPositionSensor;
-	inherits RobotPositionSensor
+class RobotArmPositionSensor
 
 	TD items
 		predicates
