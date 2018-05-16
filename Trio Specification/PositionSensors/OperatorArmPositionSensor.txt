@@ -1,0 +1,7 @@
+class OperatorArmPositionSensor
+	inherits PositionSensor
+	
+	axioms
+        -- the arm can be in only one area at a time
+        uniquePosition: \forall x \forall y (position(x) && position(y) \implies x == y);
+end OperatorArmPositionSensor.

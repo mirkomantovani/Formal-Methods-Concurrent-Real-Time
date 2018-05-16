@@ -1,0 +1,7 @@
+class OperatorBodyPositionSensor
+	inherits PositionSensor
+	
+	axioms
+                -- the body can only be at most in 4 areas at the same time
+                \forall x \forall y (position(x) && position(y) && x != y \implies adjacient(x, y));
+end OperatorHeadPositionSensor.
