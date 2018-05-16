@@ -28,7 +28,7 @@ class RobotPositionSensor;
 
 		-- Each area that is occupied by the robot must be adjacent to the center
 		positionRelativeToCenter:
-			\forall y forall x (center(y) \implies (position(x) \iff adjacent(x, y));
+			\forall y \forall x (center(y) \implies (position(x) \iff adjacent(x, y));
 
 		-- Each position that is occupied by the robot is either adjacent to another position or is adjacent to a position that is adjacent to that one
 		maximumDistancePosition: \forall x \forall y (position(x) && position(y) \implies
