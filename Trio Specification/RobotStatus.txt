@@ -2,7 +2,7 @@ class RobotStatus
 
 	temporal domain integer;
 
-	visible targetCartSpeed, targetEndEffectorSpeed, binEmpty, binFull, addPieceToBin, removePieceFromBin;
+	visible targetCartSpeed, targetEndEffectorSpeed, binEmpty, binFull, addPieceToBin, removePieceFromBin, currentCartSpeed, currentEndEffectorSpeed;
 
 	TD items:
 		predicates
@@ -13,7 +13,9 @@ class RobotStatus
 
 		vars
 			targetCartSpeed({None, Low, Normal}),
+			currentCartSpeed({None, Low, Normal}),
 			targetEndEffectorSpeed({None, Low, Normal}),
+			currentEndEffectorSpeed({None, Low, Normal}),
 			binStatus({Empty, 1, 2, Full});
 
 	axioms
@@ -48,4 +50,11 @@ class RobotStatus
 
 		-- binStatus stays constant if there is no action performed
 		constantBin: \forall x (binStatus(x) && \neg (addPieceToBin() || removePieceFromBin()) \implies Futr(binStatus(x), 1));
+
+		-- define the relation between current and target speed
+		cartSpeedRelation: \forall x targetCartSpeed(x) \implies Fut(currentCartSpeed(x),1);
+		armSpeedRelation: \forall x targetEndEffectorSpeed(x) \implies Fut(currentEndEffectorSpeed(x),1);
+
+
+
 end RobotStatus.

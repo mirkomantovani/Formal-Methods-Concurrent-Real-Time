@@ -1,0 +1,41 @@
+class RobotControllerPosition
+
+	-- class interface: exported items can be referenced outside the class
+	visible *variable*; 
+    
+	-- the temporal domain to be considered in the specification
+	temporal domain integer; 
+	
+	-- declaration of time dependent predicates, variables and functions
+	TD items 
+	
+		-- predicate on a domain defined by enumeration
+		predicates go({up, down}); 
+		
+		-- variable of a type defined by enumeration
+		vars       state: {open, closed, mvUp, MvDown};  
+		
+		values  *var*: {stuff, stuff1, ...}
+    
+	-- declaration of time independent predicates, functions, and constants
+	TI items 
+		-- a real constant
+		consts g: real; 
+   
+	-- they represent a set of items and modules definitions
+	-- we can access visible items by doing *module class name*.*visible variable*
+	modules RobotCartPositionSensor; 
+	
+	-- Here we define the equivalence/identity between variables/module variables
+	connections {(*variable*,)} 
+
+	-- class axioms, implicitly preceded by an Alw operator, prefixed by a name for reference
+	axioms 
+		
+		-- the time independent variables, implicitly universally quantified
+		vars t: real; 
+		
+		-- comments in the form of natural language sentences are highly recommended
+		positiveg:  g > 0
+
+end RobotControllerPosition.
