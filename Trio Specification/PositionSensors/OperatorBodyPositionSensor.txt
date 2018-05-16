@@ -1,7 +1,38 @@
 class OperatorBodyPositionSensor
 	inherits PositionSensor
+
+    visible position;
 	
+    temporal domain integer;
+
+    TD items
+        predicates
+            bodyIn1(),
+            bodyIn2(),
+            bodyIn4();
+
 	axioms
                 -- the body can only be at most in 4 areas at the same time
                 \forall x \forall y (position(x) && position(y) && x != y \implies adjacient(x, y));
+
+                bodyOccupiesOneArea: bodyIn1() \iff (
+                    \exists x position(x) && \neg exists y (x != y && position(y))
+                );
+
+                bodyOccupiesTwoAreas: bodyIn2() \iff (
+                    \exists x, y (x != y && position(x) && position(y) && \neg exists z (z != x && z != y && position(z)))
+                );
+
+                bodyOccupiesFourAreas: bodyIn4() \iff (
+                    \exists x1, x2, x3, x4 (x1 != x2 && x1 != x3 && x1 != x4 && x2 != x3 && x2 != x4 && x3 != x4 &&
+                        position(x1) && position(x2) && position(x3) && position(x4) &&
+                        \neg exists y (y != x1 && y != x2 && y != x3 && y != x4 && position(y)))
+                );
+
+                onlyOnePredicateCanBeActive:
+                    (bodyIn1() || bodyIn2() || bodyIn4()) &&
+                    (bodyIn1() \implies \neg (bodyIn2() || bodyIn4())) &&
+                    (bodyIn2() \implies \neg (bodyIn1() || bodyIn4())) &&
+                    (bodyIn4() \implies \neg (bodyIn1() || bodyIn2()));
+                     
 end OperatorHeadPositionSensor.
