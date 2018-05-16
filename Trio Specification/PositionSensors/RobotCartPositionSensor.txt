@@ -7,18 +7,39 @@
 
 
 class RobotCartPositionSensor; 
-    inherits RobotPositionSensor
+	inherits PositionSensor
+	
+	visible center;
 	
 	temporal domain integer;
-		
+	
+	TD items
+		center({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
+			     L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
+			     L20, L21, L22, L23, L24, L25, L26, L27, L28});
+	
 	axioms
+	
+		-- The center is unique
+		centerUnique: \forall x (center(x) \implies (\forall y (y != x \implies \neg center(y))))			
+
+		-- The center of the robot must be in one of the position occupied by the robot
+		centerInRobot: \forall x (center(x) \implies position(x));
+
+		-- Each area that is occupied by the robot must be adjacent to the center
+		positionRelativeToCenter:
+			\forall y forall x (center(y) \implies (position(x) \iff adjacent(x, y));
+
+		-- Each position that is occupied by the robot is either adjacent to another position or is adjacent to a position that is adjacent to that one
+		maximumDistancePosition: \forall x \forall y (position(x) && position(y) \implies
+			adjacent(x, y) || \exists z (position(z) && adjacent(x, z) && adjacent(z, y)));
 			
-		-- The Position predicate can be true only for areas adjacent to the Center
+		-- The Position predicate can be true only for areas adjacent to the center
 		positionAdjacent:
-			\forall x (Position(x) -> \exists y (Center(y) && adjacent(Center(y), Position(x)) ) )
+			\forall x (position(x) -> \exists y (center(y) && adjacent(center(y), position(x)) ) )
 		
 		-- An area occupied by the robot must be adjacent with an area occupied by the robot in the past
 		doNotTeleport:
-			\forall x (Becomes(\neg Position(x)) && -> \exists y (Past(adjacent(x,y),-1)) )   
+			\forall x (Becomes(position(x)) \implies \exists y (Past(position(y), 1) && adjacent(x, y)));
 			
 end RobotCartPositionSensor.
