@@ -12,8 +12,8 @@ class RobotStatus
 			removePieceFromBin();
 
 		vars
-			targetCartSpeed({None, Low, Medium, High}),
-			targetEndEffectorSpeed({None, Low, Medium, High}),
+			targetCartSpeed({None, Low, Normal}),
+			targetEndEffectorSpeed({None, Low, Normal}),
 			binStatus({Empty, 1, 2, Full});
 
 	axioms
