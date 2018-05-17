@@ -7,14 +7,19 @@ class OperatorBodyPositionSensor
 
     TD items
         predicates
+			-- those predicates indicate how many areas the operator body is located in
             bodyIn1(),
             bodyIn2(),
             bodyIn4();
 
 	axioms
                 -- the body can only be at most in 4 areas at the same time
+				
+				-- if the body is in two different positions, those positions have to be adjacent to one another
+				adjacentPositions:
                 \forall x \forall y (position(x) && position(y) && x != y \implies adjacient(x, y));
 
+				-- definition of the bodyInX predicates
                 bodyOccupiesOneArea: bodyIn1() \iff (
                     \exists x position(x) && \neg exists y (x != y && position(y))
                 );
@@ -28,7 +33,7 @@ class OperatorBodyPositionSensor
                         position(x1) && position(x2) && position(x3) && position(x4) &&
                         \neg exists y (y != x1 && y != x2 && y != x3 && y != x4 && position(y)))
                 );
-
+				-- this is already implied by the predicates definitions, but just in case..
                 onlyOnePredicateCanBeActive:
                     (bodyIn1() || bodyIn2() || bodyIn4()) &&
                     (bodyIn1() \implies \neg (bodyIn2() || bodyIn4())) &&
