@@ -21,24 +21,24 @@ class RobotStatus
 	axioms
 
 		-- bin empty
-		binEmpty() \iff binStatus(Empty);
+		binEmpty() \iff binStatus == Empty;
 
 		-- bin full
-		binFull() \iff binStatus(Full);
+		binFull() \iff binStatus == Full;
 
 		-- ordering of bin status
-		binStatus(Empty) && addPieceToBin() \implies \exists x (Becomes(binStatus(1), x));
-		binStatus(1) && addPieceToBin() \implies \exists x (Becomes(binStatus(2), x));
-		binStatus(2) && addPieceToBin() \implies \exists x (Becomes(binStatus(Full), x));
-		binStatus(Full) && removePieceFromBin() \implies \exists x (Becomes(binStatus(2), x));
-		binStatus(2) && removePieceFromBin() \implies \exists x (Becomes(binStatus(1), x));
-		binStatus(1) && removePieceFromBin() \implies \exists x (Becomes(binStatus(Empty), x));
+		binStatus == Empty && addPieceToBin() \implies \exists x (Becomes(binStatus == 1, x));
+		binStatus == 1 && addPieceToBin() \implies \exists x (Becomes(binStatus == 2, x));
+		binStatus == 2 && addPieceToBin() \implies \exists x (Becomes(binStatus == Full, x));
+		binStatus == Full && removePieceFromBin() \implies \exists x (Becomes(binStatus == 2, x));
+		binStatus == 2 && removePieceFromBin() \implies \exists x (Becomes(binStatus == 1, x));
+		binStatus == 1 && removePieceFromBin() \implies \exists x (Becomes(binStatus == Empty, x));
 
 		-- a piece can be added to the local bin only if there is enough capacity
-		addPieceToBin() \implies \neg binStatus(Full);
+		addPieceToBin() \implies \neg binStatus == Full;
 
 		-- a piece can be removed from the local bin only if there is at least one in the bin
-		removePieceFromBin() \implies \neg binStatus(Empty);
+		removePieceFromBin() \implies \neg binStatus == Empty;
 
 		-- binStatus is unique at each instant
 		uniqueBinStatus: \forall x \forall y (binStatus(x) && x != y \implies \neg binStatus(y));

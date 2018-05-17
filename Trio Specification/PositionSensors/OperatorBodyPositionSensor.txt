@@ -40,4 +40,4 @@ class OperatorBodyPositionSensor
                     (bodyIn2() \implies \neg (bodyIn1() || bodyIn4())) &&
                     (bodyIn4() \implies \neg (bodyIn1() || bodyIn2()));
 
-end OperatorHeadPositionSensor.
+end OperatorBodyPositionSensor.
