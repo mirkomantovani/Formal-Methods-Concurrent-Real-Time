@@ -1,8 +1,10 @@
 \documentclass[a4paper]{article}
 \usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage[bookmarks=true]{hyperref}
 \usepackage[left=2cm, right=2cm]{geometry}
+
 
 
 
@@ -123,7 +125,12 @@ The most critical areas are the ones with indices from 1 to 12, particular atten
 \clearpage
 \section{TRIO specification}
 \begin{equation*}
-\lasttime(F, t) = \past(F, t) \land \lasted(\lnot F, t)
+\lasttime(F, t) = \past(F, t) \land \liff \lasted(\lnot F, t)
+\exists 
+\not\exists
+\nexists
+\neg
+\lnot
 \end{equation*}
 
 \section{Model checking}
