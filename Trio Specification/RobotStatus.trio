@@ -40,21 +40,16 @@ class RobotStatus
 		-- a piece can be removed from the local bin only if there is at least one in the bin
 		removePieceFromBin() \implies \neg binStatus == Empty;
 
-		-- binStatus is unique at each instant
-		uniqueBinStatus: \forall x \forall y (binStatus(x) && x != y \implies \neg binStatus(y));
-
 		-- addPieceToBin() and removePieceFromBin() are instantaneous events
 		singleInstantEvents:
 		(addPieceToBin() \implies Futr(\neg addPieceToBin(), 1));
 		(removePieceFromBin() \implies Futr(\neg removePieceFromBin(), 1));
 
 		-- binStatus stays constant if there is no action performed
-		constantBin: \forall x (binStatus(x) && \neg (addPieceToBin() || removePieceFromBin()) \implies Futr(binStatus(x), 1));
+		constantBin: \forall x (binStatus == x && \neg (addPieceToBin() || removePieceFromBin()) \implies Futr(binStatus == x, 1));
 
 		-- define the relation between current and target speed
-		cartSpeedRelation: \forall x targetCartSpeed(x) \implies Fut(currentCartSpeed(x),1);
-		armSpeedRelation: \forall x targetEndEffectorSpeed(x) \implies Fut(currentEndEffectorSpeed(x),1);
-
-
+		cartSpeedRelation: \forall x targetCartSpeed == x \implies Fut(currentCartSpeed == x, 1);
+		armSpeedRelation: \forall x targetEndEffectorSpeed == x \implies Fut(currentEndEffectorSpeed == x, 1);
 
 end RobotStatus.
