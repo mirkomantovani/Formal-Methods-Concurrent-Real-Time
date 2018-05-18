@@ -1,13 +1,11 @@
 class OperatorPositionSensor
-    visible legs, arms, body, head;
+    inherits PositionSensor
+    visible arms, body, head;
 
     temporal domain integer;
 
     TD items
         predicates
-            legs({L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
-                      L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
-                      L20, L21, L22, L23, L24, L25, L26, L27, L28 }),
             arms({L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
                       L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
                       L20, L21, L22, L23, L24, L25, L26, L27, L28 }),
@@ -21,51 +19,18 @@ class OperatorPositionSensor
 
     modules LeftArm: OperatorArmPositionSensor,
             RightArm: OperatorArmPositionSensor,
-            LeftLeg: OperatorLegPositionSensor,
-            RightLeg: OperatorLegPositionSensor,
             Body: OperatorBodyPositionSensor,
             Head: OperatorHeadPositionSensor;
 
     axioms
         -- connect the predicates between the modules
-        legs: \forall x (legs(x) \iff (LeftLeg.position(x) || RightLeg.position(x)));
-        arms: \forall x (arms(x) \iff (LeftArm.elbow(x) || LeftArm.hand(x) || RightArm.elbow(x) || RightArm.hand(x)));
+        arms: \forall x (arms(x) \iff (LeftArm.position(x) || RightArm.position(x)));
         body: \forall x (body(x) \iff Body.position(x));
         head: \forall x (head(x) \iff Head.position(x));
 
-        -- head is on the body
-        headOnTheBody: \forall x (Head.position(x) \implies Body.position(x));
+        -- head is on the body or in a close by cell
+        headOnTheBody: \forall x (head(x) \implies body(x) || \exists y (body(y) && adjacent(x, y)));
 
-        -- if the body occupies one area, then the elbow may be on the body and the hand in another area or they both may be in the same area as the body
-        elbowConnectedToBody1Area:
-            \forall x (Body.bodyIn1() && Body.position(x) \implies
-                (LeftArm.elbow(x) || \exists y (x != y && adjacent(x, y) && LeftArm.elbow(y)))
-                &&
-                (RightArm.elbow(x) || \exists y (x != y && adjacent(x, y) && RightArm.elbow(y))));
-
-        -- if the body occupies two areas, then the elbow needs to be in the same position of the body
-        elbowConnectToBody2Area:
-            \forall x \forall y (Body.bodyIn2() && Body.position(x) && Body.position(y) && x != y \implies
-                (LeftArm.elbow(x) || LeftArm.elbow(y)) &&
-                (RightArm.elbow(x) || RightArm.elbow(y)));
-        
-        -- if the body occupies four areas, both the elbow and the hand are in positions occupied by the body
-        elbowHandConnectToBody4Area:
-            \forall x (Body.bodyIn4() && (LeftArm.elbow(x) || LeftArm.hand(x)) \implies Body.position(x)) &&
-                (Body.bodyIn4() && (RightArm.elbow(x) || RightArm.hand(x) \implies Body.position(x)));
-
-        -- If the body occupies one area, then the leg may be in the same area as the body or in an adjacent area
-        legConnectedToBody1Area:
-            \forall x (Body.bodyIn1() && (LeftLeg.position(x) || RightLeg.position(x)) \implies
-                Body.position(x) || (\exists y (x != y && Body.position(y) && adjacent(x, y))));
-        
-        -- If the body occupies two areas, then the leg may be in the same area as the body or in an adjacent area
-        legConnectedToBody1Area:
-            \forall x (Body.bodyIn2() && (LeftLeg.position(x) || RightLeg.position(x)) \implies
-                Body.position(x) || (\exists y (x != y && Body.position(y) && adjacent(x, y))));
-        
-        -- If the body occupies two areas, then the leg may only be in the one position that is also occupied by the body
-        legConnectedToBody4Area:
-            \forall x (Body.bodyIn4() && (LeftLeg.position(x) || RightLeg.position(x)) \implies Body.position(x));
-
+        -- arms are on the body or in a close by cell
+        armsOnTheBody: \forall x (arms(x) \implies body(x) || \exists y (body(y) && adjacent(x, y)));
 end OperatorPositionSensor.
