@@ -20,7 +20,8 @@ class OperatorPositionSensor
     modules LeftArm: OperatorArmPositionSensor,
             RightArm: OperatorArmPositionSensor,
             Body: OperatorBodyPositionSensor,
-            Head: OperatorHeadPositionSensor;
+            Head: OperatorHeadPositionSensor,
+            Grid: Grid;
 
     axioms
         -- connect the predicates between the modules
@@ -29,8 +30,11 @@ class OperatorPositionSensor
         head: \forall x (head(x) \iff Head.position(x));
 
         -- head is on the body or in a close by cell
-        headOnTheBody: \forall x (head(x) \implies body(x) || \exists y (body(y) && adjacent(x, y)));
+        headOnTheBody: \forall x (head(x) \implies body(x) || \exists y (body(y) && Grid.adjacent(x, y)));
 
         -- arms are on the body or in a close by cell
-        armsOnTheBody: \forall x (arms(x) \implies body(x) || \exists y (body(y) && adjacent(x, y)));
+        armsOnTheBody: \forall x (arms(x) \implies body(x) || \exists y (body(y) && Grid.adjacent(x, y)));
+
+        -- the operator can move one area in each time instant
+        movement: \forall x (body(x) \implies \exists y (Futr(body(y), 1) && (x == y || Grid.adjacent(x, y))));
 end OperatorPositionSensor.
