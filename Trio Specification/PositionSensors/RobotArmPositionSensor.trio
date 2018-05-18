@@ -1,4 +1,11 @@
 class RobotArmPositionSensor
+    inherits PositionSensor
+
+    temporal domain integer;
+
+    visible position, link3, link2, endEffector, pickedUp, holding, dropped;
+
+    modules Grid: Grid;
 
     TD items
         predicates
@@ -27,21 +34,18 @@ class RobotArmPositionSensor
             -- signal to model the fact that the robot has dropped the piece it was holding
             dropped();
 
-    connection: {
-        "RobotPositionSensor.Center": "RobotCenter"
-    };
-    
     axioms:
-        -- link3 starts from the center of the robot
-        link3FromCenter: \forall x (link3(x) \iff RobotCenter(x));
 
+        -- position is all the cells that are occupied by the arm
+        armPosition: \forall x (position(x) \iff link2(x) || link1(x));
+        
         -- link 2 is connected to link3
         connection32: \forall x \forall y (link2(x) \implies link3(x) ||
-            (x != y && link3(y) && adjacent(x, y)));
+            (x != y && link3(y) && Grid.adjacent(x, y)));
 
         -- link1 is connected to link2
         connection21: \forall x \forall y (link1(x) \implies link2(x) ||
-            (x != y && link2(y) && adjacent(x, y)));
+            (x != y && link2(y) && Grid.adjacent(x, y)));
 
         -- end effector is on link1
         endEffectorOnLink1: \forall x (endEffector(x) \iff link1(x));
