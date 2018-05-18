@@ -33,7 +33,8 @@ class OperatorBodyPositionSensor
                         position(x1) && position(x2) && position(x3) && position(x4) &&
                         \neg exists y (y != x1 && y != x2 && y != x3 && y != x4 && position(y)))
                 );
-				-- this is already implied by the predicates definitions, but just in case..
+
+                -- This is a theorem that can be derived from the definitions of the predicates
                 onlyOnePredicateCanBeActive:
                     (bodyIn1() || bodyIn2() || bodyIn4()) &&
                     (bodyIn1() \implies \neg (bodyIn2() || bodyIn4())) &&
