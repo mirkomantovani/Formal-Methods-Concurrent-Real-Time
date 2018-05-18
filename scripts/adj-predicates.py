@@ -10,7 +10,7 @@ def pred(a, b):
 
 
 if __name__ == "__main__":
-	with open('adj-matrix.csv', 'r') as csvfile:
+	with open('../adj-matrix.csv', 'r') as csvfile:
 		matrix = csv.reader(csvfile, delimiter=';')
 		output = ''
 		skip = True
