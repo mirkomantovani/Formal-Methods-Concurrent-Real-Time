@@ -112,9 +112,21 @@ class RobotController
 
 			-- DropToLocalBin requires the robot to be holding a piece and the local bin not to be full
 			preDropToLocalBin:
-				Becomes(currentAction == DropToLocalBin) => \neg RobotStatus.binFull() && Robot.Arm.holding() && Robot.Arm;
+				Becomes(currentAction == DropToLocalBin) => \neg RobotStatus.binFull() && Robot.Arm.holding() && \exists x (Robot.Cart.position(x) && Robot.Arm.endEffector(x));
+				
+				-- the robot cannot move if the action is DropToLocalBin, and also the endEffector does not have to move
+				duringPreDropToLocalBin:
+					currentAction == PickUpFromBinArea \implies (RobotStatus.currentCartSpeed == None &&
+						RobotStatus.currentEndEffectorSpeed == None)
+			
+				-- there exists a time t in which the robot switches from holding to not holding
+				dropSequence:
+					Becomes(currentAction == preDropToLocalBin) \implies \exists t (0 <= t < MaxDropTime && Futr(\neg Robot.Arm.holding(t),t) && Lasts_{ie}(currentAction == DropToLocalBin, t));
+					
+					
 
 			-- GoToTombstone requires the robot to have the local bin full and not hold any piece
+			TODO bloccare end effector sul robot durqante tutta l'azione
 			preGoToTombstone:
 				Becomes(currentAction == GoToTombstone) => RobotStatus.binFull() && \neg RobotStatus.holding();
 
@@ -132,10 +144,13 @@ class RobotController
 			TODO
 
 			-- precondition for the currentAction to be GoToBinArea is that the local bin is empty
+			TODO bloccare end effector sul robot durqante tutta l'azione
 			preGoToBinArea:
 				Becomes(currentAction == GoToBinArea) => RobotStatus.binEmpty() && \neg RobotStatus.holding();
 
 			-- when the bin is full, the robot must go to the tombstone
 			binIsFull:
 				Becomes(RobotStatus.binFull()) \implies do(GoToTombstone);
+				
+			TODO bloccare end effector sul robot durqante tutta l'azione in go to conveyor belt
 end RobotController.
