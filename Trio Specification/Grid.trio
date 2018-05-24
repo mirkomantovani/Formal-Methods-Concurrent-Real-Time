@@ -7,13 +7,13 @@ class Grid
         predicates 
                     adjacent(position, position);
                     
-                    binArea({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
+                    adjToBinArea({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
                             L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
                             L20, L21, L22, L23, L24, L25, L26, L27, L28, LBA, LCB}),
-                    tombstone({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
+                    adjToTombstone({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
                             L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
                             L20, L21, L22, L23, L24, L25, L26, L27, L28, LBA, LCB}),
-                    conveyorBelt({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
+                    adjToConveyorBelt({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
                             L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
                             L20, L21, L22, L23, L24, L25, L26, L27, L28, LBA, LCB}),
                     border({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
@@ -47,11 +47,11 @@ class Grid
             \forall x (transit(x) \iff \neg border(x) || \neg danger(x) );
 
         binArea:
-            \forall x (binArea(x) \iff adjacent(x, LBA);
+            \forall x (adjToBinArea(x) \iff adjacent(x, LBA);
 
         tombstone:
-            \forall x (tombstone(x) \iff adjacent(x, L0);
+            \forall x (adjToTombstone(x) \iff adjacent(x, L0);
 
         conveyorBelt:
-            \forall x (conveyorBelt(x) \iff adjacent(x, LCB);
+            \forall x (adjToConveyorBelt(x) \iff adjacent(x, LCB);
 end Grid.
