@@ -34,6 +34,9 @@ class RobotArmPositionSensor
             -- signal to model the fact that the robot has dropped the piece it was holding
             dropped();
 
+            -- is the operator touching the arm of the robot?
+            contact();
+
     axioms:
 
         -- position is all the cells that are occupied by the arm
@@ -70,5 +73,5 @@ class RobotArmPositionSensor
 
         -- holding() holds between pickedUp() and dropped()
         Becomes(\neg pickedUp()) && Until(holding(), dropped());
-        
+
 end RobotArmPositionSensor.
