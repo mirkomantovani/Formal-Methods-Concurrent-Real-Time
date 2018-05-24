@@ -4,7 +4,27 @@
 \usepackage{graphicx}
 \usepackage[bookmarks=true]{hyperref}
 \usepackage[left=2cm, right=2cm]{geometry}
+\usepackage{listings}
+\usepackage[dvipsnames]{xcolor}
 
+\lstset{morecomment=[l]--,
+		commentstyle=\color{NavyBlue},
+		numbers=left,
+        classoffset=0,
+		morekeywords={trio},
+		keywordstyle=\color{red},
+		classoffset=1,
+		morekeywords={class,
+					  visible,
+					  temporal,
+					  TD items,
+					  modules,
+					  connection,
+					  axioms},
+		keywordstyle=\color{blue}\bfseries,
+        classoffset=2,
+        morekeywords={axioms},keywordstyle=\color{green},
+        classoffset=0}%
 
 
 
@@ -48,7 +68,7 @@ Homework project\\
 \begin{document}
 \maketitle
 \begin{center}
-	\includegraphics[width=7cm]{images/polimi-logo}
+    \includegraphics[width=7cm]{images/polimi-logo}
 \end{center}
 \clearpage
 {\hypersetup{hidelinks}\tableofcontents}
@@ -61,37 +81,37 @@ brief description
 scheme with areas subdivision
 \subsection{Definitions and Acronyms of Components}
 \begin{itemize}
-	\item \textbf{R}:\@ The whole KUKA mobile robot
-	\item \textbf{EE}:\@ The End-Effector of the robot's arm
-	\item \textbf{O}:\@ The Operator that works in the same environment of the Robot and interacts with it
-	\item \textbf{L}:\@ The entire Layout in which Robot and Operator work
-	\item \textbf{BA}:\@ The Bin Area (top-right)
-	\item \textbf{WP}:\@ The single WorkPiece which is transported by the robot
-	\item \textbf{HID}:\@ The Human Interface Device used by the Operator to control the Robot
+    \item \textbf{R}:\@ The whole KUKA mobile robot
+    \item \textbf{EE}:\@ The End-Effector of the robot's arm
+    \item \textbf{O}:\@ The Operator that works in the same environment of the Robot and interacts with it
+    \item \textbf{L}:\@ The entire Layout in which Robot and Operator work
+    \item \textbf{BA}:\@ The Bin Area (top-right)
+    \item \textbf{WP}:\@ The single WorkPiece which is transported by the robot
+    \item \textbf{HID}:\@ The Human Interface Device used by the Operator to control the Robot
 \end{itemize}
 
 \subsection{Constants?}
 \begin{itemize}
-	\item \textbf{N}:\@ The capacity of the local bin of the Robot
+    \item \textbf{N}:\@ The capacity of the local bin of the Robot
 \end{itemize}
 \subsection{World discretization}
 
 \subsubsection{Human body parts}
 \begin{itemize}
-	\item \textbf{Head area}:\@ Highly sensitive areas
-	\item \textbf{Arms area}:\@ Very delicate areas
-	\item \textbf{Waist area}:\@ Delicate areas
-	\item \textbf{Legs area}:\@ 
+    \item \textbf{Head area}:\@ Highly sensitive areas
+    \item \textbf{Arms area}:\@ Very delicate areas
+    \item \textbf{Waist area}:\@ Delicate areas
+    \item \textbf{Legs area}:\@ 
 \end{itemize}
 
 \subsubsection{Robot parts}
 
 \subsubsection{O-R relative speed}
 \begin{itemize}
-	\item \textbf{None}:\@ 
-	\item \textbf{Low}:\@ 
-	\item \textbf{Medium}:\@ 
-	\item \textbf{High}:\@ 
+    \item \textbf{None}:\@ 
+    \item \textbf{Low}:\@ 
+    \item \textbf{Medium}:\@ 
+    \item \textbf{High}:\@ 
 \end{itemize}
 
 \subsubsection{Layout areas}
@@ -112,7 +132,7 @@ The most critical areas are the ones with indices from 1 to 12, particular atten
 \end{figure}
 
 \begin{itemize}
-	\item \textbf{..}:\@ ..
+    \item \textbf{..}:\@ ..
 \end{itemize}
 
 \subsection{Sensors? signals?}
@@ -132,6 +152,36 @@ The most critical areas are the ones with indices from 1 to 12, particular atten
 \neg
 \lnot
 \end{equation*}
+
+\subsection{Definition of the sensor class}
+\begin{lstlisting}[fontadjust, mathescape, frame=tlb]
+class PositionSensor
+    visible position, adjacent;
+
+    temporal domain integer;
+
+    -- TODO: add Bin Area
+
+    TD items 
+        predicates  position({L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
+                              L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
+                              L20, L21, L22, L23, L24, L25, L26, L27, L28 });
+                    
+                    moved();
+
+    modules: Grid: Grid;
+
+    connection: {(Grid.adjacent, adjacent)};
+
+    axioms
+	    moved: $moved() \iff \exists x \past(position(x), 1) \land \neg position(x);$
+
+        $
+        \displaystyle\iff x 
+        $
+
+end PositionSensor.
+\end{lstlisting}
 
 \section{Model checking}
 
