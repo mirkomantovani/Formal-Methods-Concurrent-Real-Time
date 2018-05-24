@@ -1,6 +1,8 @@
 class RobotPositionSensor
     temporal domain integer
 
+    visible Cart, Arm;
+
     modules Cart: RobotCartPositionSensor,
             Arm: RobotArmPositionSensor,
             Status: RobotStatus,
