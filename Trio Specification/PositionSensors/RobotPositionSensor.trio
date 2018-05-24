@@ -21,19 +21,31 @@ class RobotPositionSensor
 
         cartSpeedNormal: \exists x (Status.currentCartSpeed == Normal && Cart.position(x) \implies \exists y (Futr(Cart.position(y), 1) && x != y && Grid.adjacent(x, y)));
 
-        -- armCurrentSpeed defines how ofter the end effector can move
-        -- if the speed is None, then the end effector doesn't move
-        armSpeedNone: Status.currentArmSpeed == None \implies \exists x Futr(Arm.endEffector(x), 1) && Arm.endEffector(x);
-
         -- if the speed is low, then the arm can move from one area to another only half of the time
         armSpeedLowMoved: \exists x (Status.currentCartSpeed == None && Status.currentArmSpeed == Low && Arm.moved() \implies Arm.endEffector(x) && Futr(Arm.endEffector(x), 1));
 
-        armSpeedLowNotMoved: \exists x (Status.currentCartSpeed == None && Status.currentArmSpeed == Low && \neg Arm.moved() \implies Arm.endEffector(x) && \exists y (Futr(Arm.endEffector(y), 1) && x != y && Grid.adjacent(x, y)));
+        armSpeedLowNotMoved: \exists x (Status.currentCartSpeed == None && Status.currentArmSpeed == Low && Past(\neg Arm.moved() && Arm.endEffector(x), 1) \implies Arm.endEffector(y) && x != y && Grid.adjacent(x, y)));
 
         -- if the speed is normal, then the arm can move from one area to another at every time instant
         armSpeedNormal: \exists x (Status.currentCartSpeed == None && Status.currentArmSpeed == Normal && Arm.endEffector(x) \implies \exists y (Futr(Arm.endEffector(y), 1) && x != y && Grid.adjacent(x, y)));
 
         -- if the cart is moving, then the arm must stay on top of the cart, both the end effector and the link
         armOnTopMovingCart: \forall x (Status.currentCartSpeed != None && Cart.moved() && Cart.position(x) \implies Arm.position(x));
+
+        --------------------
+        -- CONTACT AXIOMS --
+        --------------------
+
+        -- the Arm.contact() predicate can be true only when the arms of the operator are in the same area as the arm of the robot
+        armContact:
+            \forall x (Arm.position(x) && Arm.contact() \implies Operator.arms(x));
+
+        -- when the operator is touching the arm of the robot, the speed of the arm of the robot is none
+        stoppedWhileContact:
+            Arm.contact() \implies RobotStatus.currentEndEffectorSpeed == None;
+
+        -- if the operator is moving the end effector, then the end effector will move even if the speed is none
+        armSpeedNoneWithContact: \forall x Status.currentArmSpeed == None && Arm.contact() && Arm.endEffector(x) \implies
+                                 \exists Futr(\exists y Arm.endEffector(y) && (x == y || Grid.adjacent(x, y)), 1);
         
 end RobotPositionSensor.

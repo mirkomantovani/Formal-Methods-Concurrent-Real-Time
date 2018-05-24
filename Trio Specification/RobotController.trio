@@ -218,4 +218,6 @@ class RobotController
 				Becomes(RobotStatus.binFull()) \implies do(GoToTombstone);
 				
 			TODO bloccare end effector sul robot durqante tutta l'azione in go to conveyor belt
+            -- if the speed of the arm is set to none, then if:
+            -- 1. 
 end RobotController.
