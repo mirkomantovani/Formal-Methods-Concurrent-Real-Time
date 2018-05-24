@@ -47,6 +47,12 @@ class RobotController
 				Emergency,
 				Continue
 			});
+			
+	TI items 
+	
+		consts MaxDropTime: integer,
+			   MaxPickUpTime: integer,
+			   MaxTravelTime: integer;
 
 		modules RobotStatus: RobotStatus,
                         Robot: RobotPositionSensor;
@@ -58,11 +64,11 @@ class RobotController
 			correctActionOrder:
 			(currentAction == PickFromBinArea => Until(currentAction == PickFromBinArea, currentAction == DropToLocalBin))
 			&&
-                        -- After having dropped a piece in the local bin, the robot either takes another or goes to the tombstone
+            -- After having dropped a piece in the local bin, the robot either takes another or goes to the tombstone
 			(currentAction == DropToLocalBin => (Until(currentAction == DropToLocalBin, currentAction == PickFromBinArea)
                                        || Until(currentAction == DropToLocalBin, currentAction == GoToTombstone)))
 			&&
-                        -- After having gone to the tombstone, the robot takes the stored working piece with the end effector
+            -- After having gone to the tombstone, the robot takes the stored working piece with the end effector
 			(currentAction == GoToTombstone => (Until(currentAction == GoToTombstone, currentAction == PickFromLocalBin)))
 			&&
 			(currentAction == PickFromLocalBin => Until(currentAction == PickFromLocalBin, currentAction == DropToTombstone))
@@ -93,22 +99,22 @@ class RobotController
 				Becomes(currentAction == PickFromBinArea) =>
                                     \neg RobotStatus.binFull() && \neg Robot.Arm.holding() &&
                                     \forall x (Robot.Cart.position(x) \implies Grid.adjToBinArea(x));
-
-                    duringPickFromBinArea:
+				-- 
+                duringPickFromBinArea:
                         currentAction == PickFromBinArea \implies RobotStatus.currentCartSpeed == None;
 
-                        -- the robot must move the arm from the cart
-                        -- to the bin area, take the piece from the
-                        -- bin area and then move the arm back on top
-                        -- of the cart
-                    pickUpSequence:
-                        Becomes(currentAction == PickFromBinArea) \implies \exists t1, t2, t3
-                            (0 <= t1 < t2 < t3 < MaxPickUpTime &&
-                            Lasts_{ie}(\neg Robot.Arm.holding(), t2) &&
-                            Futr(Robot.Arm.endEffector(LBA), t1) &&
-                            Futr(Lasts_{ii}(Robot.Arm.holding(), t3), t2) &&
-                            Futr(\exists x (Robot.Cart.position(x) && Robot.Arm.endEffector(x)), t3) &&
-                            Lasts_{ie}(currentAction == PickFromBinArea, t3));
+                -- the robot must move the arm from the cart
+                -- to the bin area, take the piece from the
+                -- bin area and then move the arm back on top
+                -- of the cart
+                pickUpSequence:
+                    Becomes(currentAction == PickFromBinArea) \implies \exists t1, t2, t3
+                        (0 <= t1 < t2 < t3 < MaxPickUpTime &&
+                        Lasts_{ie}(\neg Robot.Arm.holding(), t2) &&
+                        Futr(Robot.Arm.endEffector(LBA), t1) &&
+                        Futr(Lasts_{ii}(Robot.Arm.holding(), t3), t2) &&
+                        Futr(\exists x (Robot.Cart.position(x) && Robot.Arm.endEffector(x)), t3) &&
+                        Lasts_{ie}(currentAction == PickFromBinArea, t3));
 						
 -- DropToLocalBin
 			-- DropToLocalBin requires the robot to be holding a piece and the local bin not to be full
@@ -184,7 +190,7 @@ class RobotController
                         currentAction == PickFromTombstone \implies RobotStatus.currentCartSpeed == None;
 
                         -- the 
-                    pickPickFromTombstone:
+                    pickPickFromTombstoneSequence:
                         Becomes(currentAction == PickFromTombstone) \implies \exists t1, t2, t3
                             (0 <= t1 < t2 < t3 < MaxPickUpTime &&
                             Lasts_{ie}(\neg Robot.Arm.holding(), t2) &&
@@ -193,31 +199,47 @@ class RobotController
                             Futr(\exists x (Robot.Cart.position(x) && Robot.Arm.endEffector(x)), t3) &&
                             Lasts_{ie}(currentAction == PickFromTombstone, t3));
 			
-			
-			
-			-- precondition for the currentAction to be PickFromLocalBin,DropToTombstone,PickFromTomstone, DropToConveyorBelt is that R is at the WA
-			preActionsAtWorkingArea:
-				(Becomes(currentAction == PickFromLocalBin) => atWorkingArea) &&
-				(Becomes(currentAction == DropToTombstone) => atWorkingArea) &&
-				(Becomes(currentAction == PickFromTomstone) => atWorkingArea) &&
-				(Becomes(currentAction == DropToConveyorBelt) => atWorkingArea) &&
-
-			-- precondition for the currentAction to be PickFromLocalBin is that the local bin is not empty
-				Becomes(currentAction == PickFromLocalBin) => \neg RobotStatus.binEmpty() && \neg RobotStatus.holding();
-
-			-- precondition for the currentAction to be PickFromTombstone is that the WP is finished
-			TODO
-
-			-- precondition for the currentAction to be GoToBinArea is that the local bin is empty
-			TODO bloccare end effector sul robot durqante tutta l'azione
-			preGoToBinArea:
-				Becomes(currentAction == GoToBinArea) => RobotStatus.binEmpty() && \neg RobotStatus.holding();
-
-			-- when the bin is full, the robot must go to the tombstone
-			binIsFull:
-				Becomes(RobotStatus.binFull()) \implies do(GoToTombstone);
+-- GoToConveyorBelt
+			-- GoToConveyorBelt requires the robot to have the local bin full and not hold any piece
+			preGoToConveyorBelt:
+				Becomes(currentAction == GoToConveyorBelt) => RobotStatus.holding();
 				
-			TODO bloccare end effector sul robot durqante tutta l'azione in go to conveyor belt
-            -- if the speed of the arm is set to none, then if:
-            -- 1. 
+			    -- in case the robot stops himself during the action of going towards the tombstone, then the endEffector cannot move
+			    -- in RobotPositionSensor we already stated that if the cart is moving then the endEffector must stay on top of the -- cart
+				duringGoToConveyorBelt:
+					currentAction == GoToConveyorBelt \implies ((RobotStatus.currentCartSpeed == None \implies RobotStatus.currentEndEffectorSpeed == None ) && Robot.Arm.holding());
+				-- there exists a time t smaller than MaxTravelTime when the robot is at the tombstone
+				goToConveyorBeltSequence:
+					Becomes(currentAction == GoToConveyorBelt) \implies \exists t (0 <= t < MaxTravelTime && Futr(\exists x (Robot.Cart.position(x) && Grid.adjToConveyorBelt(x)),t) && Lasts_{ie}(currentAction == GoToConveyorBelt, t));
+-- DropToConveyorBelt
+			-- precondition of DropToConveyorBelt
+			preDropToConveyorBelt:
+				Becomes(currentAction == DropToConveyorBelt) =>
+                        Robot.Arm.holding() && \forall x (Robot.Cart.position(x) \implies Grid.adjToConveyorBelt(x));
+					-- 
+                    duringDropToConveyorBelt:
+                        currentAction == DropToConveyorBelt \implies RobotStatus.currentCartSpeed == None;
+
+                        -- 
+                    dropToConveyorBeltSequence:
+                        Becomes(currentAction == DropToConveyorBelt) \implies \exists t1, t2, t3
+                            (0 <= t1 < t2 < t3 < MaxDropTime &&
+                            Lasts_{ie}(Robot.Arm.holding(), t2) &&
+                            Futr(Robot.Arm.endEffector(LCB), t1) &&
+                            Futr(Lasts_{ii}(\neg Robot.Arm.holding(), t3), t2) &&
+                            Futr(\exists x (Robot.Cart.position(x) && Robot.Arm.endEffector(x)), t3) &&
+                            Lasts_{ie}(currentAction == DropToConveyorBelt, t3));
+-- GoToBinArea
+			-- GoToBinArea requires the robot to have the local bin full and not hold any piece
+			preGoToBinArea:
+				Becomes(currentAction == GoToBinArea) => RobotStatus.holding() && RobotStatus.binEmpty()
+				
+			    -- in case the robot stops himself during the action of going towards the tombstone, then the endEffector cannot move
+			    -- in RobotPositionSensor we already stated that if the cart is moving then the endEffector must stay on top of the -- cart
+				duringGoToBinArea:
+					currentAction == GoToBinArea \implies (RobotStatus.currentCartSpeed == None \implies RobotStatus.currentEndEffectorSpeed == None);
+				-- there exists a time t smaller than MaxTravelTime when the robot is at the tombstone
+				goToBinAreaSequence:
+					Becomes(currentAction == GoToBinArea) \implies \exists t (0 <= t < MaxTravelTime && Futr(\exists x (Robot.Cart.position(x) && Grid.adjToBinArea(x)),t) && Lasts_{ie}(currentAction == GoToBinArea, t));
+                    
 end RobotController.
