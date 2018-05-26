@@ -6,6 +6,10 @@ if __name__ == "__main__":
 
     print("Insert file with extension (must be in same folder)")
     path_to_file = input()
+    print("Auto reindent option? (y/n)")
+    reindent = input()
+
+
 
     substitutions = []
 
@@ -13,6 +17,10 @@ if __name__ == "__main__":
     substitutions.append(["ftr", " future"])  # problem
     substitutions.append(["Becomes", "\\ bcm"])  # problem
     substitutions.append([" bcm", "becomes"])  # problem
+
+    substitutions.append(["Lasts_{ie}", "\\lastsie"])
+    substitutions.append(["Lasts_{ii}", "\\lastsii"])
+    substitutions.append(["Lasts_{ei}", "\\lastsei"])
 
     substitutions.append(["=>","\\limply"])
     substitutions.append(["\\neg \\\\exists", "\\nexists"])
@@ -24,7 +32,7 @@ if __name__ == "__main__":
     substitutions.append(["Not", "\\lnot"])
     substitutions.append(["notexists", "\\nexists"])
 
-    substitutions.append(["exists", "\\exists"])
+    substitutions.append([" exists", "\\exists"])
     substitutions.append(["Not", "\\lnot"])
     substitutions.append(["Until", "\\until"])
     substitutions.append(["Since", "\\since"])
@@ -40,6 +48,11 @@ if __name__ == "__main__":
     substitutions.append([":", ":$"])
     substitutions.append([";", ";$"])
 
+    if reindent == "y":
+        substitutions.append(["\t\t", "  "])
+        substitutions.append(["\t\t", "  "])
+        substitutions.append(["\t", "  "])
+
     # print(substitutions[0][1])
     with open(path_to_file, 'r') as trioFile:
         text = trioFile.read()
@@ -49,8 +62,11 @@ if __name__ == "__main__":
         sub = s[1]
         text = re.sub(pattern, sub, text)
 
+    # print(text)
     path_to_file = re.sub(".trio", ".tex", path_to_file)
     path_to_file = re.sub(".txt", ".tex", path_to_file)
     with open('latex'+path_to_file, 'w') as latexFile:
+        latexFile.write("\\begin{lstlisting}[fontadjust, mathescape, frame=tlb] \n")
         latexFile.write(text)
+        latexFile.write("\\end{lstlisting}")
 

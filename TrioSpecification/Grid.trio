@@ -1,0 +1,57 @@
+class Grid
+    visible adjacent;
+
+    temporal domain integer;
+
+    TI items
+        predicates 
+                    adjacent(position, position);
+                    
+                    adjToBinArea({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
+                            L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
+                            L20, L21, L22, L23, L24, L25, L26, L27, L28, LBA, LCB}),
+                    adjToTombstone({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
+                            L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
+                            L20, L21, L22, L23, L24, L25, L26, L27, L28, LBA, LCB}),
+                    adjToConveyorBelt({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
+                            L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
+                            L20, L21, L22, L23, L24, L25, L26, L27, L28, LBA, LCB}),
+                    border({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
+                            L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
+                            L20, L21, L22, L23, L24, L25, L26, L27, L28, LBA, LCB}),
+                    danger({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
+                            L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
+                            L20, L21, L22, L23, L24, L25, L26, L27, L28, LBA, LCB}),
+                    transit({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
+                            L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
+                            L20, L21, L22, L23, L24, L25, L26, L27, L28, LBA, LCB}),
+
+    axioms
+        
+        -- This is the formula that appears into the document's appendix.
+        -- Specifies which areas are adjacent one with another
+        adjacency: 
+            \forall x, y (adjacent(x,y) -> ... );
+
+        dangerArea:
+            danger(L0) && danger(L2) && danger(L3) && danger(L4) && danger(L6) && danger(L7) && danger(L8) && danger(L10) && danger(L11) && danger(L12) && 
+            danger(L15) && danger(L17) && danger(L20) && danger(L22) && danger(L23) && danger(L24) && 
+            \neg danger(L1) && \neg danger(L5) && \neg danger(L9) && \neg danger(L13) && \neg danger(L14) && \neg danger(L16) && \neg danger(L18) &&
+            \neg danger(L19) && \neg danger(L21) && \neg danger(L25) && \neg danger(L26) && \neg danger(L27) && \neg danger(L28);
+        
+        borderArea:
+            border(L1) && border(L2) && border(L3) && border(L4) && border(L25) && border(L26) && border(L27) && border(L28) && border(L24) && border(L23) && border(L22) && border(L20) && border(L17) && border(L15) && border(L14) && border(L13) && border(L18) && border(L9) && border(L5) && 
+            \neg border(L0) && \neg border(L6) && \neg border(L7) && \neg border(L8) && \neg border(L10) && \neg border(L11) && \neg border(L12) && \neg border(L21) && \neg border(L16) && \neg border(L19);
+
+        transitArea:
+            \forall x (transit(x) \iff \neg border(x) || \neg danger(x) );
+
+        binArea:
+            \forall x (adjToBinArea(x) \iff adjacent(x, LBA);
+
+        tombstone:
+            \forall x (adjToTombstone(x) \iff adjacent(x, L0);
+
+        conveyorBelt:
+            \forall x (adjToConveyorBelt(x) \iff adjacent(x, LCB);
+end Grid.

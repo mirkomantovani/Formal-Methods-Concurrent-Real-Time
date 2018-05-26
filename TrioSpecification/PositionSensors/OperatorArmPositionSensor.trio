@@ -1,0 +1,13 @@
+class OperatorArmPositionSensor
+        inherits PositionSensor
+
+        visible position;
+
+        temporal domain integer;
+
+        TD items
+	
+	axioms
+            -- unique position
+            uniqueArms: \exists x (position(x) && \neg exists y (x != y && position(y)));
+end OperatorArmPositionSensor.

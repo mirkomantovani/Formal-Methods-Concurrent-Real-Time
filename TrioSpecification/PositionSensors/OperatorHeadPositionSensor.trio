@@ -1,0 +1,12 @@
+class OperatorHeadPositionSensor
+    inherits PositionSensor
+    
+    visible position;
+
+    temporal domain integer;
+
+    axioms
+        -- The head can be only in one area at each time
+        headIsUnique: \exists x (position(x) && \forall y (y != x \implies \neg position(y)));
+
+end OperatorHeadPositionSensor.

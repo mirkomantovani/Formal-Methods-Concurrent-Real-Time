@@ -1,0 +1,11 @@
+class RobotControllerPosition
+	-- RobotControllerPosition needs to manage the position of the cart. It needs to ensure
+	-- that the cart and the operator do not collide at high speed. Furthemore, it needs to
+	-- ensure that the speed of the cart corresponds to the actual movement of the cart.
+
+	temporal domain integer; 
+	
+	modules RobotCartPositionSensor; 
+	
+	axioms
+end RobotControllerPosition.

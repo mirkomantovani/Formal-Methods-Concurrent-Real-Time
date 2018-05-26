@@ -1,0 +1,122 @@
+class RobotController
+	-- RobotController needs to ensure that
+	-- 1. the contacts between Operator and Robot can happen only when the Robot is still or is moving very slowly
+	-- 1.1. a contact between Operator's head and Robot can happen only when the Robot is still
+	-- 1.2. a contact between Operator's arm and Robot can happen only when the speed is slow
+	-- 1.3. a contact between Operator's body and Robot can happen only when the speed is slow
+	-- 2. the Robot needs to avoid to entrap the Operator between itself and a wall
+	
+	-- TODO: missing the exported variables
+ 
+	temporal domain integer;
+	
+
+	TD items
+
+		predicates
+			do({
+				PickUpFromShelf,
+				DropToLocalBin,
+				GoToWorkingArea,
+				PickFromLocalBin,
+				DropToTombstone,
+				PickFromTombstone,
+				DropToConveyorBelt,
+				GoToShelfArea
+			});
+
+		variables
+			currentAction({
+				PickUpFromShelf,
+				DropToLocalBin,
+				GoToWorkingArea,
+				PickFromLocalBin,
+				DropToTombstone,
+				PickFromTombstone,
+				DropToConveyorBelt,
+				GoToShelfArea
+			}),
+			
+			-- None -> Proceed normally with the execution
+			-- Emergency -> Stop the robot and wait for the HDICommand to return to None
+			-- Continue -> when the robot has placed a piece on the tombstone, it needs to wait for the lavoration to be done and for the operator to signal that the lavoration has terminated.
+			HDICommand({
+				None,
+				Emergency,
+				Continue 
+			});
+
+		modules RobotStatus;
+
+		axioms
+			vars t: real;
+
+			-- the current action is unique
+			uniqueAction:
+				\forall x (currentAction == x \limply (\neg y currentAction == y \land x != y));
+
+			-- the actions must be done in the correct order
+			correctActionOrder:
+			(currentAction == PickUpFromShelf \limply \until(currentAction == PickUpFromShelf, currentAction == DropToLocalBin))
+			\land  
+			-- why the first until? we have to suppose the shelf is always full
+			(currentAction == DropToLocalBin \limply (\until(currentAction == DropToLocalBin, currentAction == GoToShelfArea) ||
+												    \until(currentAction == DropToLocalBin, currentAction == PickUpFormShelf) ||
+													\until(currentAction == DropToLocalBin, currentAction == GoToWorkingArea)))
+			\land
+			(currentAction == GoToWorkingArea \limply (\until(currentAction == GoToWorkingArea, currentAction == PickFromLocalBin)))
+			\land
+			(currentAction == PickFromLocalBin \limply \until(currentAction == PickFromLocalBin, currentAction == DropToTombstone))
+			\land
+			(currentAction == DropToTombstone \limply \until(currentAction == DropToTombstone, currentAction = PickFromTombstone))
+			\land
+			(currentAction == PickFromTombstone \limply \until(currentAction == PickFromTombstone, currentAction = DropToConveyorBelt))
+			\land
+			(currentAction == DropToConveyorBelt \limply \until(currentAction == DropToConveyorBelt, currentAction == PickFromLocalBin) ||
+														  \until(currentAction == DropToConveyorBelt, currentAction == GoToShelfArea))
+			\land
+			(currentAction == GoToShelfArea \limply \until(currentAction == GoToShelfArea, currentAction == PickUpfromShelf);
+
+			-- the change in currentAction must be preceded by a do request
+			correctInit:
+			\forall x (ecomes(currentAction == x) \iff do(x));
+
+			-- during emergency mode, the robot needs to be stopped immediately
+			emergencyMode: (HDICommand == Emergency) \limply (RobotStatus.TargetCartSpeed == None) \land (RobotStatus.TargetEndEffectorSpeed == None);
+
+			-- do is an instantaneous event (lasts only one time instant)
+			instantaneousDo: \forall x (do(x) \limply uture(\neg do(x), 1));
+
+			-- precondition of PickUpFromShelf is that the robot has space in the local bin and is at the shelf
+			prePickUpFromShelf:
+				ecomes(currentAction == PickUpFromShelf) \limply \neg RobotStatus.binFull() \land atShelf
+
+			-- DropToLocalBin requires the robot to be holding a piece and the local bin not to be full
+			preDropToLocalBin:
+				ecomes(currentAction == DropToLocalBin) \limply \neg RobotStatus.binFull() \land RobotStatus.holding();
+
+			-- GoToWorkingArea requires the robot to have the local bin full and not hold any piece
+			preGoToWorkingArea:
+				ecomes(currentAction == GoToWorkingArea) \limply RobotStatus.binFull() \land \neg RobotStatus.holding();
+			
+			-- precondition for the currentAction to be PickFromLocalBin,DropToTombstone,PickFromTomstone, DropToConveyorBelt is that R is at the WA
+			preActionsAtWorkingArea:
+				(ecomes(currentAction == PickFromLocalBin) \limply atWorkingArea) \land
+				(ecomes(currentAction == DropToTombstone) \limply atWorkingArea) \land
+				(ecomes(currentAction == PickFromTomstone) \limply atWorkingArea) \land
+				(ecomes(currentAction == DropToConveyorBelt) \limply atWorkingArea) \land
+			
+			-- precondition for the currentAction to be PickFromLocalBin is that the local bin is not empty
+				ecomes(currentAction == PickFromLocalBin) \limply \neg RobotStatus.binEmpty() \land \neg RobotStatus.holding();
+			
+			-- precondition for the currentAction to be PickFromTombstone is that the WP is finished
+			TODO
+			
+			-- precondition for the currentAction to be GoToShelfArea is that the local bin is empty
+			preGoToShelfArea:
+				ecomes(currentAction == GoToShelfArea) \limply RobotStatus.binEmpty() \land \neg RobotStatus.holding();
+
+			-- when the bin is full, the robot must go to the tombstone
+			binIsFull:
+				ecomes(RobotStatus.binFull()) \limply do(GoToWorkingArea);
+end RobotController.
