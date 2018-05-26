@@ -2,7 +2,10 @@ import re
 
 if __name__ == "__main__":
 
-    path_to_file = "RobotController.trio"
+    # path_to_file = "RobotController.trio"
+
+    print("Insert file with extension (must be in same folder)")
+    path_to_file = input()
 
     substitutions = []
 
@@ -34,18 +37,20 @@ if __name__ == "__main__":
     substitutions.append(["Lasts", "\\lasts"])
     substitutions.append(["Lasted", "\\lastedOp"])
 
+    substitutions.append([":", ":$"])
+    substitutions.append([";", ";$"])
 
     # print(substitutions[0][1])
-
     with open(path_to_file, 'r') as trioFile:
         text = trioFile.read()
 
     for s in substitutions:
-         pattern = s[0]
-         sub = s[1]
-         text = re.sub(pattern, sub, text)
+        pattern = s[0]
+        sub = s[1]
+        text = re.sub(pattern, sub, text)
 
-    print(text)
+    path_to_file = re.sub(".trio", ".tex", path_to_file)
+    path_to_file = re.sub(".txt", ".tex", path_to_file)
     with open('latex'+path_to_file, 'w') as latexFile:
-         latexFile.write(text)
+        latexFile.write(text)
 
