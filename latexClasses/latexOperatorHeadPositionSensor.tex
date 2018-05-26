@@ -1,0 +1,13 @@
+\begin{lstlisting}[fontadjust, mathescape, frame=tlb] 
+class OperatorHeadPositionSensor
+    inherits PositionSensor
+    
+    visible position;$
+
+    temporal domain integer;$
+
+    axioms
+        -- The head can be only in one area at each time
+        headIsUnique:$ \exists x (position(x) \land \forall y (y != x \limply \neg position(y)));$
+
+end OperatorHeadPositionSensor.\end{lstlisting}

@@ -1,0 +1,14 @@
+\begin{lstlisting}[fontadjust, mathescape, frame=tlb] 
+class OperatorBodyPositionSensor
+    inherits PositionSensor
+
+    visible position;$
+
+    temporal domain integer;$
+
+    TD items
+        axioms
+            -- the body is only in one area
+            uniqueBody:$ \forall x (position(x) \limply \neg \exists y (position(y) \land x != y));$
+
+end OperatorBodyPositionSensor.\end{lstlisting}

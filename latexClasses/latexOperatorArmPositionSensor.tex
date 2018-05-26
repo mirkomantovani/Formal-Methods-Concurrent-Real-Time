@@ -1,0 +1,14 @@
+\begin{lstlisting}[fontadjust, mathescape, frame=tlb] 
+class OperatorArmPositionSensor
+        inherits PositionSensor
+
+        visible position;$
+
+        temporal domain integer;$
+
+        TD items
+  
+  axioms
+            -- unique position
+            uniqueArms:$ \exists x (position(x) \land \neg\exists y (x != y \land position(y)));$
+end OperatorArmPositionSensor.\end{lstlisting}

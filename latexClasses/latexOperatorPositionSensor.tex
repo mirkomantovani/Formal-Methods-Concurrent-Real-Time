@@ -1,0 +1,41 @@
+\begin{lstlisting}[fontadjust, mathescape, frame=tlb] 
+class OperatorPositionSensor
+    inherits PositionSensor
+    visible arms, body, head;$
+
+    temporal domain integer;$
+
+    TD items
+        predicates
+            arms({L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
+                      L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
+                      L20, L21, L22, L23, L24, L25, L26, L27, L28 }),
+            body({L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
+                      L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
+                      L20, L21, L22, L23, L24, L25, L26, L27, L28 }),
+            head({L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
+                      L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
+                      L20, L21, L22, L23, L24, L25, L26, L27, L28 });$
+
+
+    modules LeftArm:$ OperatorArmPositionSensor,
+            RightArm:$ OperatorArmPositionSensor,
+            Body:$ OperatorBodyPositionSensor,
+            Head:$ OperatorHeadPositionSensor,
+            Grid:$ Grid;$
+
+    axioms
+        -- connect the predicates between the modules
+        arms:$ \forall x (arms(x) \iff (LeftArm.position(x) || RightArm.position(x)));$
+        body:$ \forall x (body(x) \iff Body.position(x));$
+        head:$ \forall x (head(x) \iff Head.position(x));$
+
+        -- head is on the body or in a close by cell
+        headOnTheBody:$ \forall x (head(x) \limply body(x) || \exists y (body(y) \land Grid.adjacent(x, y)));$
+
+        -- arms are on the body or in a close by cell
+        armsOnTheBody:$ \forall x (arms(x) \limply body(x) || \exists y (body(y) \land Grid.adjacent(x, y)));$
+
+        -- the operator can move one area in each time instant
+        movement:$ \forall x (body(x) \limply \exists y (\  future(body(y), 1) \land (x == y || Grid.adjacent(x, y))));$
+end OperatorPositionSensor.\end{lstlisting}

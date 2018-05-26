@@ -1,0 +1,52 @@
+\begin{lstlisting}[fontadjust, mathescape, frame=tlb] 
+class RobotStatus
+
+  temporal domain integer;$
+
+  visible targetCartSpeed, targetEndEffectorSpeed, binEmpty, binFull, addPieceToBin, removePieceFromBin, currentCartSpeed, currentEndEffectorSpeed;$
+
+  TD items:$
+  predicates
+    binEmpty(),
+    binFull(),
+    addPieceToBin(),
+    removePieceFromBin();$
+
+  vars
+    targetCartSpeed({None, Low, Normal}),
+    currentCartSpeed({None, Low, Normal}),
+    targetEndEffectorSpeed({None, Low, Normal}),
+    currentEndEffectorSpeed({None, Low, Normal}),
+    binStatus({Empty, 1, 2, Full});$
+
+  axioms
+
+  -- bin empty
+  binEmpty() \iff binStatus == Empty;$
+
+  -- bin full
+  binFull() \iff binStatus == Full;$
+
+  -- ordering of bin status
+  binStatus == Empty \land addPieceToBin() \limply \exists x (\becomes(binStatus == 1, x));$
+  binStatus == 1 \land addPieceToBin() \limply \exists x (\becomes(binStatus == 2, x));$
+  binStatus == 2 \land addPieceToBin() \limply \exists x (\becomes(binStatus == Full, x));$
+  binStatus == Full \land removePieceFromBin() \limply \exists x (\becomes(binStatus == 2, x));$
+  binStatus == 2 \land removePieceFromBin() \limply \exists x (\becomes(binStatus == 1, x));$
+  binStatus == 1 \land removePieceFromBin() \limply \exists x (\becomes(binStatus == Empty, x));$
+
+  -- a piece can be added to the local bin only if there is enough capacity
+  addPieceToBin() \limply \neg binStatus == Full;$
+
+  -- a piece can be removed from the local bin only if there is at least one in the bin
+  removePieceFromBin() \limply \neg binStatus == Empty;$
+
+  -- addPieceToBin() and removePieceFromBin() are instantaneous events
+  singleInstantEvents:$
+  (addPieceToBin() \limply \  future(\neg addPieceToBin(), 1));$
+  (removePieceFromBin() \limply \  future(\neg removePieceFromBin(), 1));$
+
+  -- binStatus stays constant if there is no action performed
+  constantBin:$ \forall x (binStatus == x \land \neg (addPieceToBin() || removePieceFromBin()) \limply \  future(binStatus == x, 1));$
+
+end RobotStatus.\end{lstlisting}
