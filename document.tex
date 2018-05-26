@@ -2,6 +2,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{graphicx}
+\usepackage{verbatim}
 \usepackage[bookmarks=true]{hyperref}
 \usepackage[left=2cm, right=2cm]{geometry}
 \usepackage{listings}
@@ -50,6 +51,9 @@ Homework project\\
 \DeclareMathOperator{\past}{Past}
 \DeclareMathOperator{\lastsOp}{Lasts}
 \newcommand{\lasts}{\lastsOp_{ee}}
+\newcommand{\lastsie}{\lastsOp_{ie}}
+\newcommand{\lastsii}{\lastsOp_{ii}}
+\newcommand{\lastsei}{\lastsOp_{ei}}
 \DeclareMathOperator{\lastedOp}{Lasted}
 \newcommand{\lasted}{\lastedOp_{ei}}
 \DeclareMathOperator{\always}{Always}
@@ -168,6 +172,9 @@ class PositionSensor
                               L20, L21, L22, L23, L24, L25, L26, L27, L28 });
                     
                     moved();
+                    
+                    
+    prova:$ \lastsie(\neg Robot.Arm.holding(),t)$
 
     modules: Grid: Grid;
 
@@ -182,6 +189,13 @@ class PositionSensor
 
 end PositionSensor.
 \end{lstlisting}
+
+\subsection{Robot Controller}
+
+
+\input{TrioSpecification/latexRobotController.tex}
+
+
 
 \section{Model checking}
 
