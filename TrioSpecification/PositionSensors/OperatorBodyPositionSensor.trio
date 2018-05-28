@@ -9,8 +9,8 @@ class OperatorBodyPositionSensor
 
     temporal domain integer;
 
-	axioms
-		-- the body is only in one area
-		uniqueBody: \forall x (position(x) \implies \neg \exists y (position(y) && x != y));
+    axioms
+        -- the body is only in one area
+        uniqueBody: \forall x (position(x) \implies \neg \exists y (position(y) && x != y));
 
 end OperatorBodyPositionSensor.

@@ -1,3 +1,10 @@
+-- This class specify the sensors for the robot's arm. We decide
+-- to model the arm as the real one present on the KUKA unit.
+-- The arm is composed of 3 links and one end effector.
+-- There are three predicates that will be use to determine
+-- when the robot is switching between an action an another,
+-- and they are pickedUp(), holding() and dropped().
+
 class RobotArmPositionSensor
     inherits PositionSensor
 
@@ -9,37 +16,44 @@ class RobotArmPositionSensor
 
     TD items
         predicates
-            -- link3 is the first segment of the arm from the body of the robot
+            -- Link3 is the first segment of the arm from the body of the robot
             link3({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
                  L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
                  L20, L21, L22, L23, L24, L25, L26, L27, L28}),
-            -- link2 is the second segment of the arm, linked to link3 and link1
+                 
+            -- Link2 is the second segment of the arm, linked to link3 and link1
             link2({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
                  L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
                  L20, L21, L22, L23, L24, L25, L26, L27, L28}),
-            -- link1 is the third segment of the arm, which is linked to link2 and holds the end effector
+                 
+            -- Link1 is the third segment of the arm, which is linked to link2 
+            -- and holds the end effector
             link1({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
                  L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
                  L20, L21, L22, L23, L24, L25, L26, L27, L28}),
-            -- end effector is the "hand" of the robot
+                 
+            -- End effector is the "hand" of the robot
             endEffector({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
                  L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
                  L20, L21, L22, L23, L24, L25, L26, L27, L28}),
-            -- signal if the pick action has been completed successfully
+                 
+            -- Signal if the pick action has been completed successfully
             pickedUp(),
 
-            -- signal to model the fact that the robot is holding a piece
+            -- Signal to model the fact that the robot is holding a piece
             holding(),
 
-            -- signal to model the fact that the robot has dropped the piece it was holding
+            -- Signal to model the fact that the robot has dropped the piece it
+            -- was holding
             dropped();
 
-            -- is the operator touching the arm of the robot?
+            -- Signal to model the fact that the robot's arm is being touched by
+            -- the operator
             contact();
 
     axioms:
 
-        -- position is all the cells that are occupied by the arm
+        -- The position is all the cells that are occupied by the arm
         armPosition: \forall x (position(x) \iff link2(x) || link1(x));
         
         -- link 2 is connected to link3
@@ -63,7 +77,7 @@ class RobotArmPositionSensor
         only1EndEffector:
             \forall x (endEffector(x) \iff \neg \exists y (x != y && endEffector(y)));
 
-        -- only one of pickedUp(), holding() and dropped() can be true in each instant
+        -- Only one of pickedUp(), holding() and dropped() can be true in each instant
         onlyOne:
             (pickedUp() \implies \neg holding() && \neg dropped())
             &&

@@ -5,8 +5,8 @@ class PositionSensor
     visible position, adjacent;
 
     temporal domain integer;
-	
-	-- The domain of the predicate position lies inside all the possible areas
+    
+    -- The domain of the predicate position lies inside all the possible areas
     -- of interest. 
     -- The predicate moved allows us to manage the robot's movement. This is due
     -- to the fact that the robot can move at three speed intensity. Therefore, 
@@ -25,8 +25,8 @@ class PositionSensor
     connection: {(Grid.adjacent, adjacent)};
 
     axioms
-		-- If the predicate moved is true, this means that the current position
-		-- must be different from the one assumed one time instant in the past.
+        -- If the predicate moved is true, this means that the current position
+        -- must be different from the one assumed one time instant in the past.
         moved: moved() \iff \exists x Past(position(x), 1) && \neg position(x);
 
 end PositionSensor.

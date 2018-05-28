@@ -5,13 +5,13 @@
 -- two arms.
 
 class OperatorArmPositionSensor
-	inherits PositionSensor
+    inherits PositionSensor
 
-	visible position;
+    visible position;
 
-	temporal domain integer;
+    temporal domain integer;
 
-	axioms
-		--The arms can be only in one position
-		uniqueArms: \exists x (position(x) && \neg exists y (x != y && position(y)));
+    axioms
+        --The arms can be only in one position
+        uniqueArms: \exists x (position(x) && \neg exists y (x != y && position(y)));
 end OperatorArmPositionSensor.

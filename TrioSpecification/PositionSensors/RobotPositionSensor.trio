@@ -1,3 +1,6 @@
+-- This is the class that collects all the sensor of the
+-- robot. 
+
 class RobotPositionSensor
     temporal domain integer
 
@@ -10,27 +13,58 @@ class RobotPositionSensor
 
     axioms
         -- link3 is in the same position as the cart
-        link3OnCart: \forall x (Arm.link3(x) \iff Body.position(x));
+        link3OnCart: 
+            \forall x (Arm.link3(x) \iff Body.position(x));
 
         -- cartTargetSpeed defines how often the robot cart can move in the grid
-        cartSpeedNone: Status.currentCartSpeed == None \implies \exists x Futr(Cart.position(x), 1) && Cart.position(x);
+        cartSpeedNone: 
+            Status.currentCartSpeed == None \implies 
+                \exists x Futr(Cart.position(x), 1) && Cart.position(x);
 
-        cartSpeedLowMoved: \exists x (Status.currentCartSpeed == Low && Cart.moved() \implies Cart.position(x) && Futr(Cart.position(x), 1));
+        cartSpeedLowMoved: 
+            \exists x (Status.currentCartSpeed == Low && Cart.moved() \implies
+                           Cart.position(x) && Futr(Cart.position(x), 1));
 
-        cartSpeedLowNotMoved: \exists x (Status.currentCartSpeed == Low && \neg Cart.moved() \implies Cart.position(x) && \exists y (Futr(Cart.position(y), 1) && x != y && Grid.adjacent(x, y)));
+        cartSpeedLowNotMoved: 
+            \exists x (Status.currentCartSpeed == Low && 
+                       \neg Cart.moved() \implies
+                           Cart.position(x) && 
+                           \exists y (Futr(Cart.position(y), 1)&& 
+                           x != y && Grid.adjacent(x, y)));
 
-        cartSpeedNormal: \exists x (Status.currentCartSpeed == Normal && Cart.position(x) \implies \exists y (Futr(Cart.position(y), 1) && x != y && Grid.adjacent(x, y)));
+        cartSpeedNormal: 
+            \exists x (Status.currentCartSpeed == Normal &&
+                       Cart.position(x) \implies
+                           \exists y (Futr(Cart.position(y), 1) &&
+                                      x != y && Grid.adjacent(x, y)));
 
         -- if the speed is low, then the arm can move from one area to another only half of the time
-        armSpeedLowMoved: \exists x (Status.currentCartSpeed == None && Status.currentArmSpeed == Low && Arm.moved() \implies Arm.endEffector(x) && Futr(Arm.endEffector(x), 1));
+        armSpeedLowMoved: 
+            \exists x (Status.currentCartSpeed == None &&
+                       Status.currentArmSpeed == Low && Arm.moved() \implies 
+                           Arm.endEffector(x) && Futr(Arm.endEffector(x), 1));
 
-        armSpeedLowNotMoved: \exists x (Status.currentCartSpeed == None && Status.currentArmSpeed == Low && Past(\neg Arm.moved() && Arm.endEffector(x), 1) \implies Arm.endEffector(y) && x != y && Grid.adjacent(x, y)));
+        armSpeedLowNotMoved: 
+            \exists x (Status.currentCartSpeed == None &&
+                       Status.currentArmSpeed == Low && 
+                       Past(\neg Arm.moved() &&
+                       Arm.endEffector(x), 1) \implies 
+                           Arm.endEffector(y) && 
+                           x != y && Grid.adjacent(x, y)));
 
         -- if the speed is normal, then the arm can move from one area to another at every time instant
-        armSpeedNormal: \exists x (Status.currentCartSpeed == None && Status.currentArmSpeed == Normal && Arm.endEffector(x) \implies \exists y (Futr(Arm.endEffector(y), 1) && x != y && Grid.adjacent(x, y)));
+        armSpeedNormal: 
+            \exists x (Status.currentCartSpeed == None &&
+                       Status.currentArmSpeed == Normal &&
+                       Arm.endEffector(x) \implies
+                           \exists y (Futr(Arm.endEffector(y), 1) &&
+                           x != y && Grid.adjacent(x, y)));
 
         -- if the cart is moving, then the arm must stay on top of the cart, both the end effector and the link
-        armOnTopMovingCart: \forall x (Status.currentCartSpeed != None && Cart.moved() && Cart.position(x) \implies Arm.position(x));
+        armOnTopMovingCart: 
+        \forall x (Status.currentCartSpeed != None &&
+                   Cart.moved() && Cart.position(x) \implies
+                       Arm.position(x));
 
         --------------------
         -- CONTACT AXIOMS --
@@ -38,14 +72,24 @@ class RobotPositionSensor
 
         -- the Arm.contact() predicate can be true only when the arms of the operator are in the same area as the arm of the robot
         armContact:
-            \forall x (Arm.position(x) && Arm.contact() \implies Operator.arms(x));
+            \forall x (Arm.position(x) &&
+                       Arm.contact() \implies
+                           Operator.arms(x));
 
         -- when the operator is touching the arm of the robot, the speed of the arm of the robot is none
         stoppedWhileContact:
-            Arm.contact() \implies RobotStatus.currentEndEffectorSpeed == None;
+            Arm.contact() \implies 
+                RobotStatus.currentEndEffectorSpeed == None;
 
+        -- TODO
+        -- TODO C'è un exists di troppo
+        -- TODO
+                
         -- if the operator is moving the end effector, then the end effector will move even if the speed is none
-        armSpeedNoneWithContact: \forall x Status.currentArmSpeed == None && Arm.contact() && Arm.endEffector(x) \implies
-                                 \exists Futr(\exists y Arm.endEffector(y) && (x == y || Grid.adjacent(x, y)), 1);
+        armSpeedNoneWithContact: 
+            \forall x Status.currentArmSpeed == None &&
+                      Arm.contact() && Arm.endEffector(x)\implies
+                          \exists Futr(\exists y Arm.endEffector(y) &&
+                                       (x == y || Grid.adjacent(x, y)), 1);
         
 end RobotPositionSensor.
