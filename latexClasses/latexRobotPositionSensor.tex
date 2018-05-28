@@ -18,14 +18,14 @@ class RobotPositionSensor
 
         cartSpeedLowMoved:$ \exists x (Status.currentCartSpeed == Low \land Cart.moved() \limply Cart.position(x) \land \  future(Cart.position(x), 1));$
 
-        cartSpeedLow\lnot Moved:$ \exists x (Status.currentCartSpeed == Low \land \neg Cart.moved() \limply Cart.position(x) \land \exists y (\  future(Cart.position(y), 1) \land x != y \land Grid.adjacent(x, y)));$
+        cartSpeedLowNotMoved:$ \exists x (Status.currentCartSpeed == Low \land \neg Cart.moved() \limply Cart.position(x) \land \exists y (\  future(Cart.position(y), 1) \land x != y \land Grid.adjacent(x, y)));$
 
         cartSpeedNormal:$ \exists x (Status.currentCartSpeed == Normal \land Cart.position(x) \limply \exists y (\  future(Cart.position(y), 1) \land x != y \land Grid.adjacent(x, y)));$
 
         -- if the speed is low, then the arm can move from one area to another only half of the time
         armSpeedLowMoved:$ \exists x (Status.currentCartSpeed == None \land Status.currentArmSpeed == Low \land Arm.moved() \limply Arm.endEffector(x) \land \  future(Arm.endEffector(x), 1));$
 
-        armSpeedLow\lnotMoved:$ \exists x (Status.currentCartSpeed == None \land Status.currentArmSpeed == Low \land \past(\neg Arm.moved() \land Arm.endEffector(x), 1) \limply Arm.endEffector(y) \land x != y \land Grid.adjacent(x, y)));$
+        armSpeedLowNotMoved:$ \exists x (Status.currentCartSpeed == None \land Status.currentArmSpeed == Low \land \past(\neg Arm.moved() \land Arm.endEffector(x), 1) \limply Arm.endEffector(y) \land x != y \land Grid.adjacent(x, y)));$
 
         -- if the speed is normal, then the arm can move from one area to another at every time instant
         armSpeedNormal:$ \exists x (Status.currentCartSpeed == None \land Status.currentArmSpeed == Normal \land Arm.endEffector(x) \limply \exists y (\  future(Arm.endEffector(y), 1) \land x != y \land Grid.adjacent(x, y)));$
