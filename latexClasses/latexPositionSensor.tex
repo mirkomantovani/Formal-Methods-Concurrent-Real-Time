@@ -1,12 +1,13 @@
 \begin{lstlisting}[fontadjust, mathescape, frame=single]
-    
+
 -- This is the basic sensor of our system. Allows to define a predicate position,
--- that will be used by the robot's position sensors.   
+-- that will be used by the robot's position sensors.
+
 class PositionSensor
     visible position, adjacent;
 
     temporal domain integer;
-
+    
     -- The domain of the predicate position lies inside all the possible areas
     -- of interest. 
     -- The predicate moved allows us to manage the robot's movement. This is due
@@ -24,8 +25,10 @@ class PositionSensor
     modules: Grid: Grid;
 
     connection: {(Grid.adjacent, adjacent)};
-
     axioms
-        moved:$ moved() \iff \exists x \past(position(x), 1) \land \neg position(x);$
+        -- If the predicate moved is true, this means that the current position
+        -- must be different from the one assumed one time instant in the past.
+        moved: $moved() \iff \exists x \past(position(x), 1) \land \neg position(x)$;
 
-end PositionSensor.\end{lstlisting}
+end PositionSensor.
+\end{lstlisting}
