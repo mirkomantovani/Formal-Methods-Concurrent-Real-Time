@@ -1,13 +1,13 @@
-\begin{lstlisting}[fontadjust, mathescape, frame=tlb] 
+\begin{lstlisting}[fontadjust, mathescape, frame=single] 
 class RobotPositionSensor
     temporal domain integer
 
-    visible Cart, Arm;$
+    visible Cart, Arm;
 
-    modules Cart:$ RobotCartPositionSensor,
-            Arm:$ RobotArmPositionSensor,
-            Status:$ RobotStatus,
-            Grid:$ Grid;$
+    modules Cart: RobotCartPositionSensor,
+            Arm: RobotArmPositionSensor,
+            Status: RobotStatus,
+            Grid: Grid;
 
     axioms
         -- link3 is in the same position as the cart

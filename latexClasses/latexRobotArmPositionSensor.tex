@@ -1,12 +1,12 @@
-\begin{lstlisting}[fontadjust, mathescape, frame=tlb] 
+\begin{lstlisting}[fontadjust, mathescape, frame=single] 
 class RobotArmPositionSensor
     inherits PositionSensor
 
-    temporal domain integer;$
+    temporal domain integer;
 
-    visible position, link3, link2, endEffector, pickedUp, holding, dropped;$
+    visible position, link3, link2, endEffector, pickedUp, holding, dropped;
 
-    modules Grid:$ Grid;$
+    modules Grid: Grid;
 
     TD items
         predicates
@@ -33,12 +33,12 @@ class RobotArmPositionSensor
             holding(),
 
             -- signal to model the fact that the robot has dropped the piece it was holding
-            dropped();$
+            dropped(),
 
             -- is the operator touching the arm of the robot?
-            contact();$
+            contact();
 
-    axioms:$
+    axioms
 
         -- position is all the cells that are occupied by the arm
         armPosition:$ \forall x (position(x) \iff link2(x) || link1(x));$

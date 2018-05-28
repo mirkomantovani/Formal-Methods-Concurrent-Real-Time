@@ -1,9 +1,9 @@
-\begin{lstlisting}[fontadjust, mathescape, frame=tlb] 
+\begin{lstlisting}[fontadjust, mathescape, frame=single] 
 class RobotController
   -- RobotController handles all the actions that the robot can execute, specifying preconditions, axioms over the duration of the action
   -- and the sequences of events that must happen during the action
 
-  temporal domain integer;$
+  temporal domain integer;
 
   TD items
 
@@ -18,7 +18,7 @@ class RobotController
     GoToConveyorBelt,
     DropToConveyorBelt,
     GoToBinArea
-    });$
+    });
 
   variables
     currentAction({
@@ -41,16 +41,16 @@ class RobotController
     None,
     Emergency,
     Continue
-    });$
+    });
     
   TI items 
   
-  consts MaxDropTime:$ integer,
-       MaxPickUpTime:$ integer,
-       MaxTravelTime:$ integer;$
+  consts MaxDropTime: integer,
+       MaxPickUpTime: integer,
+       MaxTravelTime: integer;
 
-  modules RobotStatus:$ RobotStatus,
-                Robot:$ RobotPositionSensor;$
+  modules RobotStatus: RobotStatus,
+                Robot: RobotPositionSensor;
 
   axioms
 
@@ -59,33 +59,33 @@ class RobotController
     -- the actions must be done in the correct order
     correctActionOrder:$
     (currentAction == PickFromBinArea \limply \until(currentAction == PickFromBinArea, currentAction == DropToLocalBin))
-    \land
+    \land$
             -- After having dropped a piece in the local bin, the robot either takes another or goes to the tombstone
-    (currentAction == DropToLocalBin \limply (\until(currentAction == DropToLocalBin, currentAction == PickFromBinArea)
+    $(currentAction == DropToLocalBin \limply (\until(currentAction == DropToLocalBin, currentAction == PickFromBinArea)
                                        || \until(currentAction == DropToLocalBin, currentAction == GoToTombstone)))
-    \land
+    \land$
             -- After having gone to the tombstone, the robot takes the stored working piece with the end effector
-    (currentAction == GoToTombstone \limply (\until(currentAction == GoToTombstone, currentAction == PickFromLocalBin)))
-    \land
+    $(currentAction == GoToTombstone \limply (\until(currentAction == GoToTombstone, currentAction == PickFromLocalBin)))
+    \land$
     -- After having picked up a piece from the local bin, the robot drops it into the tombstone
-    (currentAction == PickFromLocalBin \limply \until(currentAction == PickFromLocalBin, currentAction == DropToTombstone))
-    \land
+    $(currentAction == PickFromLocalBin \limply \until(currentAction == PickFromLocalBin, currentAction == DropToTombstone))
+    \land$
     -- After having dropped a piece into the tombstone, the robot waits for the operator's signal and then picks up the reshaped piece
-    (currentAction == DropToTombstone \limply \until(currentAction == DropToTombstone, currentAction = PickFromTombstone))
-    \land
+    $(currentAction == DropToTombstone \limply \until(currentAction == DropToTombstone, currentAction = PickFromTombstone))
+    \land$
     -- After having picked up the piece from the tombstone, the robot goes to the conveyor belt
-    (currentAction == PickFromTombstone \limply \until(currentAction == PickFromTombstone, currentAction = GoToConveyorBelt))
-    \land
+    $(currentAction == PickFromTombstone \limply \until(currentAction == PickFromTombstone, currentAction = GoToConveyorBelt))
+    \land$
     -- After having gone to the conveyor belt, the robot drops the piece onto it
-    (currentAction == GoToConveyorBelt \limply \until(currentAction == GoToConveyorBelt, currentAction == DropToConveyorBelt)
-    \land
+    $(currentAction == GoToConveyorBelt \limply \until(currentAction == GoToConveyorBelt, currentAction == DropToConveyorBelt)
+    \land$
     -- After having dropped the piece onto the conveyor belt, the robot either goes back to the tombstone or it goes to the bin area if 
     -- local bin is empty
-    (currentAction == DropToConveyorBelt \limply \until(currentAction == DropToConveyorBelt, currentAction == GoToTombstone) ||
+    $(currentAction == DropToConveyorBelt \limply \until(currentAction == DropToConveyorBelt, currentAction == GoToTombstone) ||
                    \until(currentAction == DropToConveyorBelt, currentAction == GoToBinArea))
-    \land
+    \land$
     -- After having gone to the bin area, the robot picks up a piece from the bin area
-    (currentAction == GoToBinArea \limply \until(currentAction == GoToBinArea, currentAction == PickFromBinArea);$
+    $(currentAction == GoToBinArea \limply \until(currentAction == GoToBinArea, currentAction == PickFromBinArea);$
 
     -- the change in currentAction must be preceded by a do request
     correctInit:$
