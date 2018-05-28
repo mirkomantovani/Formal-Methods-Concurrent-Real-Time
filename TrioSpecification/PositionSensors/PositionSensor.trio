@@ -1,10 +1,17 @@
+-- This is the basic sensor of our system. Allows to define a predicate position,
+-- that will be used by the robot's position sensors.
+
 class PositionSensor
     visible position, adjacent;
 
     temporal domain integer;
-
-    -- TODO: add Bin Area
-
+	
+	-- The domain of the predicate position lies inside all the possible areas
+    -- of interest. 
+    -- The predicate moved allows us to manage the robot's movement. This is due
+    -- to the fact that the robot can move at three speed intensity. Therefore, 
+    -- for a correct modelization of this movement, we needed a predicate that 
+    -- tell us whether the robot has moved in this time instant.
     TD items 
         predicates  position({L0, L1, L2, L3, L4, L5, L6, L7,
                               L8, L9, L10, L11, L12, L13, L14,
@@ -18,6 +25,8 @@ class PositionSensor
     connection: {(Grid.adjacent, adjacent)};
 
     axioms
+		-- If the predicate moved is true, this means that the current position
+		-- must be different from the one assumed one time instant in the past.
         moved: moved() \iff \exists x Past(position(x), 1) && \neg position(x);
 
 end PositionSensor.
