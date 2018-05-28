@@ -80,3 +80,5 @@ class PositionController
         operatorTransitZone:
             \forall x (Operator.body(x) && Grid.transit(x) && Robot.Cart.position(x) \implies
                 RobotStatus.currentCartSpeed == Low || RobotStatus.currentCartSpeed == None);
+				
+end PositionController.

@@ -158,41 +158,9 @@ The most critical areas are the ones with indices from 1 to 12, particular atten
 \end{equation*}
 
 \subsection{Definition of the sensor class}
-\begin{lstlisting}[fontadjust, mathescape, frame=tlb]
-class PositionSensor
-    visible position, adjacent;
-
-    temporal domain integer;
-
-    -- TODO: add Bin Area
-
-    TD items 
-        predicates  position({L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
-                              L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
-                              L20, L21, L22, L23, L24, L25, L26, L27, L28 });
-                    
-                    moved();
-                    
-                    
-    prova:$ \lastsie(\neg Robot.Arm.holding(),t)$
-
-    modules: Grid: Grid;
-
-    connection: {(Grid.adjacent, adjacent)};
-
-    axioms
-	    moved: $moved() \iff \exists x \past(position(x), 1) \land \neg position(x);$
-
-        $
-        \displaystyle\iff x 
-        $
-
-end PositionSensor.
-\end{lstlisting}
+\input{./latexClasses/latexPositionSensor}
 
 \subsection{Robot Controller}
-
-
 \input{latexClasses/latexRobotController.tex}
 \input{latexClasses/latexRobotPositionSensor.tex}
 \input{latexClasses/latexPositionController.tex}
