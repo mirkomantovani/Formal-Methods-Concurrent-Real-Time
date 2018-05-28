@@ -1,3 +1,7 @@
+-- Simple class that specify the predicate position for the 
+-- operator's body. The body can be in only one position at
+-- each time instant.
+
 class OperatorBodyPositionSensor
     inherits PositionSensor
 
@@ -5,9 +9,8 @@ class OperatorBodyPositionSensor
 
     temporal domain integer;
 
-    TD items
-        axioms
-            -- the body is only in one area
-            uniqueBody: \forall x (position(x) \implies \neg \exists y (position(y) && x != y));
+	axioms
+		-- the body is only in one area
+		uniqueBody: \forall x (position(x) \implies \neg \exists y (position(y) && x != y));
 
 end OperatorBodyPositionSensor.

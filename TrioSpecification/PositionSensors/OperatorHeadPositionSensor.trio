@@ -1,3 +1,10 @@
+-- This class defines the position that the head of the
+-- operator assumes at each time instant. This position
+-- will be crucial for the definition of the safety 
+-- properties. 
+-- We assume also that the head of hhe operator can be in
+-- only one position at each time instant.
+
 class OperatorHeadPositionSensor
     inherits PositionSensor
     

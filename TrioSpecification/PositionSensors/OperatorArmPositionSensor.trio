@@ -1,13 +1,17 @@
+-- Simple class that specify the predicates for the position of
+-- the operator's arm. The arm can be in only one position in 
+-- the map at each time instant. 
+-- One thing to notice is that in our model the operator will have
+-- two arms.
+
 class OperatorArmPositionSensor
-        inherits PositionSensor
+	inherits PositionSensor
 
-        visible position;
+	visible position;
 
-        temporal domain integer;
+	temporal domain integer;
 
-        TD items
-	
 	axioms
-            -- unique position
-            uniqueArms: \exists x (position(x) && \neg exists y (x != y && position(y)));
+		--The arms can be only in one position
+		uniqueArms: \exists x (position(x) && \neg exists y (x != y && position(y)));
 end OperatorArmPositionSensor.
