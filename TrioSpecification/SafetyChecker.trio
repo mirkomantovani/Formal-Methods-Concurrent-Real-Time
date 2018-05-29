@@ -15,12 +15,12 @@ class SafetyChecker
         -- if the end effector is in the same area as the head of the operator, then the end effector is stopped
         headSameAreaAsRobotArm:
             \forall x (Robot.Arm.position(x) && Operator.head(x) &&
-                RobotController.armMoving() \implies
+                RobotController.isArmMoving() \implies
                 RobotStatus.targetEndEffectorSpeed == None);
         -- if the head of the operator is close to the arm of the robot, then the arm is either moving slowly or staying still
         headCloseToRobotArm:
             \forall x, y (x != y && Robot.Arm.position(x) && Operator.head(y) && Grid.adjacent(x, y) &&
-                RobotController.armMoving() \implies
+                RobotController.isArmMoving() \implies
                 (RobotStatus.targetEndEffectorSpeed == None || RobotStatus.targetEndEffectorSpeed == Low));
 
         -- if the arms of the operator are in the same area as the arm
