@@ -1,8 +1,15 @@
+-- In this class we define all the predicates relative to
+-- the robot's bin and its velocity.
+-- We defined an ordering on how the bin is filled and 
+-- empty. We defined as capacity of our bin only three
+-- pieces.
 class RobotStatus
 
 	temporal domain integer;
 
-	visible targetCartSpeed, targetEndEffectorSpeed, binEmpty, binFull, addPieceToBin, removePieceFromBin, currentCartSpeed, currentEndEffectorSpeed;
+	visible targetCartSpeed, targetEndEffectorSpeed, 
+            binEmpty, binFull, addPieceToBin, removePieceFromBin,
+            currentCartSpeed, currentEndEffectorSpeed;
 
 	TD items:
 		predicates
@@ -21,31 +28,43 @@ class RobotStatus
 	axioms
 
 		-- bin empty
-		binEmpty() \iff binStatus == Empty;
+        binIsEmpty:
+            binEmpty() \iff binStatus == Empty;
 
 		-- bin full
-		binFull() \iff binStatus == Full;
+        binIsFull:
+            binFull() \iff binStatus == Full;
 
 		-- ordering of bin status
-		binStatus == Empty && addPieceToBin() \implies \exists x (Becomes(binStatus == 1, x));
-		binStatus == 1 && addPieceToBin() \implies \exists x (Becomes(binStatus == 2, x));
-		binStatus == 2 && addPieceToBin() \implies \exists x (Becomes(binStatus == Full, x));
-		binStatus == Full && removePieceFromBin() \implies \exists x (Becomes(binStatus == 2, x));
-		binStatus == 2 && removePieceFromBin() \implies \exists x (Becomes(binStatus == 1, x));
-		binStatus == 1 && removePieceFromBin() \implies \exists x (Becomes(binStatus == Empty, x));
+        ordering1:
+            binStatus == Empty && addPieceToBin() \implies \exists x (Becomes(binStatus == 1, x));
+        ordering2:
+            binStatus == 1 && addPieceToBin() \implies \exists x (Becomes(binStatus == 2, x));
+        ordering3:
+            binStatus == 2 && addPieceToBin() \implies \exists x (Becomes(binStatus == Full, x));
+        ordering4:
+            binStatus == Full && removePieceFromBin() \implies \exists x (Becomes(binStatus == 2, x));
+        ordering5:
+            binStatus == 2 && removePieceFromBin() \implies \exists x (Becomes(binStatus == 1, x));
+		ordering6:
+            binStatus == 1 && removePieceFromBin() \implies \exists x (Becomes(binStatus == Empty, x));
 
 		-- a piece can be added to the local bin only if there is enough capacity
-		addPieceToBin() \implies \neg binStatus == Full;
+        stillNotFull:
+            addPieceToBin() \implies \neg binStatus == Full;
 
 		-- a piece can be removed from the local bin only if there is at least one in the bin
-		removePieceFromBin() \implies \neg binStatus == Empty;
+        stillNotEmpty:
+            removePieceFromBin() \implies \neg binStatus == Empty;
 
 		-- addPieceToBin() and removePieceFromBin() are instantaneous events
-		singleInstantEvents:
-		(addPieceToBin() \implies Futr(\neg addPieceToBin(), 1));
-		(removePieceFromBin() \implies Futr(\neg removePieceFromBin(), 1));
+		singleInstantEvents1:
+            (addPieceToBin() \implies Futr(\neg addPieceToBin(), 1));
+        singleInstantEvents2:
+            (removePieceFromBin() \implies Futr(\neg removePieceFromBin(), 1));
 
 		-- binStatus stays constant if there is no action performed
-		constantBin: \forall x (binStatus == x && \neg (addPieceToBin() || removePieceFromBin()) \implies Futr(binStatus == x, 1));
+		constantBin: 
+            \forall x (binStatus == x && \neg (addPieceToBin() || removePieceFromBin()) \implies Futr(binStatus == x, 1));
 
 end RobotStatus.

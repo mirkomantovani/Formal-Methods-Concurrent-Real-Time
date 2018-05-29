@@ -1,52 +1,75 @@
 \begin{lstlisting}[fontadjust, mathescape, frame=single] 
+-- In this class we define all the predicates relative to
+-- the robot's bin and its velocity.
+-- We defined an ordering on how the bin is filled and 
+-- empty. We defined as capacity of our bin only three
+-- pieces.
 class RobotStatus
 
-  temporal domain integer;
+    temporal domain integer;
 
-  visible targetCartSpeed, targetEndEffectorSpeed, binEmpty, binFull, addPieceToBin, removePieceFromBin, currentCartSpeed, currentEndEffectorSpeed;$
+    visible targetCartSpeed, targetEndEffectorSpeed, 
+             binEmpty, binFull, addPieceToBin, removePieceFromBin,
+             currentCartSpeed, currentEndEffectorSpeed;
 
-  TD items
-  predicates
-    binEmpty(),
-    binFull(),
-    addPieceToBin(),
-    removePieceFromBin();
+    TD items:
+        predicates
+            binEmpty(),
+            binFull(),
+            addPieceToBin(),
+            removePieceFromBin();
 
-  vars
-    targetCartSpeed({None, Low, Normal}),
-    currentCartSpeed({None, Low, Normal}),
-    targetEndEffectorSpeed({None, Low, Normal}),
-    currentEndEffectorSpeed({None, Low, Normal}),
-    binStatus({Empty, 1, 2, Full});
+        vars
+            targetCartSpeed({None, Low, Normal}),
+            currentCartSpeed({None, Low, Normal}),
+            targetEndEffectorSpeed({None, Low, Normal}),
+            currentEndEffectorSpeed({None, Low, Normal}),
+            binStatus({Empty, 1, 2, Full});
 
-  axioms
+    axioms
+        -- bin empty
+        binIsEmpty:
+            $binEmpty() \iff binStatus == Empty;$
 
-  -- bin empty
-  $binEmpty() \iff binStatus == Empty;$
+        -- bin full
+        binIsFull:
+            $binFull() \iff binStatus == Full;$
 
-  -- bin full
-  $binFull() \iff binStatus == Full;$
+        -- ordering of bin status
+        ordering1:
+            $binStatus == Empty \land addPieceToBin() \implies \exists x (\becomes(binStatus == 1, x));$
+        ordering2:
+            $binStatus == 1 \land addPieceToBin() \implies \exists x (\becomes(binStatus == 2, x));$
+        ordering3:
+            $binStatus == 2 \land addPieceToBin() \implies \exists x (\becomes(binStatus == Full, x));$
+        ordering4:
+            $binStatus == Full \land removePieceFromBin() \implies \exists x (\becomes(binStatus == 2, x));$
+        ordering5:
+            $binStatus == 2 \land removePieceFromBin() \implies \exists x (\becomes(binStatus == 1, x));$
 
-  -- ordering of bin status
-  $binStatus == Empty \land addPieceToBin() \limply \exists x (\becomes(binStatus == 1, x));$
-  $binStatus == 1 \land addPieceToBin() \limply \exists x (\becomes(binStatus == 2, x));$
-  $binStatus == 2 \land addPieceToBin() \limply \exists x (\becomes(binStatus == Full, x));$
-  $binStatus == Full \land removePieceFromBin() \limply \exists x (\becomes(binStatus == 2, x));$
-  $binStatus == 2 \land removePieceFromBin() \limply \exists x (\becomes(binStatus == 1, x));$
-  $binStatus == 1 \land removePieceFromBin() \limply \exists x (\becomes(binStatus == Empty, x));$
+        ordering6:
+            $binStatus == 1 \land removePieceFromBin() \implies \exists x (\becomes(binStatus == Empty, x));$
 
-  -- a piece can be added to the local bin only if there is enough capacity
-  $addPieceToBin() \limply \neg binStatus == Full;$
+        -- a piece can be added to the local bin only if there is 
+        -- enough capacity
+        stillNotFull:
+            $addPieceToBin() \implies \neg binStatus == Full;$
 
-  -- a piece can be removed from the local bin only if there is at least one in the bin
-  $removePieceFromBin() \limply \neg binStatus == Empty;$
+        -- a piece can be removed from the local bin only if there is
+        -- at least one in the bin
+        stillNotEmpty:
+            $removePieceFromBin() \implies \neg binStatus == Empty;$
 
-  -- addPieceToBin() and removePieceFromBin() are instantaneous events
-  singleInstantEvents:$
-  (addPieceToBin() \limply \  future(\neg addPieceToBin(), 1));$
-  $(removePieceFromBin() \limply \  future(\neg removePieceFromBin(), 1));$
+        -- addPieceToBin() and removePieceFromBin() are instantaneous events
+        singleInstantEvents1:
+            $addPieceToBin() \implies \future(\neg addPieceToBin(), 1)$;
+        singleInstantEvents2:
+            $removePieceFromBin() \implies \future(\neg removePieceFromBin(), 1)$;
 
-  -- binStatus stays constant if there is no action performed
-  constantBin:$ \forall x (binStatus == x \land \neg (addPieceToBin() || removePieceFromBin()) \limply \  future(binStatus == x, 1));$
+        -- binStatus stays constant if there is no action performed
+        constantBin: 
+            $\forall x (binStatus == x \land \neg (addPieceToBin() \lor removePieceFromBin()) \implies$
+                $\future(binStatus == x, 1));$
 
-end RobotStatus.\end{lstlisting}
+end RobotStatus.
+\end{lstlisting}
