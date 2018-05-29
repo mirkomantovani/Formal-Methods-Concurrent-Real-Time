@@ -1,4 +1,4 @@
-class PositionController
+class SafetyChecker
     temporal domain integer;
 
     modules  Operator: OperatorPositionSensor,
@@ -81,4 +81,4 @@ class PositionController
             \forall x (Operator.body(x) && Grid.transit(x) && Robot.Cart.position(x) \implies
                 RobotStatus.currentCartSpeed == Low || RobotStatus.currentCartSpeed == None);
 				
-end PositionController.
+end SafetyChecker.
