@@ -28,7 +28,8 @@ class PositionSensor
     axioms
         -- If the predicate moved is true, this means that the current position
         -- must be different from the one assumed one time instant in the past.
-        moved: $moved() \iff \exists x \past(position(x), 1) \land \neg position(x)$;
+        moved: 
+          $moved() \iff \exists x \past(position(x), 1) \land \neg position(x); $
 
 end PositionSensor.
 \end{lstlisting}
