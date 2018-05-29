@@ -96,7 +96,7 @@ scheme with areas subdivision
     \item \textbf{HID}:\@ The Human Interface Device used by the Operator to control the Robot
 \end{itemize}
 
-\subsection{Constants?}
+\subsection{Constants}
 \begin{itemize}
     \item \textbf{N}:\@ The capacity of the local bin of the Robot
 \end{itemize}
@@ -106,42 +106,58 @@ scheme with areas subdivision
 \begin{itemize}
     \item \textbf{Head area}:\@ Highly sensitive areas
     \item \textbf{Arms area}:\@ Very delicate areas
-    \item \textbf{Waist area}:\@ Delicate areas
-    \item \textbf{Legs area}:\@ 
+    \item \textbf{Body area}:\@ Delicate areas
 \end{itemize}
 
 \subsubsection{Robot parts}
-
-\subsubsection{O-R relative speed}
 \begin{itemize}
-    \item \textbf{None}:\@ 
-    \item \textbf{Low}:\@ 
-    \item \textbf{Medium}:\@ 
-    \item \textbf{High}:\@ 
+    \item \textbf{Head area}:\@ Arm
+    \item \textbf{Arms area}:\@ Cart
 \end{itemize}
+
+\subsubsection{Robot speed}
+\begin{itemize}
+    \item \textbf{None}:\@ Null speed, the robot cannot move
+    \item \textbf{Low}:\@ Low speed, the robot can move every other time instant
+    \item \textbf{Normal}:\@ Normal speed, the robot can move at every time instant
+\end{itemize}
+
+% \subsubsection{Layout areas}
+% We discretized the layout in such a way that the most important and critical areas, in which Human-Robot interaction are very likely to happen, have a fine-grained grid, whereas the other areas, in which the Operator should not be present to assist the Robot, are modeled as bigger blocks in order not to introduce unnecessary complexity in the model and to avoid state space explosion.
+% \begin{figure}[htp] 
+% \includegraphics[width=\textwidth]{images/layout} 
+% \caption{Subdivision of the layout, highlighted areas are the most dangerous ones} 
+% \label{fig:layout} 
+% \end{figure}
+
+% \clearpage
+% The most critical areas are the ones with indices from 1 to 12, particular attention must be paid to L\textsubscript0 too, since it is where the EE and O could be working together. 
+
+% \begin{figure}[htp] 
+% \includegraphics[width=\textwidth]{images/layoutnames} 
+% \caption{Names of the splitted layout and various areas} 
+% \label{fig:layout2} 
+% \end{figure}
+
 
 \subsubsection{Layout areas}
 We discretized the layout in such a way that the most important and critical areas, in which Human-Robot interaction are very likely to happen, have a fine-grained grid, whereas the other areas, in which the Operator should not be present to assist the Robot, are modeled as bigger blocks in order not to introduce unnecessary complexity in the model and to avoid state space explosion.
-\begin{figure}[htp] 
-\includegraphics[width=\textwidth]{images/layout} 
-\caption{Subdivision of the layout, highlighted areas are the most dangerous ones} 
-\label{fig:layout} 
-\end{figure}
 
-\clearpage
 The most critical areas are the ones with indices from 1 to 12, particular attention must be paid to L\textsubscript0 too, since it is where the EE and O could be working together. 
 
 \begin{figure}[htp] 
-\includegraphics[width=\textwidth]{images/layoutnames} 
-\caption{Names of the splitted layout and various areas} 
+\includegraphics[width=0.9\textwidth]{images/layoutnames} 
+\caption{Subdivision of the layout. The highligthed areas are the dangerous ones.} 
 \label{fig:layout2} 
 \end{figure}
 
-\begin{itemize}
-    \item \textbf{..}:\@ ..
-\end{itemize}
+\subsection{Assumptions and modeling}
+\paragraph{Robot}
+The robot is discretized in two parts, the cart and the arm. The cart is such that it can only occupy one area at the time: this is a strong assumption, however it is vital because it reduces the complexity of our model. The arm is modeled by considering two joints and the end effector. The first joint is assumed to be the connection between the cart and the arm, therefore its position is at all times the same as the cart position. The second joint allows broader movement to the arm and it links the first joint to the end effector. The whole arm can reach at most a distance of two adjacent areas. The response of the actuators to a change in the control variables is assumed to be short enough to be modeled as instantaneous.
 
-\subsection{Sensors? signals?}
+\paragraph{Human}
+The human is discretized in body, head and arms. Each one of the parts can only occupy one area. The movement can only be observed, but not controlled, by the robot.
+
 \clearpage
 \section{Archi-TRIO model}
 

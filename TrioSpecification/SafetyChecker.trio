@@ -17,6 +17,7 @@ class SafetyChecker
             \forall x (Robot.Arm.position(x) && Operator.head(x) &&
                 RobotController.isArmMoving() \implies
                 RobotStatus.targetEndEffectorSpeed == None);
+                
         -- if the head of the operator is close to the arm of the robot, then the arm is either moving slowly or staying still
         headCloseToRobotArm:
             \forall x, y (x != y && Robot.Arm.position(x) && Operator.head(y) && Grid.adjacent(x, y) &&
