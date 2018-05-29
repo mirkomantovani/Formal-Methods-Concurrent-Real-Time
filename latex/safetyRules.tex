@@ -1,0 +1,12 @@
+\subsection{No head contact}
+
+\begin{lstlisting}[fontadjust, mathescape, frame=single]
+
+-- if the end effector is in the same area as the head of the operator, 
+-- then the end effector is stopped
+  headSameAreaAsRobotArm:
+    $\forall x (Robot.Arm.position(x) && Operator.head(x)\ && $
+      $RobotController.isArmMoving() \implies$
+        $RobotStatus.targetEndEffectorSpeed == None);$
+
+\end{lstlisting}
