@@ -35,10 +35,6 @@ class RobotPositionSensor
             \exists x (Status.currentCartSpeed == Low && Cart.moved() \implies
                            Cart.position(x) && Futr(Cart.position(x), 1));
 
-        -- TODO
-        -- TODO Non dovremmo imporre che nel futuro Cart.moved() è true? Mentre nel predicato
-        -- TODO sopra dire che nel futuro non si muove e moved diventa false?
-        -- TODO
         cartSpeedLowNotMoved: 
             \exists x (Status.currentCartSpeed == Low && 
                        \neg Cart.moved() \implies

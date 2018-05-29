@@ -36,9 +36,6 @@ class RobotPositionSensor
             $\exists x (Status.currentCartSpeed == Low \land Cart.moved() \implies$
                 $Cart.position(x) \land \future(Cart.position(x), 1));$
 
-        -- TODO Non dovremmo imporre che nel futuro Cart.moved() = true?
-        -- TODO Mentre nel predicato sopra dire che nel futuro non si
-        -- TODO muove e moved diventa false?
         cartSpeedLowNotMoved: 
             $\exists x (Status.currentCartSpeed == Low \land$
               $\neg Cart.moved() \implies$
