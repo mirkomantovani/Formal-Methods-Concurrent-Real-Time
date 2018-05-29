@@ -88,6 +88,14 @@ class RobotPositionSensor
               $Cart.position(x) \implies$
                   $Arm.position(x));$
 
+
+
+
+
+
+
+
+
         --------------------
         -- CONTACT AXIOMS --
         --------------------
@@ -111,11 +119,11 @@ class RobotPositionSensor
         -- if the operator is moving the end effector, then the end effector 
         -- will move even if the speed is none
         armSpeedNoneWithContact: 
-            $\forall x Status.currentArmSpeed == None \land$
+            $\forall x(Status.currentArmSpeed == None \land$
               $Arm.contact() \land$
               $Arm.endEffector(x)\implies$
                   $\exists \future(\exists y Arm.endEffector(y) \land 
-                    (x == y \lor Grid.adjacent(x, y)), 1);$
+                    (x == y \lor Grid.adjacent(x, y)), 1));$
         
 end RobotPositionSensor.
 \end{lstlisting}
