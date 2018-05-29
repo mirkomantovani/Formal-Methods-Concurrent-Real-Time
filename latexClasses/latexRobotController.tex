@@ -21,6 +21,8 @@ class RobotController
     GoToBinArea
     });
 
+    isArmMoving();
+
   variables
     currentAction({
     PickFromBinArea,
@@ -336,5 +338,10 @@ class RobotController
         $\exists t (0 <= t < MaxTravelTime \land \future(\exists x (Robot.Cart.position(x)\ \land $
           $Grid.adjToBinArea(x)),t) \land \lastsie(currentAction == GoToBinArea, t));$
                       
+    -- The robot can move the arm only when the cart is not moving
+      isArmMoving: 
+        $isArmMoving() \iff \neg (currentAction == GoToBinArea || currentAction == GoToTombstone\ || $
+          $currentAction == GoToConveyorBelt);$
+         
 end RobotController.
 \end{lstlisting}

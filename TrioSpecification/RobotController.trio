@@ -263,6 +263,6 @@ class RobotController
                 Becomes(currentAction == GoToBinArea) \implies \exists t (0 <= t < MaxTravelTime && Futr(\exists x (Robot.Cart.position(x) && Grid.adjToBinArea(x)),t) && Lasts_{ie}(currentAction == GoToBinArea, t));
 
         -- The robot can move the arm only when the cart is not moving
-           armMoving: armMoving() \iff \neg (currentAction == GoToBinArea || currentAction == GoToTombstone || currentAction == GoToConveyorBelt);
+           isArmMoving: isArmMoving() \iff \neg (currentAction == GoToBinArea || currentAction == GoToTombstone || currentAction == GoToConveyorBelt);
           
 end RobotController.
