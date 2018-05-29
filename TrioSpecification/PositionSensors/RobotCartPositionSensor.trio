@@ -17,11 +17,14 @@ class RobotCartPositionSensor;
     axioms
     
         -- The position is unique
-        positionUnique: \forall x (position(x) 
-            \implies (\forall y (y != x \implies \neg position(y))))            
+        positionUnique: 
+            \forall x (position(x)\implies 
+                (\forall y (y != x \implies \neg position(y))))            
 
-        -- An area occupied by the robot must be Grid.adjacent with an area occupied by the robot in the past
+        -- An area occupied by the robot must be Grid.adjacent with an area occupied by 
+        -- the robot one time instant in the past
         doNotTeleport:
-            \forall x (Becomes(position(x)) \implies \exists y (Past(position(y), 1) && Grid.adjacent(x, y)));
+            \forall x (Becomes(position(x)) \implies 
+                \exists y (Past(position(y), 1) && Grid.adjacent(x, y)));
             
 end RobotCartPositionSensor.

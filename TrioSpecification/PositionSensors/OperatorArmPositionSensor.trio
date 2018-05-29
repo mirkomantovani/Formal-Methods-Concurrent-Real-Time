@@ -12,6 +12,6 @@ class OperatorArmPositionSensor
     temporal domain integer;
 
     axioms
-        --The arms can be only in one position
-        uniqueArms: \exists x (position(x) && \neg exists y (x != y && position(y)));
+        --The arm can be only in one position
+        uniqueArm: \exists x (position(x) && \neg exists y (x != y && position(y)));
 end OperatorArmPositionSensor.

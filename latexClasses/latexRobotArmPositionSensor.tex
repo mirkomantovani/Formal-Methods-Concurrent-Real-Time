@@ -1,4 +1,11 @@
 \begin{lstlisting}[fontadjust, mathescape, frame=single] 
+-- This class specify the sensors for the robot's arm. We decide
+-- to model the arm as the real one present on the KUKA unit.
+-- The arm is composed of 3 links and one end effector.
+-- There are three predicates that will be use to determine
+-- when the robot is switching between an action an another,
+-- and they are pickedUp(), holding() and dropped().
+
 class RobotArmPositionSensor
     inherits PositionSensor
 
@@ -10,69 +17,96 @@ class RobotArmPositionSensor
 
     TD items
         predicates
-            -- link3 is the first segment of the arm from the body of the robot
+            -- Link3 is the first segment of the arm from the body of the robot
             link3({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
-                 L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
-                 L20, L21, L22, L23, L24, L25, L26, L27, L28}),
-            -- link2 is the second segment of the arm, linked to link3 and link1
+                    L10, L11, L12, L13, L14, L15, L16, L17,
+                    L18, L19, L20, L21, L22, L23, L24, L25,
+                    L26, L27, L28}),
+                    
+            -- Link2 is the second segment of the arm, linked to link3 and link1
             link2({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
-                 L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
-                 L20, L21, L22, L23, L24, L25, L26, L27, L28}),
-            -- link1 is the third segment of the arm, which is linked to link2 and holds the end effector
+                    L10, L11, L12, L13, L14, L15, L16, L17,
+                    L18, L19, L20, L21, L22, L23, L24, L25,
+                    L26, L27, L28}),
+                    
+            -- Link1 is the third segment of the arm, which is linked to link2 
+            -- and holds the end effector
             link1({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
-                 L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
-                 L20, L21, L22, L23, L24, L25, L26, L27, L28}),
-            -- end effector is the "hand" of the robot
+                    L10, L11, L12, L13, L14, L15, L16, L17,
+                    L18, L19, L20, L21, L22, L23, L24, L25,
+                    L26, L27, L28}),
+                    
+            --TODO
+            --TODO The endeffector should be able to go over areas L0, LBA, LCB
+            --TODO         
+            -- End effector is the "hand" of the robot
             endEffector({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
-                 L10, L11, L12, L13, L14, L15, L16, L17, L18, L19,
-                 L20, L21, L22, L23, L24, L25, L26, L27, L28}),
-            -- signal if the pick action has been completed successfully
+                          L10, L11, L12, L13, L14, L15, L16, L17,
+                          L18, L19, L20, L21, L22, L23, L24, L25,
+                          L26, L27, L28}),
+                    
+
+            -- Signal if the pick action has been completed successfully
             pickedUp(),
 
-            -- signal to model the fact that the robot is holding a piece
+            -- Signal to model the fact that the robot is holding a piece
             holding(),
 
-            -- signal to model the fact that the robot has dropped the piece it was holding
-            dropped(),
+            -- Signal to model the fact that the robot has dropped the piece it
+            -- was holding
+            dropped();
 
-            -- is the operator touching the arm of the robot?
+            -- Signal to model the fact that the robot's arm is being touched by
+            -- the operator
             contact();
 
-    axioms
+    axioms:
 
-        -- position is all the cells that are occupied by the arm
-        armPosition:$ \forall x (position(x) \iff link2(x) || link1(x));$
+        -- The position is all the cells that are occupied by the arm
+        armPosition: 
+            $\forall x (position(x) \iff link2(x) \lor link1(x));$
         
         -- link 2 is connected to link3
-        connection32:$ \forall x \forall y (link2(x) \limply link3(x) ||
-            (x != y \land link3(y) \land Grid.adjacent(x, y)));$
+        connection32: 
+            $\forall x \forall y (link2(x) \implies$
+                 $link3(x) \lor (x != y \land link3(y) \land Grid.adjacent(x, y)));$
 
         -- link1 is connected to link2
-        connection21:$ \forall x \forall y (link1(x) \limply link2(x) ||
-            (x != y \land link2(y) \land Grid.adjacent(x, y)));$
+        connection21: 
+            $\forall x \forall y (link1(x) \implies$ 
+                 $link2(x) \lor (x != y \land link2(y) \land Grid.adjacent(x, y)));$
 
         -- end effector is on link1
-        endEffectorOnLink1:$ \forall x (endEffector(x) \iff link1(x));$
+        endEffectorOnLink1:
+            $\forall x (endEffector(x) \iff link1(x));$
 
         -- link2 is unique
-        uniqueLink2:$ \forall x \forall y (x != y \land link2(x) \limply \neg \link2(y));$
+        uniqueLink2: 
+            $\forall x \forall y (x != y \land link2(x) \implies \neg link2(y));$
 
         -- link1 is unique
-        uniqueLink1:$ \forall x \forall y (x != y \land link1(x) \limply \neg \link1(y));$
+        uniqueLink1: 
+            $\forall x \forall y (x != y \land link1(x) \implies \neg link1(y));$
 
         -- end effector occupies only one position at a time
-        only1EndEffector:$
-            \forall x (endEffector(x) \iff \neg \exists y (x != y \land endEffector(y)));$
+        only1EndEffector:
+            $\forall x (endEffector(x) \iff \neg \exists y (x != y \land endEffector(y)));$
 
-        -- only one of pickedUp(), holding() and dropped() can be true in each instant
-        onlyOne:$
-            (pickedUp() \limply \neg holding() \land \neg dropped())
-            \land
-            (holding() \limply \neg pickedUp() \land \neg dropped())
-            \land
-            (dropped() \limply \neg pickedUp() \land \neg holding());$
+            
+        -- Only one of pickedUp(), holding() and dropped() can be true in each instant
+        onlyOne:
+            $(pickedUp() \implies$
+                $\neg holding() \land \neg dropped())$
+            $\land$
+            $(holding() \implies$ 
+                $\neg pickedUp() \land \neg dropped())$
+            $\land$
+            $(dropped() \implies$
+                $\neg pickedUp() \land \neg holding());$
 
         -- holding() holds between pickedUp() and dropped()
-        \becomes(\neg pickedUp()) \land \until(holding(), dropped());$
+        sequence:
+            $\becomes(\neg pickedUp()) \land \until(holding(), dropped());$
 
-end RobotArmPositionSensor.\end{lstlisting}
+end RobotArmPositionSensor.
+\end{lstlisting}

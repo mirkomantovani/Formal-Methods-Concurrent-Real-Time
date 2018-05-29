@@ -1,5 +1,14 @@
 -- This is the class that collects all the sensor of the
--- robot. 
+-- robot.
+-- In this class we defined a predicate for the robot's velocities,
+-- both for the arm and the cart. We defined axioms to check the
+-- robot's movement. As example, if the robot is moving at low speed,
+-- it can move in a adjacent area in two time unit. This modelization
+-- is permitted through the use of a support predicate moved().
+-- We also define a predicate contact to model the fact that the robot's
+-- arm can be touched by the operator to guide its working process.
+-- Some specific axioms has been defined to model the situation
+-- explained before.
 
 class RobotPositionSensor
     temporal domain integer
@@ -21,10 +30,15 @@ class RobotPositionSensor
             Status.currentCartSpeed == None \implies 
                 \exists x Futr(Cart.position(x), 1) && Cart.position(x);
 
+                
         cartSpeedLowMoved: 
             \exists x (Status.currentCartSpeed == Low && Cart.moved() \implies
                            Cart.position(x) && Futr(Cart.position(x), 1));
 
+        -- TODO
+        -- TODO Non dovremmo imporre che nel futuro Cart.moved() è true? Mentre nel predicato
+        -- TODO sopra dire che nel futuro non si muove e moved diventa false?
+        -- TODO
         cartSpeedLowNotMoved: 
             \exists x (Status.currentCartSpeed == Low && 
                        \neg Cart.moved() \implies

@@ -1,52 +1,121 @@
 \begin{lstlisting}[fontadjust, mathescape, frame=single] 
+-- This is the class that collects all the sensor of the
+-- robot.
+-- In this class we defined a predicate for the robot's velocities,
+-- both for the arm and the cart. We defined axioms to check the
+-- robot's movement. As example, if the robot is moving at low speed,
+-- it can move in a adjacent area in two time unit. This modelization
+-- is permitted through the use of a support predicate moved().
+-- We also define a predicate contact to model the fact that the robot's
+-- arm can be touched by the operator to guide its working process.
+-- Some specific axioms has been defined to model the situation
+-- explained before.
+
 class RobotPositionSensor
     temporal domain integer
 
     visible Cart, Arm;
 
     modules Cart: RobotCartPositionSensor,
-            Arm: RobotArmPositionSensor,
-            Status: RobotStatus,
-            Grid: Grid;
+             Arm: RobotArmPositionSensor,
+             Status: RobotStatus,
+             Grid: Grid;
 
     axioms
         -- link3 is in the same position as the cart
-        link3OnCart:$ \forall x (Arm.link3(x) \iff Body.position(x));$
+        link3OnCart: 
+            $\forall x (Arm.link3(x) \iff Body.position(x));$
 
         -- cartTargetSpeed defines how often the robot cart can move in the grid
-        cartSpeedNone:$ Status.currentCartSpeed == None \limply \exists x \  future(Cart.position(x), 1) \land Cart.position(x);$
+        cartSpeedNone: 
+            $Status.currentCartSpeed == None \implies$ 
+                $\exists x \future(Cart.position(x), 1) \land Cart.position(x);$
 
-        cartSpeedLowMoved:$ \exists x (Status.currentCartSpeed == Low \land Cart.moved() \limply Cart.position(x) \land \  future(Cart.position(x), 1));$
+                
+        cartSpeedLowMoved: 
+            $\exists x (Status.currentCartSpeed == Low \land Cart.moved() \implies$
+                $Cart.position(x) \land \future(Cart.position(x), 1));$
 
-        cartSpeedLowNotMoved:$ \exists x (Status.currentCartSpeed == Low \land \neg Cart.moved() \limply Cart.position(x) \land \exists y (\  future(Cart.position(y), 1) \land x != y \land Grid.adjacent(x, y)));$
+        -- TODO Non dovremmo imporre che nel futuro Cart.moved() = true?
+        -- TODO Mentre nel predicato sopra dire che nel futuro non si
+        -- TODO muove e moved diventa false?
+        cartSpeedLowNotMoved: 
+            $\exists x (Status.currentCartSpeed == Low \land$
+              $\neg Cart.moved() \implies$
+                  $Cart.position(x) \land$ 
+                  $\exists y (\future(Cart.position(y), 1) \land$ 
+                    $x != y \land$ 
+                    $Grid.adjacent(x, y)));$
 
-        cartSpeedNormal:$ \exists x (Status.currentCartSpeed == Normal \land Cart.position(x) \limply \exists y (\  future(Cart.position(y), 1) \land x != y \land Grid.adjacent(x, y)));$
+        cartSpeedNormal: 
+            $\exists x (Status.currentCartSpeed == Normal \land$
+              $Cart.position(x) \implies$
+                  $\exists y (\future(Cart.position(y), 1) \land$
+                    $x != y \land$
+                    $Grid.adjacent(x, y)));$
 
-        -- if the speed is low, then the arm can move from one area to another only half of the time
-        armSpeedLowMoved:$ \exists x (Status.currentCartSpeed == None \land Status.currentArmSpeed == Low \land Arm.moved() \limply Arm.endEffector(x) \land \  future(Arm.endEffector(x), 1));$
+        -- if the speed is low, then the arm can move from one area to another
+        -- only half of the time
+        armSpeedLowMoved: 
+            $\exists x (Status.currentCartSpeed == None \land$
+              $Status.currentArmSpeed == Low \land Arm.moved() \implies$ 
+                  $Arm.endEffector(x) \land \future(Arm.endEffector(x), 1));$
 
-        armSpeedLowNotMoved:$ \exists x (Status.currentCartSpeed == None \land Status.currentArmSpeed == Low \land \past(\neg Arm.moved() \land Arm.endEffector(x), 1) \limply Arm.endEffector(y) \land x != y \land Grid.adjacent(x, y)));$
+        armSpeedLowNotMoved: 
+            $\exists x (Status.currentCartSpeed == None \land$
+              $Status.currentArmSpeed == Low \land$ 
+              $\past(\neg Arm.moved() \land$
+              $Arm.endEffector(x), 1) \implies$ 
+                  $Arm.endEffector(y) \land$
+                  $x != y \land$ 
+                  $Grid.adjacent(x, y)));$
 
-        -- if the speed is normal, then the arm can move from one area to another at every time instant
-        armSpeedNormal:$ \exists x (Status.currentCartSpeed == None \land Status.currentArmSpeed == Normal \land Arm.endEffector(x) \limply \exists y (\  future(Arm.endEffector(y), 1) \land x != y \land Grid.adjacent(x, y)));$
+        -- if the speed is normal, then the arm can move from one area to 
+        -- another at every time instant
+        armSpeedNormal: 
+            $\exists x (Status.currentCartSpeed == None \land$
+              $Status.currentArmSpeed == Normal \land$
+              $Arm.endEffector(x) \implies$
+                  $\exists y (\future(Arm.endEffector(y), 1) \land$
+                    $x != y \land$
+                    $Grid.adjacent(x, y)));$
 
-        -- if the cart is moving, then the arm must stay on top of the cart, both the end effector and the link
-        armOnTopMovingCart:$ \forall x (Status.currentCartSpeed != None \land Cart.moved() \land Cart.position(x) \limply Arm.position(x));$
+        -- if the cart is moving, then the arm must stay on top of the cart,
+        -- both the end effector and the link
+        armOnTopMovingCart: 
+            $\forall x (Status.currentCartSpeed != None \land$
+              $Cart.moved() \land$ 
+              $Cart.position(x) \implies$
+                  $Arm.position(x));$
 
         --------------------
         -- CONTACT AXIOMS --
         --------------------
 
-        -- the Arm.contact() predicate can be true only when the arms of the operator are in the same area as the arm of the robot
-        armContact:$
-            \forall x (Arm.position(x) \land Arm.contact() \limply Operator.arms(x));$
+        -- the Arm.contact() predicate can be true only when the arms of the 
+        -- operator are in the same area as the arm of the robot
+        armContact:
+            $\forall x (Arm.position(x) \land Arm.contact() \implies$
+                $Operator.arms(x));$
 
-        -- when the operator is touching the arm of the robot, the speed of the arm of the robot is none
-        stoppedWhileContact:$
-            Arm.contact() \limply RobotStatus.currentEndEffectorSpeed == None;$
+        -- when the operator is touching the arm of the robot, the speed of the
+        -- arm of the robot is none
+        stoppedWhileContact:
+            $Arm.contact() \implies $
+                $RobotStatus.currentEndEffectorSpeed == None;$
 
-        -- if the operator is moving the end effector, then the end effector will move even if the speed is none
-        armSpeedNoneWithContact:$ \forall x Status.currentArmSpeed == None \land Arm.contact() \land Arm.endEffector(x) \limply
-                                 \exists \  future(\exists y Arm.endEffector(y) \land (x == y || Grid.adjacent(x, y)), 1);$
+        -- TODO
+        -- TODO C'è un exists di troppo
+        -- TODO
+                
+        -- if the operator is moving the end effector, then the end effector 
+        -- will move even if the speed is none
+        armSpeedNoneWithContact: 
+            $\forall x Status.currentArmSpeed == None \land$
+              $Arm.contact() \land$
+              $Arm.endEffector(x)\implies$
+                  $\exists \future(\exists y Arm.endEffector(y) \land 
+                    (x == y \lor Grid.adjacent(x, y)), 1);$
         
-end RobotPositionSensor.\end{lstlisting}
+end RobotPositionSensor.
+\end{lstlisting}
