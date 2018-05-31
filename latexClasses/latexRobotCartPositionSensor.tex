@@ -22,7 +22,7 @@ class RobotCartPositionSensor;
         -- The position is unique
         positionUnique: 
             $\forall x (position(x)\implies 
-                (\forall y (y != x \implies \neg position(y))))$            
+                (\forall y (y \neq x \implies \neg position(y))))$            
 
         -- An area occupied by the robot must be Grid.adjacent with an area
         -- occupied by the robot one time instant in the past

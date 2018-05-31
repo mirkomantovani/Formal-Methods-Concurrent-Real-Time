@@ -3,10 +3,10 @@ class PositionController
     temporal domain integer;
 
     modules  Operator: OperatorPositionSensor,
-             Robot: RobotPositionSensor,
-             RobotStatus: RobotStatus,
-             RobotController: RobotController,
-             Grid: Grid;
+              Robot: RobotPositionSensor,
+              RobotStatus: RobotStatus,
+              RobotController: RobotController,
+              Grid: Grid;
     
         axioms
     
@@ -14,45 +14,59 @@ class PositionController
         -- SAFETY ARM AXIOMS --
         -----------------------
         
-        -- if the end effector is in the same area as the head of the operator, then the end effector is stopped
-        headSameAreaAsRobotArm:$
-            \forall x (Robot.Arm.position(x) \land Operator.head(x) \land
-                <azioni in cui può muovere il braccio> \limply
-                RobotStatus.targetEndEffectorSpeed == None);$
-        -- if the head of the operator is close to the arm of the robot, then the arm is either moving slowly or staying still
-        headCloseToRobotArm:$
-            \forall x, y (x != y \land Robot.Arm.position(x) \land Operator.head(y) \land Grid.adjacent(x, y) \land
-                <azioni in cui può muovere il braccio> \limply
-                (RobotStatus.targetEndEffectorSpeed == None || RobotStatus.targetEndEffectorSpeed == Low));$
+        -- if the end effector is in the same area as the head of the operator,
+        -- then the end effector is stopped
+        headSameAreaAsRobotArm:
+            $\forall x (Robot.Arm.position(x) \land Operator.head(x) \land
+                <azioni in cui può muovere il braccio> \limply$
+                $RobotStatus.targetEndEffectorSpeed == None);$
+
+        -- if the head of the operator is close to the arm of the robot, then
+        -- the arm is either moving slowly or staying still
+        headCloseToRobotArm:
+            $\forall x, y (x \neq y \land Robot.Arm.position(x) \land Operator.head(y) \land$
+                $Grid.adjacent(x, y) \land <azioni in cui può muovere il braccio> \limply$
+                    $(RobotStatus.targetEndEffectorSpeed == None \lor$
+                    $RobotStatus.targetEndEffectorSpeed == Low));$
 
         -- if the arms of the operator are in the same area as the arm
         -- of the robot, then either the arm of the robot is staying
         -- still or is moving slow.
-        sameAreaArms:$
-            \forall x (Robot.Arm.position(x) \land Operator.arms(x) \land \neg Robot.Arm.contact() \limply
-                 RobotStatus.currentEndEffectorSpeed == None || RobotStatus.currentEndEffectorSpeed == Low);$
+        sameAreaArms:
+            $\forall x (Robot.Arm.position(x) \land Operator.arms(x) \land \neg Robot.Arm.contact() \limply$
+                $RobotStatus.currentEndEffectorSpeed == None \lor$
+                $RobotStatus.currentEndEffectorSpeed == Low);$
 
-        -- if the arms of the operator are touching the arm of the robot, then the arm is not moving
-        sameAreaArmsWithContact:$
-            \forall x (Robot.Arm.position(x) \land Operator.arms(x) \land Robot.Arm.contact() \limply
-                 RobotStatus.currentEndEffectorSpeed == None);$
+        -- if the arms of the operator are touching the arm of the robot,
+        -- then the arm is not moving
+        sameAreaArmsWithContact:
+            $\forall x (Robot.Arm.position(x) \land Operator.arms(x) \land Robot.Arm.contact() \limply$
+                $RobotStatus.currentEndEffectorSpeed == None);$
+
+
+
+
+
 
         -- if the arm of the robot is in an area adjacent to the arms
         -- of the operator, then the robot is at most moving slow
-        armsCloseArm:$
-            \forall x, y (Robot.Arm.position(x) \land Operator.arms(y) \land x != y \land Grid.adjacent(x, y) \limply
-                 RobotStatus.currentEndEffectorSpeed == None || RobotStatus.currentEndEffectorSpeed == Slow);$
+        armsCloseArm:
+            $\forall x, y (Robot.Arm.position(x) \land Operator.arms(y) \land x \neq y \land Grid.adjacent(x, y) \limply$
+                $RobotStatus.currentEndEffectorSpeed == None \lor$
+                $RobotStatus.currentEndEffectorSpeed == Slow);$
 
-        -- if the arm of the robot is in the same area as the operator's body, then the arm is not moving
-        armCloseBody:$
-            \forall x (Robot.Arm.position(x) \land Operator.body(x) \limply
-                 RobotStatus.currentEndEffectorSpeed == None);$
+        -- if the arm of the robot is in the same area as the operator's body,
+        -- then the arm is not moving
+        armCloseBody:
+            $\forall x (Robot.Arm.position(x) \land Operator.body(x) \limply$
+                $RobotStatus.currentEndEffectorSpeed == None);$
 
         -- if the arm of the robot is in an area adjacent to the body
         -- of the operator, then the robot is at most moving slow
-        bodyCloseArm:$
-            \forall x, y (Robot.Arm.position(x) \land Operator.body(y) \land x != y \land Grid.adjacent(x, y) \limply
-                 RobotStatus.currentEndEffectorSpeed == None || RobotStatus.currentEndEffectorSpeed == Slow);$
+        bodyCloseArm:
+            $\forall x, y (Robot.Arm.position(x) \land Operator.body(y) \land x \neq y \land Grid.adjacent(x, y) \limply$
+                    $RobotStatus.currentEndEffectorSpeed == None \lor$
+                    $RobotStatus.currentEndEffectorSpeed == Slow);$
 
         ------------------------       
         -- SAFETY CART AXIOMS --
@@ -62,26 +76,32 @@ class PositionController
         -- robot is in an area adjacent to it, then the robot will not
         -- move to an area adjacent to the one occupied by the
         -- operator
-        operatorCloseToWall:$
-            \forall x, y (x != y \land Operator.body(x) \land Grid.border(x) \land Robot.Cart.position(y) \land Grid.adjacent(x, y) \limply
-                \exists z (\  future((RobotStatus.currentCartSpeed == Low || RobutStatus.currentCardSpeed == None) \land
-                           Robot.Cart.position(z) \land (z == y || Grid.adjacent(z, y) \land \neg Grid.adjacent(z, x))), 1));$
+        operatorCloseToWall:
+            $\forall x, y (x \neq y \land Operator.body(x) \land Grid.border(x) \land$
+                $Robot.Cart.position(y) \land Grid.adjacent(x, y) \limply$
+                    $\exists z (\future((RobotStatus.currentCartSpeed == Low \lor$
+                            $RobutStatus.currentCardSpeed == None) \land$
+                            $Robot.Cart.position(z) \land$
+                            $(z == y \lor Grid.adjacent(z, y) \land \neg Grid.adjacent(z, x))), 1));$
 
         -- if the operator is in a dangerous area and the
         -- robot is in an area adjacent to it, then the robot will not
         -- move to an area adjacent to the one occupied by the
         -- operator
-        operatorDangerZone:$
-            \forall x, y (x != y \land Operator.body(x) \land Grid.danger(x) \land Robot.Cart.position(y) \land Grid.adjacent(x, y) \limply
-                \exists z (\  future((RobotStatus.currentCartSpeed == Low || RobutStatus.currentCardSpeed == None) \land
-                           Robot.Cart.position(z) \land (z == y || Grid.adjacent(z, y) \land \neg Grid.adjacent(z, x))), 1));$
+        operatorDangerZone:
+            $\forall x, y (x \neq y \land Operator.body(x) \land Grid.danger(x) \land$
+              $Robot.Cart.position(y) \land Grid.adjacent(x, y) \limply$
+                $\exists z (\future((RobotStatus.currentCartSpeed == Low \lor$
+                        $RobutStatus.currentCardSpeed == None) \land$
+                        $Robot.Cart.position(z) \land$
+                        $(z == y \lor Grid.adjacent(z, y) \land \neg Grid.adjacent(z, x))), 1));$
 
 
         -- if the operator is in a transit area and the robot is in
         -- the same area, then the robot needs to move slow
-        operatorTransitZone:$
-            \forall x (Operator.body(x) \land Grid.transit(x) \land Robot.Cart.position(x) \limply
-                RobotStatus.currentCartSpeed == Low || RobotStatus.currentCartSpeed == None);$
+        operatorTransitZone:
+            $\forall x (Operator.body(x) \land Grid.transit(x) \land Robot.Cart.position(x) \limply$
+                $RobotStatus.currentCartSpeed == Low \lor RobotStatus.currentCartSpeed == None);$
 
 end PositionController                
 \end{lstlisting}

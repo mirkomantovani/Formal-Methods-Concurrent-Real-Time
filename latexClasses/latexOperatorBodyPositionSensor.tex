@@ -12,7 +12,7 @@ class OperatorBodyPositionSensor
 
     axioms
         -- the body is only in one area
-        uniqueBody: $\forall x (position(x) \implies \neg \exists y (position(y) \land x != y));$
+        uniqueBody: $\forall x (position(x) \implies \nexists y (position(y) \land x \neq y));$
 
 end OperatorBodyPositionSensor.
 \end{lstlisting}

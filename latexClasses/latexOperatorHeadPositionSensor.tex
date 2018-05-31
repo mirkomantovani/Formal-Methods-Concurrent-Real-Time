@@ -13,9 +13,12 @@ class OperatorHeadPositionSensor
 
     temporal domain integer;
 
+    TODO: conformare questa formula come le formule sopra per mantenere lo 
+    TODO: stesso formato
+
     axioms
         -- The head can be only in one area at each time
-        headIsUnique: $\exists x (position(x) \land \forall y (y != x \implies \neg position(y)));$
+        headIsUnique: $\exists x (position(x) \land \forall y (y \neq x \implies \neg position(y)));$
 
 end OperatorHeadPositionSensor.
 \end{lstlisting}

@@ -6,16 +6,16 @@
 -- two arms.
 
 class OperatorArmPositionSensor
-      inherits PositionSensor
+    inherits PositionSensor
 
-      visible position;
+    visible position;
 
-      temporal domain integer;
+    temporal domain integer;
 
-      axioms
-            --The arm can be only in one position
-            uniqueArm: 
-                  $\exists x (position(x) \land \neg exists y (x != y \land position(y)));$
+    axioms
+        --The arm can be only in one position
+        uniqueArm: 
+            $\exists x (position(x) \land \nexists y (x \neq y \land position(y)));$
 
 end OperatorArmPositionSensor.
 \end{lstlisting}

@@ -8,12 +8,14 @@
 \usepackage{listings}
 \usepackage[dvipsnames]{xcolor}
 
+\definecolor{wow}{RGB}{73,63,72}
+
 \lstset{morecomment=[l]--,
 		commentstyle=\color{NavyBlue},
 		numbers=left,
         classoffset=0,
-		morekeywords={trio},
-		keywordstyle=\color{red},
+		morekeywords={TODO},
+		keywordstyle=\color{red}\bfseries,
 		classoffset=1,
 		morekeywords={class,
 					  visible,
@@ -22,9 +24,13 @@
                       TI, 
                       items,
 					  modules,
-					  connection,
-					  axioms},
-		keywordstyle=\color{blue}\bfseries,
+                      connection,
+                      predicates,
+                      axioms,
+                      end,
+                      inherits,
+                      vars},
+		keywordstyle=\color{wow}\bfseries,
         classoffset=2,
         morekeywords={axioms},keywordstyle=\color{green},
         classoffset=0}%
@@ -165,7 +171,7 @@ The human is discretized in body, head and arms. Each one of the parts can only 
 
 
 \clearpage
-\section{TRIO specification}
+\section{TRIO+ specification}
 
 \subsection{Definition of Grid class}
 \input{latexClasses/latexGrid}
@@ -180,6 +186,7 @@ The human is discretized in body, head and arms. Each one of the parts can only 
 \input{latexClasses/latexOperatorBodyPositionSensor}
 \pagebreak
 \input{latexClasses/latexOperatorHeadPositionSensor}
+\input{latexClasses/latexOperatorPositionSensor}
 
 \pagebreak
 \subsection{Definition of the robot's sensor classes}
@@ -191,9 +198,12 @@ The human is discretized in body, head and arms. Each one of the parts can only 
 \input{latexClasses/latexRobotStatus}
 
 \pagebreak
-\subsection{Definition of the  RobotController class}
+\subsection{Definition of the RobotController class}
 \input{latexClasses/latexRobotController}
 
+\pagebreak
+\subsection{Definition of the PositionController class}
+\input{latexClasses/latexPositionController}
 
 
 \pagebreak

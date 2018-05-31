@@ -46,6 +46,7 @@ class RobotStatus
         ordering5:
             $binStatus == 2 \land removePieceFromBin() \implies \exists x (\becomes(binStatus == 1, x));$
 
+            
         ordering6:
             $binStatus == 1 \land removePieceFromBin() \implies \exists x (\becomes(binStatus == Empty, x));$
 

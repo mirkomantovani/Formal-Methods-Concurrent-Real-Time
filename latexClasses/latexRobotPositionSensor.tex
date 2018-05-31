@@ -37,35 +37,27 @@ class RobotPositionSensor
                 $Cart.position(x) \land \future(Cart.position(x), 1));$
 
         cartSpeedLowNotMoved: 
-            $\exists x (Status.currentCartSpeed == Low \land$
-              $\neg Cart.moved() \implies$
-                  $Cart.position(x) \land$ 
-                  $\exists y (\future(Cart.position(y), 1) \land$ 
-                    $x != y \land$ 
-                    $Grid.adjacent(x, y)));$
+            $\exists x (Status.currentCartSpeed == Low \land \neg Cart.moved() \implies$
+                $Cart.position(x) \land \exists y (\future(Cart.position(y), 1) \land x \neq y \land Grid.adjacent(x, y)));$
 
         cartSpeedNormal: 
-            $\exists x (Status.currentCartSpeed == Normal \land$
-              $Cart.position(x) \implies$
-                  $\exists y (\future(Cart.position(y), 1) \land$
-                    $x != y \land$
-                    $Grid.adjacent(x, y)));$
+            $\exists x (Status.currentCartSpeed == Normal \land Cart.position(x) \implies$
+                $\exists y (\future(Cart.position(y), 1) \land x \neq y \land Grid.adjacent(x, y)));$
+
+
+
 
         -- if the speed is low, then the arm can move from one area to another
         -- only half of the time
         armSpeedLowMoved: 
-            $\exists x (Status.currentCartSpeed == None \land$
-              $Status.currentArmSpeed == Low \land Arm.moved() \implies$ 
+            $\exists x (Status.currentCartSpeed == None \land Status.currentArmSpeed == Low \land$
+              $Arm.moved() \implies$ 
                   $Arm.endEffector(x) \land \future(Arm.endEffector(x), 1));$
 
         armSpeedLowNotMoved: 
-            $\exists x (Status.currentCartSpeed == None \land$
-              $Status.currentArmSpeed == Low \land$ 
-              $\past(\neg Arm.moved() \land$
-              $Arm.endEffector(x), 1) \implies$ 
-                  $Arm.endEffector(y) \land$
-                  $x != y \land$ 
-                  $Grid.adjacent(x, y)));$
+            $\exists x (Status.currentCartSpeed == None \land Status.currentArmSpeed == Low \land$ 
+            $\past(\neg Arm.moved() \land Arm.endEffector(x), 1) \implies$ 
+                $Arm.endEffector(y) \land x \neq y \land Grid.adjacent(x, y)));$
 
         -- if the speed is normal, then the arm can move from one area to 
         -- another at every time instant
@@ -73,24 +65,13 @@ class RobotPositionSensor
             $\exists x (Status.currentCartSpeed == None \land$
               $Status.currentArmSpeed == Normal \land$
               $Arm.endEffector(x) \implies$
-                  $\exists y (\future(Arm.endEffector(y), 1) \land$
-                    $x != y \land$
-                    $Grid.adjacent(x, y)));$
+                  $\exists y (\future(Arm.endEffector(y), 1) \land x \neq y \land Grid.adjacent(x, y)));$
 
         -- if the cart is moving, then the arm must stay on top of the cart,
         -- both the end effector and the link
         armOnTopMovingCart: 
-            $\forall x (Status.currentCartSpeed != None \land$
-              $Cart.moved() \land$ 
-              $Cart.position(x) \implies$
-                  $Arm.position(x));$
-
-
-
-
-
-
-
+            $\forall x (Status.currentCartSpeed \neq None \land Cart.moved() \land Cart.position(x) \implies$
+                $Arm.position(x));$
 
 
         --------------------
@@ -109,18 +90,19 @@ class RobotPositionSensor
             $Arm.contact() \implies $
                 $RobotStatus.currentEndEffectorSpeed == None;$
 
-        -- TODO
-        -- TODO C'è un exists di troppo
-        -- TODO
+
+
+
+
+
+
+        TODO Exists di troppo?
                 
         -- if the operator is moving the end effector, then the end effector 
         -- will move even if the speed is none
         armSpeedNoneWithContact: 
-            $\forall x(Status.currentArmSpeed == None \land$
-              $Arm.contact() \land$
-              $Arm.endEffector(x)\implies$
-                  $\exists \future(\exists y Arm.endEffector(y) \land 
-                    (x == y \lor Grid.adjacent(x, y)), 1));$
+            $\forall x(Status.currentArmSpeed == None \land Arm.contact() \land Arm.endEffector(x)\implies$
+                $\exists \future(\exists y  Arm.endEffector(y) \land (x == y \lor Grid.adjacent(x, y)), 1));$
         
 end RobotPositionSensor.
 \end{lstlisting}

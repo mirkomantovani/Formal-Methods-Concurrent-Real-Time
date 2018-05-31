@@ -36,9 +36,9 @@ class RobotArmPositionSensor
                     L18, L19, L20, L21, L22, L23, L24, L25,
                     L26, L27, L28}),
                     
-            --TODO
-            --TODO The endeffector should be able to go over areas L0, LBA, LCB
-            --TODO         
+            TODO
+            TODO The endeffector should be able to go over areas L0, LBA, LCB
+            TODO         
             -- End effector is the "hand" of the robot
             endEffector({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
                           L10, L11, L12, L13, L14, L15, L16, L17,
@@ -69,12 +69,12 @@ class RobotArmPositionSensor
         -- link 2 is connected to link3
         connection32: 
             $\forall x \forall y (link2(x) \implies$
-                 $link3(x) \lor (x != y \land link3(y) \land Grid.adjacent(x, y)));$
+                 $link3(x) \lor (x \neq y \land link3(y) \land Grid.adjacent(x, y)));$
 
         -- link1 is connected to link2
         connection21: 
             $\forall x \forall y (link1(x) \implies$ 
-                 $link2(x) \lor (x != y \land link2(y) \land Grid.adjacent(x, y)));$
+                 $link2(x) \lor (x \neq y \land link2(y) \land Grid.adjacent(x, y)));$
 
         -- end effector is on link1
         endEffectorOnLink1:
@@ -82,25 +82,26 @@ class RobotArmPositionSensor
 
         -- link2 is unique
         uniqueLink2: 
-            $\forall x \forall y (x != y \land link2(x) \implies \neg link2(y));$
+            $\forall x \forall y (x \neq y \land link2(x) \implies \neg link2(y));$
 
         -- link1 is unique
         uniqueLink1: 
-            $\forall x \forall y (x != y \land link1(x) \implies \neg link1(y));$
+            $\forall x \forall y (x \neq y \land link1(x) \implies \neg link1(y));$
 
         -- end effector occupies only one position at a time
-        only1EndEffector:
-            $\forall x (endEffector(x) \iff \neg \exists y (x != y \land endEffector(y)));$
+        onlyOneEndEffector:
+            $\forall x (endEffector(x) \iff \nexists y (x \neq y \land endEffector(y)));$
 
             
-        -- Only one of pickedUp(), holding() and dropped() can be true in each instant
+
+
+        -- Only one of pickedUp(), holding() and dropped() can be true in 
+        -- each instant
         onlyOne:
             $(pickedUp() \implies$
-                $\neg holding() \land \neg dropped())$
-            $\land$
+                $\neg holding() \land \neg dropped()) \land$
             $(holding() \implies$ 
-                $\neg pickedUp() \land \neg dropped())$
-            $\land$
+                $\neg pickedUp() \land \neg dropped()) \land$
             $(dropped() \implies$
                 $\neg pickedUp() \land \neg holding());$
 
