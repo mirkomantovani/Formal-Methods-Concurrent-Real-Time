@@ -9,28 +9,32 @@
 \usepackage[dvipsnames]{xcolor}
 
 \definecolor{wow}{RGB}{73,63,72}
+\usepackage{stix}
+% \usepackage{newtxtext}
+% \usepackage{eulervm}
 
 \lstset{morecomment=[l]--,
-		commentstyle=\color{NavyBlue},
-		numbers=left,
+  commentstyle=\color{NavyBlue},
+        basicstyle=\small\ttfamily,
+        numbers=left,
         classoffset=0,
-		morekeywords={TODO},
-		keywordstyle=\color{red}\bfseries,
-		classoffset=1,
-		morekeywords={class,
-					  visible,
-					  temporal,
+        morekeywords={TODO},
+        keywordstyle=\color{red}\bfseries,
+        classoffset=1,
+        morekeywords={class,
+                      visible,
+                      temporal,
                       TD,
                       TI, 
                       items,
-					  modules,
+                      modules,
                       connection,
                       predicates,
                       axioms,
                       end,
                       inherits,
                       vars},
-		keywordstyle=\color{wow}\bfseries,
+        keywordstyle=\color{wow}\bfseries,
         classoffset=2,
         morekeywords={axioms},keywordstyle=\color{green},
         classoffset=0}%
