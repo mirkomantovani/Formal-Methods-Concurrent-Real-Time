@@ -1,5 +1,5 @@
 \begin{lstlisting}[fontadjust, mathescape, frame=single] 
-class PositionController
+class SafetyChecker
     temporal domain integer;
 
     modules  Operator: OperatorPositionSensor,
@@ -18,14 +18,14 @@ class PositionController
         -- then the end effector is stopped
         headSameAreaAsRobotArm:
             $\forall x (Robot.Arm.position(x) \land Operator.head(x) \land
-                <azioni in cui può muovere il braccio> \limply$
+                RobotController.isArmMoving() \limply$
                 $RobotStatus.targetEndEffectorSpeed == None);$
 
         -- if the head of the operator is close to the arm of the robot, then
         -- the arm is either moving slowly or staying still
         headCloseToRobotArm:
             $\forall x, y (x \neq y \land Robot.Arm.position(x) \land Operator.head(y) \land$
-                $Grid.adjacent(x, y) \land <azioni in cui può muovere il braccio> \limply$
+                $Grid.adjacent(x, y) \land RobotController.isArmMoving() \limply$
                     $(RobotStatus.targetEndEffectorSpeed == None \lor$
                     $RobotStatus.targetEndEffectorSpeed == Low));$
 
@@ -103,5 +103,5 @@ class PositionController
             $\forall x (Operator.body(x) \land Grid.transit(x) \land Robot.Cart.position(x) \limply$
                 $RobotStatus.currentCartSpeed == Low \lor RobotStatus.currentCartSpeed == None);$
 
-end PositionController                
+end SafetyChecker                
 \end{lstlisting}

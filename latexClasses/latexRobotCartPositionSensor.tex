@@ -19,10 +19,11 @@ class RobotCartPositionSensor;
     
     axioms
     
-        -- The position is unique
-        positionUnique: 
-            $\forall x (position(x)\implies 
-                (\forall y (y \neq x \implies \neg position(y))))$            
+        -- the cart always exists
+        existsCart: $\exists x (position(x));$
+
+        -- the cart is only in one area
+        uniqueCart: $\forall x (position(x) \implies \nexists y (position(y) \land x \neq y));$         
 
         -- An area occupied by the robot must be Grid.adjacent with an area
         -- occupied by the robot one time instant in the past

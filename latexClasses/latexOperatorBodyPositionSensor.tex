@@ -11,6 +11,9 @@ class OperatorBodyPositionSensor
     temporal domain integer;
 
     axioms
+        -- the body always exists
+        existsBody: $\exists x (position(x));$
+
         -- the body is only in one area
         uniqueBody: $\forall x (position(x) \implies \nexists y (position(y) \land x \neq y));$
 

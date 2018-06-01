@@ -95,14 +95,12 @@ class RobotPositionSensor
 
 
 
-
-        TODO Exists di troppo?
                 
         -- if the operator is moving the end effector, then the end effector 
         -- will move even if the speed is none
         armSpeedNoneWithContact: 
             $\forall x(Status.currentArmSpeed == None \land Arm.contact() \land Arm.endEffector(x)\implies$
-                $\exists \future(\exists y  Arm.endEffector(y) \land (x == y \lor Grid.adjacent(x, y)), 1));$
+                $\exists y \future(Arm.endEffector(y) \land (x == y \lor Grid.adjacent(x, y)), 1));$
         
 end RobotPositionSensor.
 \end{lstlisting}

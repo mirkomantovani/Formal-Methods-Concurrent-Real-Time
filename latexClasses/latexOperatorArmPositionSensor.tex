@@ -13,9 +13,11 @@ class OperatorArmPositionSensor
     temporal domain integer;
 
     axioms
-        --The arm can be only in one position
-        uniqueArm: 
-            $\exists x (position(x) \land \nexists y (x \neq y \land position(y)));$
+        -- the arm always exists
+        existsArm: $\exists x (position(x));$
+
+        -- the arm is only in one area
+        uniqueArm: $\forall x (position(x) \implies \nexists y (position(y) \land x \neq y));$
 
 end OperatorArmPositionSensor.
 \end{lstlisting}

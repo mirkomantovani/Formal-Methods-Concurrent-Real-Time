@@ -88,9 +88,11 @@ Homework project\\
 
 \section{Formalization of the problem}
 \subsection{Problem description}
-brief description
+The TRIO+ model presented in this document aims to formalize the interaction between an operator and a KUKA robot.
 
-scheme with areas subdivision
+The goal of the robot is to move unfinished pieces from the bin area to the tombstone. After the piece has been worked, the robot will move it to the conveyor belt.
+The operator is assigned to a supervision role and he will interact physically with the end effector of the machine. The model has to guarantee the safety of the operator.
+
 \subsection{Definitions and Acronyms of Components}
 \begin{itemize}
     \item \textbf{R}: The whole KUKA mobile robot
@@ -194,7 +196,9 @@ The human is discretized in body, head and arms. Each one of the parts can only 
 \input{latexClasses/latexRobotCartPositionSensor}
 \pagebreak
 \input{latexClasses/latexRobotPositionSensor}
+
 \pagebreak
+\subsection{Definition of the state of the robot}
 \input{latexClasses/latexRobotStatus}
 
 \pagebreak
@@ -202,14 +206,13 @@ The human is discretized in body, head and arms. Each one of the parts can only 
 \input{latexClasses/latexRobotController}
 
 \pagebreak
-\subsection{Definition of the PositionController class}
-\input{latexClasses/latexPositionController}
+\subsection{Definition of the SafetyChecker class}
+\input{latexClasses/latexSafetyChecker}
 
 
-\pagebreak
-%\subsection{Definition of the robot position sensors}
-\section{Demonstration of Saftety Properties}
-\input{latex/safetyRules}
+% %\subsection{Definition of the robot position sensors}
+% \section{Demonstration of Saftety Properties}
+% \input{latex/safetyRules}
 
 
 \pagebreak

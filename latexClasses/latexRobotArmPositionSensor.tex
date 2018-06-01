@@ -21,34 +21,31 @@ class RobotArmPositionSensor
             link3({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
                     L10, L11, L12, L13, L14, L15, L16, L17,
                     L18, L19, L20, L21, L22, L23, L24, L25,
-                    L26, L27, L28}),
+                    L26, L27, L28, LBA, LCB}),
                     
             -- Link2 is the second segment of the arm, linked to link3 and link1
             link2({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
                     L10, L11, L12, L13, L14, L15, L16, L17,
                     L18, L19, L20, L21, L22, L23, L24, L25,
-                    L26, L27, L28}),
+                    L26, L27, L28, LBA, LCB}),
                     
-            -- Link1 is the third segment of the arm, which is linked to link2 
-            -- and holds the end effector
+            -- Link1 is the third segment of the arm, which is the end effector 
             link1({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
                     L10, L11, L12, L13, L14, L15, L16, L17,
                     L18, L19, L20, L21, L22, L23, L24, L25,
-                    L26, L27, L28}),
-                    
-            TODO
-            TODO The endeffector should be able to go over areas L0, LBA, LCB
-            TODO         
-            -- End effector is the "hand" of the robot
+                    L26, L27, L28, LBA, LCB}),
+                     
+            -- same as link1, used for clarity
             endEffector({ L0, L1, L2, L3, L4, L5, L6, L7, L8, L9,
                           L10, L11, L12, L13, L14, L15, L16, L17,
                           L18, L19, L20, L21, L22, L23, L24, L25,
-                          L26, L27, L28}),
+                          L26, L27, L28, LBA, LCB}),
                     
 
             -- Signal if the pick action has been completed successfully
             pickedUp(),
 
+            
             -- Signal to model the fact that the robot is holding a piece
             holding(),
 
@@ -76,23 +73,27 @@ class RobotArmPositionSensor
             $\forall x \forall y (link1(x) \implies$ 
                  $link2(x) \lor (x \neq y \land link2(y) \land Grid.adjacent(x, y)));$
 
-        -- end effector is on link1
+        -- end effector is link1
         endEffectorOnLink1:
             $\forall x (endEffector(x) \iff link1(x));$
 
-        -- link2 is unique
-        uniqueLink2: 
-            $\forall x \forall y (x \neq y \land link2(x) \implies \neg link2(y));$
+        -- the link1 always exists
+        existsLink1: $\exists x (link1(x));$
 
-        -- link1 is unique
-        uniqueLink1: 
-            $\forall x \forall y (x \neq y \land link1(x) \implies \neg link1(y));$
+        -- the link1 is only in one area
+        uniqueLink1: $\forall x (link1(x) \implies \nexists y (link1(y) \land x \neq y));$
+        
+        -- the link2 always exists
+        existsLink2: $\exists x (link2(x));$
 
-        -- end effector occupies only one position at a time
-        onlyOneEndEffector:
-            $\forall x (endEffector(x) \iff \nexists y (x \neq y \land endEffector(y)));$
+        -- the link2 is only in one area
+        uniqueLink2: $\forall x (link2(x) \implies \nexists y (link2(y) \land x \neq y));$
 
-            
+        -- the link3 always exists
+        existsLink3: $\exists x (link3(x));$
+
+        -- the link3 is only in one area
+        uniqueLink3: $\forall x (link3(x) \implies \nexists y (link3(y) \land x \neq y));$    
 
 
         -- Only one of pickedUp(), holding() and dropped() can be true in 
