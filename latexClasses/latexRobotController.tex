@@ -134,7 +134,7 @@ class RobotController
 
     -- do is an instantaneous event (lasts only one time instant)
     instantaneousDo:
-        $\forall x (do(x) \limply \  future(\neg do(x), 1));$
+        $\forall x (do(x) \limply \future(\neg do(x), 1));$
 
   -- DEFINITION OF PRECONDITIONS, AXIOMS HOLDING DURING THE ACTION 
   -- AND SEQUENCES OF EVENTS
@@ -169,7 +169,7 @@ class RobotController
     
     -- to complete the PickFromBinArea action we need to have reached
     -- PickFromBinAreaT3()
-    $\becomes(\neg currentAction == PickFromBinArea) \implies PickFromBinAreaT3()$;
+    $\becomes(\neg currentAction == PickFromBinArea) \implies Past(PickFromBinAreaT3(), 1)$;
     
     -- from T3 to T2 the only thing that changes is the position
     -- of the end effector
@@ -397,3 +397,8 @@ class RobotController
          
 end RobotController.
 \end{lstlisting}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../document"
+%%% End:
