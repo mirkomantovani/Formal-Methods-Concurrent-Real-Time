@@ -21,7 +21,9 @@ class RobotController
     GoToBinArea
     });
 
-    isArmMoving();
+    isArmMoving(),
+    PickFromBinAreaT0(), PickFromBinAreaT1(),
+    PickFromBinAreaT2(), PickFromBinAreaT3();
 
   variables
     currentAction({
@@ -148,19 +150,41 @@ class RobotController
     duringPickFromBinArea:
         $currentAction == PickFromBinArea \limply RobotStatus.currentCartSpeed == None;$
 
+    
+    -- t0: Start -> end effector on top of cart, not holding
+    -- t1: end effector on top of bin area, not holding
+    -- t2: end effector on top of bin area, holding
+    -- t3: End -> end effector on top of cart, holding
+    $PickFromBinAreaT0() \iff (currentAction == PickFromBinArea \land \neg Robot.Arm.holding() \land$
+        $\exists x (Robot.Cart.position(x) \land Robot.Arm.endEffector(x)))$;
+    
+    $PickFromBinAreaT1() \iff (currentAction == PickFromBinArea \land \neg Robot.Arm.holding() \land$
+        $Robot.Arm.endEffector(LBA)))$;
+    
+    $PickFromBinAreaT2() \iff (currentAction == PickFromBinArea \land Robot.Arm.holding() \land$
+        $Robot.Arm.endEffector(LBA)))$;
+    
+    $PickFromBinAreaT3() \iff (currentAction == PickFromBinArea \land Robot.Arm.holding() \land$
+        $\exists x (Robot.Cart.position(x) \land Robot.Arm.endEffector(x)))$;
+    
+    -- to complete the PickFromBinArea action we need to have reached
+    -- PickFromBinAreaT3()
+    $\becomes(\neg currentAction == PickFromBinArea) \implies PickFromBinAreaT3()$;
+    
+    -- from T3 to T2 the only thing that changes is the position
+    -- of the end effector
+    $PickFromBinAreaT3() \implies \exists t (\lasttime(PickFromBinAreaT2(), t) \land$
+        $\lastedOp_{ie}(currentAction == PickFromBinArea \land Robot.Arm.holding(), t))$;
 
-
-
-
-    -- the robot must move the arm from the cart to the bin area, grab the 
-    -- piece from the bin area and then move the arm back on top of the cart 
-    -- while holding the piece
-    pickUpSequence:
-        $\becomes(currentAction == PickFromBinArea) \limply $
-            $\exists t1, t2, t3 (0 <= t1 < t2 < t3 < MaxPickUpTime\ \land \lastsie(\neg Robot.Arm.holding(), t2)\ \land $
-            $\future(\textit{Robot.Arm.endEffector}(LBA), t1)\ \land \future(\lastsii(Robot.Arm.holding(), t3), t2)\ \land$
-            $\future(\exists x (Robot.Cart.position(x) \land \textit{Robot.Arm.endEffector}(x)), t3)\ \land$
-            $\lastsie(currentAction == PickFromBinArea, t3));$
+    -- from T2 to T1 the only thing that changes is the fact that
+    -- the end effector is holding a piece
+    $PickFromBinAreaT2() \implies \exists t (\lasttime(PickFromBinAreaT1(), t) \land$
+        $\lastedOp_{ie}(currentAction == PickFromBinArea \land Robot.Arm.endEffector(LBA)))$;
+    
+    -- from T1 to T0 the only thing that changes is the position
+    -- of the end effector
+    $PickFromBinAreaT1() \implies \exists t (\lasttime(PickFromBinAreaT0(), t) \land$
+        $\lastedOp_{ie}(currentAction == PickFromBinArea \land \neg Robot.Arm.holding()))$;
       
   -- DropToLocalBin
     -- the robot holds a piece, the local bin isn't full and the endEffector 
