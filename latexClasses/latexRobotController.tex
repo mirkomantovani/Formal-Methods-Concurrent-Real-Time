@@ -195,7 +195,7 @@ class RobotController
             $\exists x (Robot.Cart.position(x) \land \textit{Robot.Arm.endEffector}(x));$
     
     -- the robot cannot move, the endEffector must stay in the same zone
-    duringPreDropToLocalBin:
+    duringDropToLocalBin:
         $currentAction == DropToLocalBin \limply $
             $(RobotStatus.currentCartSpeed == None \land$
             $RobotStatus.currentEndEffectorSpeed == None);$
@@ -203,10 +203,14 @@ class RobotController
     -- there exists a time t in which the robot switches from 
     -- holding to not holding
     dropSequence:
-        $\becomes(currentAction == preDropToLocalBin) \limply $
-            $\exists t (0 <= t < MaxDropTime\ \land \lastsie(Robot.Arm.holding(),t)\ \land $
-            $\future(\neg Robot.Arm.holding(),t)\ \land \lastsie(currentAction == DropToLocalBin, t));$
-  
+        $\becomes(\neg currentAction == DropToLocalBin) \limply $
+            $\exists t (\lasttime(currentAction == DropToLocalBin \land Robot.Arm.holding(), t) \land$
+            $\lastedOp_{ie}(currentAction == DropToLocalBin, t))$;
+
+    -- after the drop to local bin action has finished, then the amount of pieces
+    -- that are stored inside the local bin has increased by one unit
+    <TODO>
+
   -- GoToTombstone
     -- the robot's local bin is full, it isn't holding any piece and the 
     -- endEffector is on the cart
