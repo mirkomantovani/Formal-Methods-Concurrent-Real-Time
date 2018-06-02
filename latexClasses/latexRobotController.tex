@@ -23,7 +23,9 @@ class RobotController
 
     isArmMoving(),
     PickFromBinAreaT0(), PickFromBinAreaT1(),
-    PickFromBinAreaT2(), PickFromBinAreaT3();
+    PickFromBinAreaT2(), PickFromBinAreaT3(),
+    DropToTombstoneT0(), DropToTombstoneT1(),
+    DropToTombstoneT2(), DropToTombstoneT3();
 
   variables
     currentAction({
@@ -238,10 +240,8 @@ class RobotController
     -- there exists a time t smaller than MaxTravelTime when the robot is in a 
     -- position adjacent to the tombstone
     goToTombstoneSequence:
-        $\becomes(currentAction == GoToTombstone) \limply $
-            $\exists t (0 <= t < MaxTravelTime \land$
-            $\future(\exists x (Robot.Cart.position(x) \land Grid.adjToTombstone(x)),t) \land$
-            $\lastsie(currentAction == GoToTombstone, t));$
+    $\becomes(\neg currentAction == GoToTombstone) \implies$
+        $\exists x (Robot.Cart.position(x) \land Grid.adjToTombstone(x))$;
 
   -- PickFromLocalBin
     -- the robot isn't holding any piece, the local bin isn't empty and the 
@@ -258,15 +258,18 @@ class RobotController
             $(RobotStatus.currentCartSpeed == None\ \land$
             $RobotStatus.currentEndEffectorSpeed == None);$
   
-    -- there exists a time t in which the robot switches from not holding to 
-    -- holding
-    pickFromLocalBinSequence:
-        $\becomes(currentAction == PickFromLocalBin) \limply $
-            $\exists t (0 <= t < MaxPickUpTime\ \land $
-            $\lastsie(\neg Robot.Arm.holding(),t)\ \land $
-            $\future(Robot.Arm.holding(),t)\ \land $
-            $\lastsie(currentAction == PickFromLocalBin, t));$
-
+    postPickFromLocalBin:
+        $\becomes(\neg currentAction == PickFromLocalBin) \implies Robot.Arm.holding() \land$
+            $\exists x (Robot.Cart.position(x) \land Robot.Arm.endEffector(x))$;
+            
+    -- $t_1$ is the starting time of the action
+    -- $t_2$ is the time during which the piece is taken from the local bin
+    removedOnlyOnePieceFromBin:
+        $\becomes(\neg currentAction == PickFromLocalBin) \implies$
+            $\exists t_1 (\lasttime(\neg currentAction == PickFromLocalBin, t_1) \land$
+                 $\exists t_2 (0 < t_2 < t_1 \land \past(RobotStatus.removePieceFromBin(), t_2) \land$
+                      $\forall t_3 (0 < t_3 < t_1 \land t_2 \neq t_3 \implies \neg \past(RobotStatus.removePieceFromBin(), t_3)))$;
+                      
   -- DropToTombstone
     -- the robot is holding a piece and it is in a position adjacent 
     -- to the tombstone
@@ -279,22 +282,40 @@ class RobotController
         $currentAction == DropToTombstone \limply $
             $RobotStatus.currentCartSpeed == None;$
 
+    -- t0: Start -> end effector on top of cart, holding
+    -- t1: end effector on top of tombstone, holding
+    -- t2: end effector on top of tombstone, not holding
+    -- t3: End -> end effector on top of cart, not holding
+    $DropToTombstoneT0() \iff (currentAction == DropToTombstone \land Robot.Arm.holding() \land$
+        $\exists x (Robot.Cart.position(x) \land Robot.Arm.endEffector(x)))$;
+    
+    $DropToTombstoneT1() \iff (currentAction == DropToTombstone \land Robot.Arm.holding() \land$
+        $Robot.Arm.endEffector(L0)))$;
+    
+    $DropToTombstoneT2() \iff (currentAction == DropToTombstone \land \neg Robot.Arm.holding() \land$
+        $Robot.Arm.endEffector(L0)))$;
+    
+    $DropToTombstoneT3() \iff (currentAction == DropToTombstone \land \neg Robot.Arm.holding() \land$
+        $\exists x (Robot.Cart.position(x) \land Robot.Arm.endEffector(x)))$;
+    
+    -- to complete the DropToTombstone action we need to have reached
+    -- DropToTombstoneT3()
+    $\becomes(\neg currentAction == DropToTombstone) \implies Past(DropToTombstoneT3(), 1)$;
+    
+    -- from T3 to T2 the only thing that changes is the position
+    -- of the end effector
+    $DropToTombstoneT3() \implies \exists t (\lasttime(DropToTombstoneT2(), t) \land$
+        $\lastedOp_{ie}(currentAction == DropToTombstone \land \neg Robot.Arm.holding(), t))$;
 
-
-
-
-
-    -- the sequence of actions that the robot has to do before MaxDropTime 
-    -- is to place the endEffector onto the tombstone, drop the piece and bring 
-    -- the endEffector back in the same position as the cart
-    dropToTombstoneSequence:
-        $\becomes(currentAction == DropToTombstone) \limply $
-            $\exists t1, t2, t3 (0 <= t1 < t2 < t3 < MaxDropTime\ \land $
-            $\lastsie(Robot.Arm.holding(), t2)\ \land $
-            $\future(\textit{Robot.Arm.endEffector}(L0), t1)\ \land $
-            $\future(\lastsii(\neg Robot.Arm.holding(), t3), t2)\ \land $
-            $\future(\exists x (Robot.Cart.position(x) \land \textit{Robot.Arm.endEffector}(x)), t3) \land $
-            $\lastsie(currentAction == DropToTombstone, t3));$
+    -- from T2 to T1 the only thing that changes is the fact that
+    -- the end effector is holding a piece
+    $DropToTombstoneT2() \implies \exists t (\lasttime(DropToTombstoneT1(), t) \land$
+        $\lastedOp_{ie}(currentAction == DropToTombstone \land Robot.Arm.endEffector(L0)))$;
+    
+    -- from T1 to T0 the only thing that changes is the position
+    -- of the end effector
+    $DropToTombstoneT1() \implies \exists t (\lasttime(DropToTombstoneT0(), t) \land$
+        $\lastedOp_{ie}(currentAction == DropToTombstone \land Robot.Arm.holding()))$;
 
   -- PickFromTombstone
     -- the robot has received the Continue HDI signal, it isn't holding anything 
