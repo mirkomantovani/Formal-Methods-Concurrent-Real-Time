@@ -209,7 +209,13 @@ class RobotController
 
     -- after the drop to local bin action has finished, then the amount of pieces
     -- that are stored inside the local bin has increased by one unit
-    <TODO>
+    -- $t_1$: the time when DropToLocalBin has started
+    -- $t_2$: the time during which the piece has been dropped from the
+    --     end effector to the local bin
+    dropOnePieceToLocalBin:
+        $\exists t_1 (\lasttime(\neg currentAction == DropToLocalBin, t_1) \land$
+            $\exists t_2 (0 < t_2 < t_1 \land \past(RobotStatus.addPieceToBin(), t_2) \land$
+                $\forall t_3 (0 < t_3 < t_1 \land t_3 \neq t_2 \implies \neg \past(RobotStatus.addPieceToBin(), t_3))))$;
 
   -- GoToTombstone
     -- the robot's local bin is full, it isn't holding any piece and the 
