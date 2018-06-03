@@ -31,6 +31,18 @@ Another very important safety property is that the robot cannot move to a zone w
 
 These properties are guaranteed by the axioms \texttt{operatorCloseToWall} and \texttt{operatorDangerZone}.
 
+If OHead is adjacent to a zone which is adjacent to the EE, then the targetSpeed is None and the current speed of EE are either None or Low
+
+If OHead and EE are in adjacent zones, then the targetSpeed and the current speed of EE are None
+
+If OArms are adjacent to a zone which is adjacent to the EE, then the targetSpeed is Low or None and the current speed of EE can be anything
+
+If OArms and EE are in adjacent zones, then the targetSpeed and currentSpeed are Low
+
+If any of the parts of O is adjacent to RCart then the cart target speed and current speed have to be None
+
+If any of the parts of O is adjacent to a zone adjacent to RCart then the cart target speed has to be Low? and current speed has to be Low
+
 %%% Local Variables:
 %%% mode: latex
 %%% TeX-master: "../document"
