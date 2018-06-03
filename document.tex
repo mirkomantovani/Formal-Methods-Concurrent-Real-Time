@@ -165,6 +165,7 @@ The most critical areas are the ones with indices from 1 to 12, particular atten
 \label{fig:layout2} 
 \end{figure}
 
+\pagebreak
 \subsection{Assumptions and modeling}
 \paragraph{Robot}
 The robot is discretized in two parts, the cart and the arm. The cart is such that it can only occupy one area at the time: this is a strong assumption, however it is vital because it reduces the complexity of our model. The arm is modeled by considering two joints and the end effector. The first joint is assumed to be the connection between the cart and the arm, therefore its position is at all times the same as the cart position. The second joint allows broader movement to the arm and it links the first joint to the end effector. The whole arm can reach at most a distance of two adjacent areas. The response of the actuators to a change in the control variables is assumed to be short enough to be modeled as instantaneous.
@@ -178,8 +179,28 @@ We operated under the assumption that the Bin Area is always full, or better, it
 \paragraph{Local Bin}
 The local bin of R is where it stores the WPs in order to transport them from one place to the other. For the sake of simplicity we made as an assumption that the local bin can contain at most 3 pieces, so we could write formulae in a simple way, of course this can be generalized to N pieces in a trivial way.
 
+\subsection{KUKA workflow}
+The workflow of KUKA can be described by a FSA, we divided the tasks that R has to perform in 9 main elementary actions, whose formalization can be found in the \textbf{RobotController} TRIO+ class.
+Those atomic actions whose name is self-explaining are:
+
+\begin{enumerate}
+    \item \textbf{PickFromBinArea}:\@ 
+    \item \textbf{DropToLocalBin}:\@
+    \item \textbf{GoToTombstone}:\@ 
+    \item \textbf{PickFromLocalBin}:\@ 
+    \item \textbf{DropToTombstone}:\@ 
+    \item \textbf{PickFromLocalBin}:\@ 
+    \item \textbf{DropToTombstone}:\@ 
+    \item \textbf{PickFromTombstone}:\@ 
+    \item \textbf{GoToConveyorBelt}:\@ 
+    \item \textbf{DropToConveyorBelt}:\@ 
+    \item \textbf{GoToBinArea}:\@ 
+\end{enumerate}
+
+
 \clearpage
 \section{Archi-TRIO model}
+
 
 \subsection{Class overview}
 We organized the model in 12 TRIO+ classes, here we provide an overview of each one and a UML-like diagram to better visualize the connections among them.
@@ -212,7 +233,10 @@ In this class we have the main predicates about the state of the robot and of it
 \subsubsection{RobotController}
 This is one of the most important classes, it handles all the actions performed by R, it specifies preconditions, axioms with constraints on what should be true while an action is being performed, and the actual sequence of events that the action is composed by.
 
-\subsubsection{PositionController}
+\subsubsection{SafetyChecker}
+Here we define all the constraints necessary for the safety of O in the presence of a working KUKA R around the layout, all the actions performed by R that could cause harm to O are avoided or limited as much as possible.
+
+\subsection{UML diagram}
 
 
 \clearpage
@@ -261,6 +285,8 @@ This is one of the most important classes, it handles all the actions performed 
 \pagebreak
 \appendix
 \section{Area modeling}
+
+Here we provide a sample of the formula that states for every possible combination of 2 cells in the layout, which one are adjacent to each other and which one are not.
 
 \begin{align*}
 &\neg Adj(L0, L0) \land Adj(L0, L1) \land Adj(L0, L2) \land Adj(L0, L3) \land Adj(L0, L4) \land \neg Adj(L0, L5) \land \neg Adj(L0, L6) \\
