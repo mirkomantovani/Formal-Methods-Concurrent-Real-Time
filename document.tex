@@ -126,6 +126,7 @@ The operator is assigned to a supervision role and he will interact physically w
     \item \textbf{Arm}:\@ Consisting of 2 segments and 3 links, the last of which connects the farther segment to the EE
     \item \textbf{End Effector}:\@ The robotic hand of R, capable of holding a WP and releasing it.
     \item \textbf{Cart}:\@ The cart is the main part of the robot, it is what can move across areas in the layout.
+    \item \textbf{Local Bin}:\@ The local bin of R is located on top of the cart and is able to contain WPs.
 \end{itemize}
 
 \subsubsection{Robot speed}
@@ -171,13 +172,47 @@ The robot is discretized in two parts, the cart and the arm. The cart is such th
 \paragraph{Human}
 The human is discretized in body, head and arms. Each one of the parts can only occupy one area. The movement can only be observed, but not controlled, by the robot.
 
-\paragraph{BinArea}
+\paragraph{Bin Area}
 We operated under the assumption that the Bin Area is always full, or better, it is never empty in any subarea of its space. With this assumption the KUKA robot will only have to stretch out from an adjacent area and pick as many WP as it wants without having to move to another adjacent area because there are no WP left where it is. 
+
+\paragraph{Local Bin}
+The local bin of R is where it stores the WPs in order to transport them from one place to the other. For the sake of simplicity we made as an assumption that the local bin can contain at most 3 pieces, so we could write formulae in a simple way, of course this can be generalized to N pieces in a trivial way.
 
 \clearpage
 \section{Archi-TRIO model}
 
+\subsection{Class overview}
+We organized the model in 12 TRIO+ classes, here we provide an overview of each one and a UML-like diagram to better visualize the connections among them.
 
+\subsubsection{Grid}
+The layout is discretized in this class, here we defined the adjacency predicate and the enumeration of subareas of L, as well as other specific predicates for special areas contained in L.
+
+\subsubsection{Sensors}
+The main superclass of sensors is \textbf{PositionSensor}, it uses as module the \textbf{Grid} and has 2 predicates: Position(layout area) and moved(), the subclasses which inherits them are the following ones:
+
+\begin{itemize}
+    \item \textbf{OperatorHeadPositionSensor}:\@ The sensor for the head of O
+    \item \textbf{OperatorBodyPositionSensor}:\@ The sensor for the body of O
+    \item \textbf{OperatorArmPositionSensor}:\@ The sensor for the arm of O
+    \item \textbf{RobotArmPositionSensor}:\@
+The sensor for the arm of O, in which the linkings and constraints are made consistent
+    \item \textbf{RobotCartPositionSensor}:\@ The sensor for the Cart position in the layout
+\end{itemize}
+
+Then 2 main wrappers are created around the sensors, in which constraints among the various specific sensors are defined:
+\begin{itemize}
+    \item \textbf{OperatorPositionSensor}:\@ The wrapper sensor for O which imports as modules OperatorHeadPositionSensor, OperatorBodyPositionSensor, OperatorArmPositionSensor and the Grid
+    \item \textbf{RobotPositionSensor}:\@ The wrapper sensor for R which imports as modules RobotArmPositionSensor, RobotCartPositionSensor and the Grid
+
+\end{itemize}
+
+\subsubsection{RobotStatus}
+In this class we have the main predicates about the state of the robot and of its local bin (isFull, isEmpty), here we also define the targetCartSpeed and targetEESpeed which are the control variables, and currentCartSpeed, currentEESpeed which are read from sensors and defined as a part of the state of the robot itself.
+
+\subsubsection{RobotController}
+This is one of the most important classes, it handles all the actions performed by R, it specifies preconditions, axioms with constraints on what should be true while an action is being performed, and the actual sequence of events that the action is composed by.
+
+\subsubsection{PositionController}
 
 
 \clearpage
