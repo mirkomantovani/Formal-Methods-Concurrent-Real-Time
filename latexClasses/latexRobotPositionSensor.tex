@@ -26,26 +26,12 @@ class RobotPositionSensor
         link3OnCart: 
             $\forall x (Arm.link3(x) \iff Body.position(x));$
 
-        -- cartTargetSpeed defines how often the robot cart can move in the grid
-        cartSpeedNone: 
-            $Status.currentCartSpeed == None \implies$ 
-                $\exists x \future(Cart.position(x), 1) \land Cart.position(x);$
-
-                
-        cartSpeedLowMoved: 
-            $\exists x (Status.currentCartSpeed == Low \land Cart.moved() \implies$
-                $Cart.position(x) \land \future(Cart.position(x), 1));$
-
-        cartSpeedLowNotMoved: 
-            $\exists x (Status.currentCartSpeed == Low \land \neg Cart.moved() \implies$
-                $Cart.position(x) \land \exists y (\future(Cart.position(y), 1) \land x \neq y \land Grid.adjacent(x, y)));$
-
-        cartSpeedNormal: 
-            $\exists x (Status.currentCartSpeed == Normal \land Cart.position(x) \implies$
-                $\exists y (\future(Cart.position(y), 1) \land x \neq y \land Grid.adjacent(x, y)));$
-
-
-
+        -- the cart can move only when the speed is not equal to None.
+        -- if the speed is normal, then the robot can move at every time instant
+        -- if the speed is low, then the robot can move only every other time instant
+            $Cart.moved() \iff \past(Status.currentCartSpeed == Normal, 1) \lor$
+                $\past(Status.currentCartSpeed == Low \land \neg Cart.moved(), 1)$
+            
 
         -- if the speed is low, then the arm can move from one area to another
         -- only half of the time
