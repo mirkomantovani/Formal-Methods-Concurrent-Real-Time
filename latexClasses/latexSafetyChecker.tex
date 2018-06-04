@@ -1,4 +1,7 @@
-\begin{lstlisting}[fontadjust, mathescape, frame=single] 
+\begin{lstlisting}[fontadjust, mathescape, frame=single]
+-- Here we define all the constraints necessary for the safety of O 
+-- in the presence of a working KUKA R around the layout, all the actions performed 
+-- by R that could cause harm to O are avoided or limited as much as possible. 
 class SafetyChecker
     temporal domain integer;
 
@@ -19,15 +22,15 @@ class SafetyChecker
         headSameAreaAsRobotArm:
             $\forall x (Robot.Arm.position(x) \land Operator.head(x) \land
                 RobotController.isArmMoving() \limply$
-                $RobotStatus.targetEndEffectorSpeed == None);$
+                $RobotStatus.currentEndEffectorSpeed == None);$
 
         -- if the head of the operator is close to the arm of the robot, then
         -- the arm is either moving slowly or staying still
         headCloseToRobotArm:
             $\forall x, y (x \neq y \land Robot.Arm.position(x) \land Operator.head(y) \land$
                 $Grid.adjacent(x, y) \land RobotController.isArmMoving() \limply$
-                    $(RobotStatus.targetEndEffectorSpeed == None \lor$
-                    $RobotStatus.targetEndEffectorSpeed == Low));$
+                    $(RobotStatus.currentEndEffectorSpeed == None \lor$
+                    $RobotStatus.currentEndEffectorSpeed == Low));$
 
         -- if the arms of the operator are in the same area as the arm
         -- of the robot, then either the arm of the robot is staying
@@ -42,11 +45,6 @@ class SafetyChecker
         sameAreaArmsWithContact:
             $\forall x (Robot.Arm.position(x) \land Operator.arms(x) \land Robot.Arm.contact() \limply$
                 $RobotStatus.currentEndEffectorSpeed == None);$
-
-
-
-
-
 
         -- if the arm of the robot is in an area adjacent to the arms
         -- of the operator, then the robot is at most moving slow

@@ -26,46 +26,20 @@ class RobotPositionSensor
         link3OnCart: 
             $\forall x (Arm.link3(x) \iff Body.position(x));$
 
-        -- cartTargetSpeed defines how often the robot cart can move in the grid
-        cartSpeedNone: 
-            $Status.currentCartSpeed == None \implies$ 
-                $\exists x \future(Cart.position(x), 1) \land Cart.position(x);$
+        -- the cart can move only when the speed is not equal to None.
+        -- if the speed is normal, then the robot can move at every time instant
+        -- if the speed is low, then the robot can move only every other time instant
+        cartMovement:
+            $Cart.moved() \implies \past(Status.currentCartSpeed == Normal, 1) \lor$
+                $\past(Status.currentCartSpeed == Low \land \neg Cart.moved(), 1)$
+            
 
-                
-        cartSpeedLowMoved: 
-            $\exists x (Status.currentCartSpeed == Low \land Cart.moved() \implies$
-                $Cart.position(x) \land \future(Cart.position(x), 1));$
-
-        cartSpeedLowNotMoved: 
-            $\exists x (Status.currentCartSpeed == Low \land \neg Cart.moved() \implies$
-                $Cart.position(x) \land \exists y (\future(Cart.position(y), 1) \land x \neq y \land Grid.adjacent(x, y)));$
-
-        cartSpeedNormal: 
-            $\exists x (Status.currentCartSpeed == Normal \land Cart.position(x) \implies$
-                $\exists y (\future(Cart.position(y), 1) \land x \neq y \land Grid.adjacent(x, y)));$
-
-
-
-
-        -- if the speed is low, then the arm can move from one area to another
-        -- only half of the time
-        armSpeedLowMoved: 
-            $\exists x (Status.currentCartSpeed == None \land Status.currentArmSpeed == Low \land$
-              $Arm.moved() \implies$ 
-                  $Arm.endEffector(x) \land \future(Arm.endEffector(x), 1));$
-
-        armSpeedLowNotMoved: 
-            $\exists x (Status.currentCartSpeed == None \land Status.currentArmSpeed == Low \land$ 
-            $\past(\neg Arm.moved() \land Arm.endEffector(x), 1) \implies$ 
-                $Arm.endEffector(y) \land x \neq y \land Grid.adjacent(x, y)));$
-
-        -- if the speed is normal, then the arm can move from one area to 
-        -- another at every time instant
-        armSpeedNormal: 
-            $\exists x (Status.currentCartSpeed == None \land$
-              $Status.currentArmSpeed == Normal \land$
-              $Arm.endEffector(x) \implies$
-                  $\exists y (\future(Arm.endEffector(y), 1) \land x \neq y \land Grid.adjacent(x, y)));$
+        -- if there is no contact between the arm and the operator, then the arm can
+        -- move only if the speed is not None
+        armMovement:
+            $Arm.moved() \implies \past(\neg Arm.contact() \land RobotStatus.currentEndEffectorSpeed == Normal, 1) \lor$
+                $\past(\neg Arm.contact() \land RobotStatus.currentEndEffectorSpeed == Low \land \neg Arm.moved(), 1) \lor $
+                $\past(Arm.contact() \land RobotStatus.currentEndEffectorSpeed == None, 1)$;
 
         -- if the cart is moving, then the arm must stay on top of the cart,
         -- both the end effector and the link
@@ -89,18 +63,6 @@ class RobotPositionSensor
         stoppedWhileContact:
             $Arm.contact() \implies $
                 $RobotStatus.currentEndEffectorSpeed == None;$
-
-
-
-
-
-
-                
-        -- if the operator is moving the end effector, then the end effector 
-        -- will move even if the speed is none
-        armSpeedNoneWithContact: 
-            $\forall x(Status.currentArmSpeed == None \land Arm.contact() \land Arm.endEffector(x)\implies$
-                $\exists y \future(Arm.endEffector(y) \land (x == y \lor Grid.adjacent(x, y)), 1));$
         
 end RobotPositionSensor.
 \end{lstlisting}

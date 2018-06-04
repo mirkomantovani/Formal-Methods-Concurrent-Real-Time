@@ -1,0 +1,49 @@
+The model needs to ensure that there will be no harmful contact between the robot and the operator. For each safety property we need to show that the conjuction of the model and the negation of the safety property is unsatisfiable: this proves that no history produced by the analysis of the TRIO axioms can lead to an unsafe situation. All the following safety properties are stated without the use of the $\always$ operator, but it is implicit in their definitions.
+
+The most important safety property that we need to ensure is that the robot needs to avoid at all costs hitting the most delicate parts of the operator: the head and the arms.
+
+\begin{align*}
+\neg \exists x &(Robot.Arm.endEffector(x) \land Operator.arms(x) \land \neg (RobotStatus.currentEndEffectorSpeed == None)) \\
+\neg \exists x &(Robot.Arm.endEffector(x) \land Operator.head(x) \land \\
+&\neg (RobotStatus.currentEndEffectorSpeed == None \lor RobotStatus.currentEndEffectorSpeed == Low)) 
+\end{align*}
+
+The first two safety properties are ensured by the axioms \texttt{headSameAreaAsRobotArm}, \texttt{headCloseToRobotArm}, \texttt{sameAreaArms}, \texttt{sameAreaArmsWithContact}.
+
+Another important property to show is that the robot will not move if the operator is in the same zone as the human operator and the area is close to a danger zone or a close to a wall:
+
+\begin{equation*}
+  \begin{array}{l}
+  \neg \exists x (\exists y (Grid.border(y) \lor Grid.danger(y) \land Grid.adj(x, y)) \\
+  \qquad \land Robot.Cart.position(x) \land Operator.body(x) \land \neg RobotStatus.currentCartSpeed == None)
+  \end{array}
+\end{equation*}
+
+Another very important safety property is that the robot cannot move to a zone which is adjacent to a zone occupied by the operator: this property means that the cart of the robot will not move to a zone where there could be the operator in the future.
+
+\begin{equation*}
+  \begin{array}{lll}
+  \neg \exists x \exists y (x \neq y \land Robot.Cart.position(x) \land Operator.body(y) \implies \\
+  \qquad \quad \neg \exists z \future(Robot.Cart.position(z) \land Operator.body(z) \land \\
+  \qquad \qquad \qquad \qquad \neg Grid.transit(z) \land \neg RobotStatus.currentCartSpeed == None, 1));
+  \end{array}
+\end{equation*}
+
+These properties are guaranteed by the axioms \texttt{operatorCloseToWall} and \texttt{operatorDangerZone}.
+
+If OHead is adjacent to a zone which is adjacent to the EE, then the targetSpeed is None and the current speed of EE are either None or Low
+
+If OHead and EE are in adjacent zones, then the targetSpeed and the current speed of EE are None
+
+If OArms are adjacent to a zone which is adjacent to the EE, then the targetSpeed is Low or None and the current speed of EE can be anything
+
+If OArms and EE are in adjacent zones, then the targetSpeed and currentSpeed are Low
+
+If any of the parts of O is adjacent to RCart then the cart target speed and current speed have to be None
+
+If any of the parts of O is adjacent to a zone adjacent to RCart then the cart target speed has to be Low? and current speed has to be Low
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../document"
+%%% End:

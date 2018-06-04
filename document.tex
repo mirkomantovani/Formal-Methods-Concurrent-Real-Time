@@ -95,7 +95,7 @@ Homework project\\
 The TRIO+ model presented in this document aims to formalize the interaction between an operator and a KUKA robot.
 
 The goal of the robot is to move unfinished pieces from the bin area to the tombstone. After the piece has been worked, the robot will move it to the conveyor belt.
-The operator is assigned to a supervision role and he will interact physically with the end effector of the machine. The model has to guarantee the safety of the operator.
+The operator is assigned to a supervision role and he will interact physically with the end effector of the machine. The model has to guarantee the safety of the operator as well as the utility constraints.
 
 \subsection{Definitions and Acronyms of Components}
 \begin{itemize}
@@ -105,7 +105,7 @@ The operator is assigned to a supervision role and he will interact physically w
     \item \textbf{L}:\@ The entire Layout in which Robot and Operator work
     \item \textbf{BA}:\@ The Bin Area (top-right)
     \item \textbf{WP}:\@ The single WorkPiece which is transported by the robot
-    \item \textbf{HID}:\@ The Human Interface Device used by the Operator to control the Robot
+    \item \textbf{HDI}:\@ The Human Device Interface used by the Operator to control the Robot
 \end{itemize}
 
 \subsection{Constants}
@@ -123,15 +123,17 @@ The operator is assigned to a supervision role and he will interact physically w
 
 \subsubsection{Robot parts}
 \begin{itemize}
-    \item \textbf{Head area}:\@ Arm
-    \item \textbf{Arms area}:\@ Cart
+    \item \textbf{Arm}:\@ Consisting of 2 segments and 3 links, the last of which connects the farther segment to the EE
+    \item \textbf{End Effector}:\@ The robotic hand of R, capable of holding a WP and releasing it.
+    \item \textbf{Cart}:\@ The cart is the main part of the robot, it is what can move across areas in the layout.
+    \item \textbf{Local Bin}:\@ The local bin of R is located on top of the cart and is able to contain WPs.
 \end{itemize}
 
 \subsubsection{Robot speed}
 \begin{itemize}
     \item \textbf{None}:\@ Null speed, the robot cannot move
-    \item \textbf{Low}:\@ Low speed, the robot can move every other time instant
-    \item \textbf{Normal}:\@ Normal speed, the robot can move at every time instant
+    \item \textbf{Low}:\@ Low speed, the robot can move every other time instant, which means it will move to an adjacent area at most every 2 time instants
+    \item \textbf{Normal}:\@ Normal speed, the robot can move to an adjacent area at each time instant.
 \end{itemize}
 
 % \subsubsection{Layout areas}
@@ -163,6 +165,7 @@ The most critical areas are the ones with indices from 1 to 12, particular atten
 \label{fig:layout2} 
 \end{figure}
 
+\pagebreak
 \subsection{Assumptions and modeling}
 \paragraph{Robot}
 The robot is discretized in two parts, the cart and the arm. The cart is such that it can only occupy one area at the time: this is a strong assumption, however it is vital because it reduces the complexity of our model. The arm is modeled by considering two joints and the end effector. The first joint is assumed to be the connection between the cart and the arm, therefore its position is at all times the same as the cart position. The second joint allows broader movement to the arm and it links the first joint to the end effector. The whole arm can reach at most a distance of two adjacent areas. The response of the actuators to a change in the control variables is assumed to be short enough to be modeled as instantaneous.
@@ -170,11 +173,71 @@ The robot is discretized in two parts, the cart and the arm. The cart is such th
 \paragraph{Human}
 The human is discretized in body, head and arms. Each one of the parts can only occupy one area. The movement can only be observed, but not controlled, by the robot.
 
+\paragraph{Bin Area}
+We operated under the assumption that the Bin Area is always full, or better, it is never empty in any subarea of its space. With this assumption the KUKA robot will only have to stretch out from an adjacent area and pick as many WP as it wants without having to move to another adjacent area because there are no WP left where it is. 
+
+\paragraph{Local Bin}
+The local bin of R is where it stores the WPs in order to transport them from one place to the other. For the sake of simplicity we made as an assumption that the local bin can contain at most 3 pieces, so we could write formulae in a simple way, of course this can be generalized to N pieces in a trivial way.
+
+\subsection{KUKA workflow}
+The workflow of KUKA can be described by a FSA, we divided the tasks that R has to perform in 9 main elementary actions, whose formalization can be found in the \textbf{RobotController} TRIO+ class.
+Those atomic actions whose name is self-explaining are:
+
+\begin{enumerate}
+    \item \textbf{PickFromBinArea}:\@ 
+    \item \textbf{DropToLocalBin}:\@
+    \item \textbf{GoToTombstone}:\@ 
+    \item \textbf{PickFromLocalBin}:\@ 
+    \item \textbf{DropToTombstone}:\@ 
+    \item \textbf{PickFromLocalBin}:\@ 
+    \item \textbf{DropToTombstone}:\@ 
+    \item \textbf{PickFromTombstone}:\@ 
+    \item \textbf{GoToConveyorBelt}:\@ 
+    \item \textbf{DropToConveyorBelt}:\@ 
+    \item \textbf{GoToBinArea}:\@ 
+\end{enumerate}
+
+
 \clearpage
 \section{Archi-TRIO model}
 
 
+\subsection{Class overview}
+We organized the model in 12 TRIO+ classes, here we provide an overview of each one and a UML-like diagram to better visualize the connections among them.
 
+\subsubsection{Grid}
+The layout is discretized in this class, here we defined the adjacency predicate and the enumeration of subareas of L, as well as other specific predicates for special areas contained in L.
+
+\subsubsection{Sensors}
+The main superclass of sensors is \textbf{PositionSensor}, it uses as module the \textbf{Grid} and has 2 predicates: Position(layout area) and moved(), the subclasses which inherits them are the following ones:
+
+\begin{itemize}
+    \item \textbf{OperatorHeadPositionSensor}:\@ The sensor for the head of O
+    \item \textbf{OperatorBodyPositionSensor}:\@ The sensor for the body of O
+    \item \textbf{OperatorArmPositionSensor}:\@ The sensor for the arm of O
+    \item \textbf{RobotArmPositionSensor}:\@
+The sensor for the arm of O, in which the linkings and constraints are made consistent
+    \item \textbf{RobotCartPositionSensor}:\@ The sensor for the Cart position in the layout
+\end{itemize}
+
+Then 2 main wrappers are created around the sensors, in which constraints among the various specific sensors are defined:
+\begin{itemize}
+    \item \textbf{OperatorPositionSensor}:\@ The wrapper sensor for O which imports as modules OperatorHeadPositionSensor, OperatorBodyPositionSensor, OperatorArmPositionSensor and the Grid
+    \item \textbf{RobotPositionSensor}:\@ The wrapper sensor for R which imports as modules RobotArmPositionSensor, RobotCartPositionSensor and the Grid
+
+\end{itemize}
+
+\subsubsection{RobotStatus}
+In this class we have the main predicates about the state of the robot and of its local bin (isFull, isEmpty), here we also define the targetCartSpeed and targetEESpeed which are the control variables, and currentCartSpeed, currentEESpeed which are read from sensors and defined as a part of the state of the robot itself.
+
+\subsubsection{RobotController}
+This is one of the most important classes, it handles all the actions performed by R, it specifies preconditions, axioms with constraints on what should be true while an action is being performed, and the actual sequence of events that the action is composed by.
+
+\subsubsection{SafetyChecker}
+Here we define all the constraints necessary for the safety of O in the presence of a working KUKA R around the layout, all the actions performed by R that could cause harm to O are avoided or limited as much as possible.
+
+\subsection{UML diagram}
+This diagram shows the connections and hierarchies among classes
 
 \clearpage
 \section{TRIO+ specification}
@@ -213,6 +276,10 @@ The human is discretized in body, head and arms. Each one of the parts can only 
 \subsection{Definition of the SafetyChecker class}
 \input{latexClasses/latexSafetyChecker}
 
+\pagebreak
+\subsection{Safety Properties}
+\input{latex/safety-properties}
+
 
 % %\subsection{Definition of the robot position sensors}
 % \section{Demonstration of Saftety Properties}
@@ -222,6 +289,8 @@ The human is discretized in body, head and arms. Each one of the parts can only 
 \pagebreak
 \appendix
 \section{Area modeling}
+
+Here we provide a sample of the formula that states for every possible combination of 2 cells in the layout, which one are adjacent to each other and which one are not.
 
 \begin{align*}
 &\neg Adj(L0, L0) \land Adj(L0, L1) \land Adj(L0, L2) \land Adj(L0, L3) \land Adj(L0, L4) \land \neg Adj(L0, L5) \land \neg Adj(L0, L6) \\

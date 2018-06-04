@@ -28,8 +28,8 @@ class RobotCartPositionSensor;
         -- An area occupied by the robot must be Grid.adjacent with an area
         -- occupied by the robot one time instant in the past
         doNotTeleport:
-            $\forall x (\becomes(position(x)) \implies 
-                \exists y (Past(position(y), 1) \land Grid.adjacent(x, y)));$
-            
+            $moved() \implies \exists x \exists y (x \neq y \land Grid.adjacent(x, y) \land position(x) \land \past(position(y), 1))$;
+
+
 end RobotCartPositionSensor.
 \end{lstlisting}
