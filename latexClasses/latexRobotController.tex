@@ -133,7 +133,7 @@ class RobotController
     -- during emergency mode, the robot needs to be stopped immediately
     emergencyMode:
       $(HDICommand == Emergency) \limply $
-        $(RobotStatus.TargetCartSpeed == None) \land (RobotStatus.TargetEndEffectorSpeed == None);$
+        $(RobotStatus.currentCartSpeed == None) \land (RobotStatus.currentEndEffectorSpeed == None);$
 
     -- do is an instantaneous event (lasts only one time instant)
     instantaneousDo:
