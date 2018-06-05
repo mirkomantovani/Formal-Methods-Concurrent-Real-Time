@@ -24,7 +24,7 @@ if __name__ == "__main__":
                 continue
             for i in range(1, len(row)):
                 if row[i] == '0':
-                    output += " (not ({}))".format(pred(row[0], i))
+                    output += " (!! ({}))".format(pred(row[0], i))
                 elif row[i] == '1':
                     output += " ({})".format(pred(row[0], i))
-        print('(and {})'.format(output))
+        print('(&& {})'.format(output))
