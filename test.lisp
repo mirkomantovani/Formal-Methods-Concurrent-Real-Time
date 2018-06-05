@@ -3,8 +3,8 @@
     :trio-utils)
 
 (load "zot/grid.lisp")
-(load "zot/cart.lisp")
 (load "zot/operator.lisp")
+(load "zot/robot.lisp")
 
 (defconstant *time* 5)
 
@@ -17,12 +17,20 @@
                        cart-speed-at-least-one
                        cart-speed-unique
                        cart-speed-controller
-                       (-V- cart 1)
-                       (somf (&& (-V- cart-moved)
-                                 (past (-V- cart-speed speed-low) 1)))
                        operator-has-one-position
                        operator-has-only-one-position
                        operator-cannot-teleport
                        operator-moved-definition
+                       arm-has-one-position
+                       arm-has-only-one-position
+                       arm-cannot-teleport
+                       arm-moved-definition
+                       arm-speed-at-least-one
+                       arm-speed-unique
+                       arm-speed-controller
+                       arm-connected-to-cart
+                       arm-speed-related-to-cart-speed
+                       arm-on-cart-if-moving
                        (somf (-V- operator-moved))
+                       (somf (-V- cart-moved))
                        ))

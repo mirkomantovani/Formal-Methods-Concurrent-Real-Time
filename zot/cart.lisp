@@ -6,11 +6,6 @@
 (define-tvar cart-moved *bool*)
 (define-tvar cart-speed *int* *bool*)
 
-(defconstant speed-none 0)
-(defconstant speed-low 1)
-(defconstant speed-normal 2)
-(defconstant speeds (list speed-none speed-low speed-normal))
-
 (defconstant cart-has-moved
   (alw (<-> (-V- cart-moved)
             (-E- x areas
