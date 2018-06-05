@@ -4,6 +4,7 @@
 
 (load "zot/grid.lisp")
 (load "zot/cart.lisp")
+(load "zot/operator.lisp")
 
 (defconstant *time* 5)
 
@@ -19,4 +20,9 @@
                        (-V- cart 1)
                        (somf (&& (-V- cart-moved)
                                  (past (-V- cart-speed speed-low) 1)))
+                       operator-has-one-position
+                       operator-has-only-one-position
+                       operator-cannot-teleport
+                       operator-moved-definition
+                       (somf (-V- operator-moved))
                        ))
