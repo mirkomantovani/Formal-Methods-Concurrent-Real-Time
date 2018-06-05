@@ -452,11 +452,11 @@ class RobotController
         $\becomes(\neg currentAction == GoToBinArea) \limply $
               $\exists x (Robot.Cart.position(x)\ \land Grid.adjToBinArea(x))$;
                       
-    -- The robot can move the arm only when the cart is not moving
-    isArmMoving: 
-        $isArmMoving() \iff$
-            $\neg (currentAction == GoToBinArea \lor currentAction == GoToTombstone \lor$
-            $currentAction == GoToConveyorBelt);$
+  -- The robot can move the arm only when the cart is not moving
+  isArmMoving: 
+    $isArmMoving() \iff$
+        $\neg (currentAction == GoToBinArea \lor currentAction == GoToTombstone \lor$
+        $currentAction == GoToConveyorBelt);$
          
 end RobotController.
 \end{lstlisting}
