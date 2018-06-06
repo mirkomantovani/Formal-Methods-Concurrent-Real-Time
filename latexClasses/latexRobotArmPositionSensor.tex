@@ -97,8 +97,8 @@ class RobotArmPositionSensor
 
         -- the arm cannot teleport
         armCannotTeleport:
-            $\forall x (endEffector(x) \implies (\future (endEffector(x) \lor$
-                          $(\exists y (endEffector(y) \land Grid.adjacent(x,y))), 1)))$;
+            $\forall x (endEffector(x) \implies$ 
+                $(\future (endEffector(x) \lor (\exists y (endEffector(y) \land Grid.adjacent(x,y))), 1)))$;
 
         -- Only one of pickedUp(), holding() and dropped() can be true in 
         -- each instant

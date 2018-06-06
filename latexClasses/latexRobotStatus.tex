@@ -69,5 +69,9 @@ class RobotStatus
             $\forall x (binStatus == x \land \neg (addPieceToBin() \lor removePieceFromBin()) \implies$
                 $\future(binStatus == x, 1));$
 
+        -- The arm can move only when the cart is stopped
+        armSpeedRelation:
+            $currentEndEffectorSpeed \neq None \implies currentCartSpeed == None$
+
 end RobotStatus.
 \end{lstlisting}

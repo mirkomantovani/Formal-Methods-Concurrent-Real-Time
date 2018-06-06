@@ -44,9 +44,8 @@ class RobotPositionSensor
         -- if the cart is moving, then the arm must stay on top of the cart,
         -- both the end effector and the link
         armOnTopMovingCart: 
-            $\forall x (Status.currentCartSpeed \neq None \land Cart.moved() \land Cart.position(x) \implies$
-                $Arm.position(x));$
-
+            $Cart.moved() \implies$
+                $\past(\forall x (Cart.position(x) \iff Arm.position(x)), 1) \land \forall x (Cart.position(x) \iff Arm.position(x)$
 
         --------------------
         -- CONTACT AXIOMS --
