@@ -9,7 +9,7 @@
 (defconstant conveyor-belt 15)
 
 (define-var adjacent *int* *int* *bool*)
-(defvar grid-adjacency 
+(defconstant grid-adjacency 
   (alw (&& (!! (-P- adjacent 1 1)) 
       (-P- adjacent 1 2) 
       (!! (-P- adjacent 1 3)) 
@@ -268,3 +268,10 @@
                           ([=] x 13)
                           ([=] x 14)
                           ([=] x 15))))))
+
+(defun are-adjacent (x y)
+  (-P- adjacent x y))
+
+(defconstant grid-axioms
+  (&& grid-adjacency
+      grid-danger-areas))

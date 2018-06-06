@@ -1,29 +1,31 @@
 (asdf:operate 'asdf:load-op 'ae2zot)
 (use-package :trio-utils)
 
-(define-tvar operator *int* *bool*)
+(define-tvar operator *int*)
 (define-tvar operator-moved *bool*)
 
-(defconstant operator-has-one-position (alw (-E- x areas (-V- operator x))))
+(defun operator-in (x)
+  ([=] (-V- operator) x))
 
-(defconstant operator-has-only-one-position
-  (alw (-A- x areas
-            (-A- y areas
-                 (-> (!! ([=] x y))
-                     (-> (-V- operator x)
-                         (!! (-V- operator y)))
-                     )))))
+(defconstant operator-position
+  (alw (-E- x areas
+            (operator-in x))))
                      
 (defconstant operator-cannot-teleport
   (alw (-A- x areas
-            (-> (-V- operator x)
-                (futr (|| (-V- operator x)
-                          (-E- y areas (&& (-V- operator y)
-                                           (-P- adjacent x y))))
+            (-> (operator-in x)
+                (futr (|| (operator-in x)
+                          (-E- y areas (&& (operator-in y)
+                                           (are-adjacent x y))))
                       1)))))
 
 (defconstant operator-moved-definition
   (alw (<-> (-V- operator-moved)
             (-E- x areas
-                 (&& (-V- operator x)
-                     (past (!! (-V- operator x)) 1))))))
+                 (&& (operator-in x)
+                     (past (!! (operator-in x)) 1))))))
+
+(defconstant operator-axioms
+  (&& operator-position
+      operator-cannot-teleport
+      operator-moved-definition))
