@@ -5,6 +5,7 @@
 (load "zot/grid.lisp")
 (load "zot/operator.lisp")
 (load "zot/robot.lisp")
+(load "zot/safety.lisp")
 
 (defconstant *time* 5)
 
@@ -14,6 +15,7 @@
                        cart-cannot-teleport
                        cart-has-moved
                        grid-adjacency
+                       grid-danger-areas
                        cart-speed-at-least-one
                        cart-speed-unique
                        cart-speed-controller
@@ -33,4 +35,10 @@
                        arm-on-cart-if-moving
                        (somf (-V- operator-moved))
                        (somf (-V- cart-moved))
+                       operator-close-to-wall
+                       do-not-squish-operator
+                       cart-does-not-move-if-operator-same-area
+                       speed-when-in-transit-zone
+                       (-V- operator 1)
+                       (-V- cart 2)
                        ))

@@ -17,7 +17,7 @@ lines = hist.readlines()
 # In[15]:
 
 
-filter_adj = [line for line in lines if 'ADJACENT' not in line]
+filter_adj = filter((lambda line: not ('ADJACENT' in line or 'DANGER' in line)), lines)
 
 # In[16]:
 
