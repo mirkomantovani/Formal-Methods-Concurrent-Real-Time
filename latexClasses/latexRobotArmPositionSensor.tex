@@ -95,6 +95,10 @@ class RobotArmPositionSensor
         -- the link3 is only in one area
         uniqueLink3: $\forall x (link3(x) \implies \nexists y (link3(y) \land x \neq y));$    
 
+        -- the arm cannot teleport
+        armCannotTeleport:
+            $\forall x (endEffector(x) \implies (\future (endEffector(x) \lor$
+                          $(\exists y (endEffector(y) \land Grid.adjacent(x,y))), 1)))$;
 
         -- Only one of pickedUp(), holding() and dropped() can be true in 
         -- each instant
