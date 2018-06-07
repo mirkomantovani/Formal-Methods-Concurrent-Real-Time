@@ -62,6 +62,20 @@
            (-E- x areas (&& (arm-in x)
                             (operator-in x))))))
 
+(defconstant add-piece-needs-drop
+  (alw (-> (-V- add-piece)
+           (-V- drop))))
+
+(defconstant remove-piece-needs-pick
+  (alw (-> (-V- remove-piece)
+           (-V- pick))))
+
+(defconstant cart-cannot-move-if-arm-holding
+  (alw (-> (|| (-V- holding)
+            (-V- pick)
+            (-V- drop))
+           (cart-speed-is speed-none))))
+
 (defconstant robot-axioms
   (&& arm-connected-to-cart
       arm-movement
@@ -70,4 +84,7 @@
       no-speed-while-touching
       arm-on-cart-if-moving
       operator-touching-arm
+      add-piece-needs-drop
+      remove-piece-needs-pick
+      cart-cannot-move-if-arm-holding
       ))
