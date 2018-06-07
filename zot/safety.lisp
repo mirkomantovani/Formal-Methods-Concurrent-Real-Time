@@ -10,8 +10,8 @@
                          (are-adjacent x y))
                      (|| (futr (&& ;; only the operator can go to the position of the cart, not the opposite
                                 (cart-speed-is speed-none)
-                                (cart-in x)
-                                (operator-in x))
+                                (cart-in y)
+                                (operator-in y))
                                1)
                       (futr (-E- w areas
                                  (-E- z areas
@@ -60,10 +60,25 @@
                          (are-adjacent x y))
                      (!! (arm-speed-is speed-normal)))))))
 
+(defconstant arm-cannot-move-to-operators-area
+  (alw (-A- x areas
+            (-A- y areas
+                 (-A- z areas
+                      (-> (&& (operator-in x)
+                              (arm-in y)
+                              (|| (&& (are-adjacent x z)
+                                      (are-adjacent z y))
+                               (&& ([=] x z)
+                                   (are-adjacent x y)))
+                              (-P- danger z))
+                          (futr (!! (arm-in z)) 1)
+                          ))))))
+
 (defconstant safety-axioms
   (&& operator-close-to-wall
       do-not-squish-operator
       cart-does-not-move-if-operator-same-area
       speed-when-in-transit-zone
       arm-cannot-move-if-operator-same-area
+      arm-cannot-move-to-operators-area
       arm-moves-slowly-if-operator-near))
