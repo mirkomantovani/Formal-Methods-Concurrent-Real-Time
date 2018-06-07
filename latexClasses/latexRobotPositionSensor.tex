@@ -30,16 +30,34 @@ class RobotPositionSensor
         -- if the speed is normal, then the robot can move at every time instant
         -- if the speed is low, then the robot can move only every other time instant
         cartMovement:
-            $Cart.moved() \implies \past(Status.currentCartSpeed == Normal, 1) \lor$
+            $Cart.moved() \iff \past(Status.currentCartSpeed == Normal, 1) \lor$
                 $\past(Status.currentCartSpeed == Low \land \neg Cart.moved(), 1)$
             
+        --The three reasons why the arm can move are mutually exclusive
+        cartSpeedNotNone:
+            $RobotStatus.currentCartSpeed \neq None \implies$
+                $RobotStatus.currentEndEffectorSpeed == None \land \neg Arm.contact()$
+        
+        armSpeedNotNone:
+            $RobotStatus.currentEndEffectorSpeed \neq None \limply$
+                $RobotStatus.currentCartSpeed == None \land \neg Arm.contact()$
+        
+        noSpeedWhileTouching:
+            $Arm.contact() \limply$
+                $RobotStatus.currentCartSpeed == None \land RobotStatus.currentEndEffectorSpeed == None$
+
 
         -- if there is no contact between the arm and the operator, then the arm can
         -- move only if the speed is not None
         armMovement:
-            $Arm.moved() \implies \past(\neg Arm.contact() \land RobotStatus.currentEndEffectorSpeed == Normal, 1) \lor$
-                $\past(\neg Arm.contact() \land RobotStatus.currentEndEffectorSpeed == Low \land \neg Arm.moved(), 1) \lor $
-                $\past(Arm.contact() \land RobotStatus.currentEndEffectorSpeed == None, 1)$;
+            $Arm.moved() \iff $
+                $(Cart.moved() \lor $
+                $(\past(RobotStatus.currentEndEffectorSpeed == Normal, 1) \lor$ 
+                    $\past(RobotStatus.currentEndEffectorSpeed == Low \land \neg Arm.moved(), 1))\lor$
+                $\past(Arm.contact(), 1) \land Arm.contact() \land$
+                    $(\exists x \exists z (x \neq z  \land \past(Operator.arm(x), 1) \land Operator.arm(z) \land ($
+                        $(\past(Arm.link2(x), 1) \land Arm.link2(z)) \lor$
+                        $(\past(Arm.endEffector(x), 1) \land Arm.endEffector(z))))))$
 
         -- if the cart is moving, then the arm must stay on top of the cart,
         -- both the end effector and the link
@@ -56,12 +74,6 @@ class RobotPositionSensor
         armContact:
             $\forall x (Arm.position(x) \land Arm.contact() \implies$
                 $Operator.arms(x));$
-
-        -- when the operator is touching the arm of the robot, the speed of the
-        -- arm of the robot is none
-        stoppedWhileContact:
-            $Arm.contact() \implies $
-                $RobotStatus.currentEndEffectorSpeed == None;$
         
 end RobotPositionSensor.
 \end{lstlisting}

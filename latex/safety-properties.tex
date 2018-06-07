@@ -2,10 +2,16 @@ The model needs to ensure that there will be no harmful contact between the robo
 
 The most important safety property that we need to ensure is that the robot needs to avoid at all costs hitting the most delicate parts of the operator: the head and the arms.
 
+\textbf{I}
 \begin{align*}
-\neg \exists x &(Robot.Arm.endEffector(x) \land Operator.head(x) \land \neg (RobotStatus.currentEndEffectorSpeed == None)) \\
+\neg \exists x &(Robot.Arm.endEffector(x) \land Operator.head(x) \land \neg (RobotStatus.currentEndEffectorSpeed == None)) \\ 
+\end{align*}
+
+\textbf{II}
+
+\begin{align*}
 \neg \exists x &(Robot.Arm.endEffector(x) \land Operator.arms(x) \land \\
-&\neg (RobotStatus.currentEndEffectorSpeed == None \lor RobotStatus.currentEndEffectorSpeed == Low)) 
+&\neg (RobotStatus.currentEndEffectorSpeed == None \lor RobotStatus.currentEndEffectorSpeed == Low))
 \end{align*}
 
 The first two safety properties are ensured by the axioms \texttt{headSameAreaAsRobotArm}, \texttt{headCloseToRobotArm}, \texttt{sameAreaArms}, \texttt{sameAreaArmsWithContact} of the SafetyChecker class.
