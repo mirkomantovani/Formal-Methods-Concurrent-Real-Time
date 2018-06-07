@@ -1,7 +1,6 @@
 (asdf:operate 'asdf:load-op 'ae2zot)
 (use-package :trio-utils)
 
-(defconstant *time* 10)
 (load "zot/bin.lisp")
 
 (defconstant test-1 ;; should give UNSAT
@@ -26,9 +25,9 @@
                   (-V- piece-removed))
                  ))))
 
+(defconstant *time* 10)
 (ae2zot:zot *time* (&&
                     bin-axioms
-                    (somf (-V- piece-added))
                     ;; test-1
                     ;; test-2
                     ;; test-3
