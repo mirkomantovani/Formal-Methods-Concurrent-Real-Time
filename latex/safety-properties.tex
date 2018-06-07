@@ -1,37 +1,32 @@
 The model needs to ensure that there will be no harmful contact between the robot and the operator. For each safety property we need to show that the conjuction of the model and the negation of the safety property is unsatisfiable: this proves that no history produced by the analysis of the TRIO axioms can lead to an unsafe situation. All the following safety properties are stated without the use of the $\always$ operator, but it is implicit in their definitions.
-
-The most important safety property that we need to ensure is that the robot needs to avoid at all costs hitting the most delicate parts of the operator: the head and the arms.
-
+\\ \\
+The \textbf{first} and most important safety property that we need to ensure is that the robot needs to avoid at all costs hitting the most delicate parts of the operator: the head and the arms.
 \begin{align*}
-\neg \exists x &(Robot.Arm.endEffector(x) \land Operator.head(x) \land \neg (RobotStatus.currentEndEffectorSpeed == None)) \\
+\neg \exists x &(Robot.Arm.endEffector(x) \land Operator.head(x) \land \neg (RobotStatus.currentEndEffectorSpeed == None)) \\ \\
 \neg \exists x &(Robot.Arm.endEffector(x) \land Operator.arms(x) \land \\
-&\neg (RobotStatus.currentEndEffectorSpeed == None \lor RobotStatus.currentEndEffectorSpeed == Low)) 
+&\neg (RobotStatus.currentEndEffectorSpeed == None \lor RobotStatus.currentEndEffectorSpeed == Low))
 \end{align*}
-
-The first two safety properties are ensured by the axioms \texttt{headSameAreaAsRobotArm}, \texttt{headCloseToRobotArm}, \texttt{sameAreaArms}, \texttt{sameAreaArmsWithContact} of the SafetyChecker class.
-
-
-The second property we want to prove is the fact that the cart will never have a speed different from none if the operator is in the same area as the cart, and the area is a danger or border one.
-
+These safety properties are ensured by the axioms \texttt{headSameAreaAsRobotArm}, \texttt{headCloseToRobotArm}, \texttt{sameAreaArms}, \texttt{sameAreaArmsWithContact} of the SafetyChecker class.
+\\ \\
+The \textbf{second} property we want to prove is the fact that the cart will never have a speed different from none if the operator is in the same area as the cart, and the area is a danger or border one.
 \begin{align*}
   &\neg \exists x ((Grid.danger(x) \lor Grid.border(x)) \land Cart.position(x) \land Operator.body(x) \\
   &\qquad \land RobotStatus.currentCartSpeed \neq None)
 \end{align*}
-
-The robot can only move slowly or stand still if it's in a transit zone with the operator:
-
-\begin{equation*}
-  \begin{array}{l}
-  \neg \exists x (Grid.transit(x) \\
-  \qquad \land Robot.Cart.position(x) \land Operator.body(x) \land RobotStatus.currentCartSpeed == Normal)
-  \end{array}
-\end{equation*}
-
-The fourth property we want to prove is the fact that the cart does not move into a dangerous or border area already occupied by the operator
-
+This property is ensured by the axiom \texttt{cartDoesNotMoveIfOperatorIsInSameArea} of the SafetyChecker class.
+\\ \\
+The \textbf{third} property ensures that the robot can only move slowly or stand still if it's in a transit zone with the operator.
+\begin{align*}
+  &\neg \exists x (Grid.transit(x) \\
+  &\qquad \land Robot.Cart.position(x) \land Operator.body(x) \land RobotStatus.currentCartSpeed == Normal)
+\end{align*}
+This property is ensured by the axiom \texttt{operatorTransitZone} of the SafetyChecker class.
+\\ \\
+The \textbf{fourth} property we want to prove is the fact that the cart does not move into a dangerous or border area already occupied by the operator.
 \begin{align*}
   &\neg \exists x ((Grid.danger (x) \lor Grid.border(x)) \land Cart.position(x) \land Operator.body(x) \land Cart.moved())
 \end{align*}
+This property is ensured by the \texttt{doNotRunOverOperator} axiom of the SafetyChecker class.
 
 % Another very important safety property is that the robot cannot move to a zone which is adjacent to a zone occupied by the operator: this property means that the cart of the robot will not move to a zone where there could be the operator in the future.
 

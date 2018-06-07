@@ -70,36 +70,32 @@ class SafetyChecker
         -- SAFETY CART AXIOMS --
         ------------------------
 
-        -- if the operator is in an area close to the wall and the
+        -- if the operator is in an area close to the wall or a danger area and the
         -- robot is in an area adjacent to it, then the robot will not
         -- move to an area adjacent to the one occupied by the
         -- operator
         operatorCloseToWall:
-            $\forall x, y (x \neq y \land Operator.body(x) \land Grid.border(x) \land$
+            $\forall x, y (Operator.body(x) \land (Grid.border(x) \lor Grid.danger(x)) \land$
                 $Robot.Cart.position(y) \land Grid.adjacent(x, y) \limply$
-                    $\exists z (\future((RobotStatus.currentCartSpeed == Low \lor$
-                            $RobutStatus.currentCardSpeed == None) \land$
-                            $Robot.Cart.position(z) \land$
-                            $(z == y \lor Grid.adjacent(z, y) \land \neg Grid.adjacent(z, x))), 1));$
+                    $((\future(RobotStatus.currentCardSpeed == None \land Cart.position(y) \land Operator.body(y), 1)) \lor$
+                     $(\future(\exists w \exists z (z \neq w \land Cart.position(w) \land Operator.body(z)), 1))$    
 
-        -- if the operator is in a dangerous area and the
-        -- robot is in an area adjacent to it, then the robot will not
-        -- move to an area adjacent to the one occupied by the
-        -- operator
-        operatorDangerZone:
-            $\forall x, y (x \neq y \land Operator.body(x) \land Grid.danger(x) \land$
-              $Robot.Cart.position(y) \land Grid.adjacent(x, y) \limply$
-                $\exists z (\future((RobotStatus.currentCartSpeed == Low \lor$
-                        $RobutStatus.currentCardSpeed == None) \land$
-                        $Robot.Cart.position(z) \land$
-                        $(z == y \lor Grid.adjacent(z, y) \land \neg Grid.adjacent(z, x))), 1));$
+        -- The robot will not go to an area that is dangerous or an area near the 
+        -- border, that may be occupied in the next time instant by the operator.
+        doNotRunOverOperator:
+            $\forall x \forall y \forall z (Operator.body(x) \land Cart.position(y) \land (Grid.border(z) \lor Grid.danger(z)) \land $
+                 $((Grid.adjacent(x,z) \land Grid.adjacent(z,y) \lor (x = z \land Grid.adjacent(x,y))))  \limply$
+                     $\future(\neg Cart.position(z), 1))$
 
+        cartDoesNotMoveIfOperatorIsInSameArea:
+            $\forall x ((Cart.position(x) \land Operator.body(x) \land (Grid.danger(x) \lor Grid.border(x))) \limply$
+                $RobotStatus.currentCardSpeed == None);$
 
         -- if the operator is in a transit area and the robot is in
         -- the same area, then the robot needs to move slow
         operatorTransitZone:
             $\forall x (Operator.body(x) \land Grid.transit(x) \land Robot.Cart.position(x) \limply$
-                $RobotStatus.currentCartSpeed == Low \lor RobotStatus.currentCartSpeed == None);$
+                $RobotStatus.currentCartSpeed \neq Normal );$
 
-end SafetyChecker                
+end SafetyChecker.                
 \end{lstlisting}

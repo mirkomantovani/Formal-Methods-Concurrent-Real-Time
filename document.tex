@@ -184,23 +184,27 @@ The workflow of KUKA can be described by a FSA, we divided the tasks that R has 
 Those atomic actions whose name is self-explaining are:
 
 \begin{enumerate}
-    \item \textbf{PickFromBinArea}:\@ 
-    \item \textbf{DropToLocalBin}:\@
-    \item \textbf{GoToTombstone}:\@ 
-    \item \textbf{PickFromLocalBin}:\@ 
-    \item \textbf{DropToTombstone}:\@ 
-    \item \textbf{PickFromLocalBin}:\@ 
-    \item \textbf{DropToTombstone}:\@ 
-    \item \textbf{PickFromTombstone}:\@ 
-    \item \textbf{GoToConveyorBelt}:\@ 
-    \item \textbf{DropToConveyorBelt}:\@ 
-    \item \textbf{GoToBinArea}:\@ 
+    \item \textbf{PickFromBinArea}\@ 
+    \item \textbf{DropToLocalBin}\@
+    \item \textbf{GoToTombstone}\@ 
+    \item \textbf{PickFromLocalBin}\@ 
+    \item \textbf{DropToTombstone}\@ 
+    \item \textbf{PickFromLocalBin}\@ 
+    \item \textbf{DropToTombstone}\@ 
+    \item \textbf{PickFromTombstone}\@ 
+    \item \textbf{GoToConveyorBelt}\@ 
+    \item \textbf{DropToConveyorBelt}\@ 
+    \item \textbf{GoToBinArea}\@ 
 \end{enumerate}
 
+\subsection{Petri Net of KUKA workflow}
+The following Petri net that represents the correct flow of actions that the robot has to perform.
+\begin{center}
+    \includegraphics[width=18cm]{images/petriNetKuka}
+\end{center}
 
 \clearpage
 \section{Archi-TRIO model}
-
 
 \subsection{Class overview}
 We organized the model in 12 TRIO+ classes, here we provide an overview of each one and a UML-like diagram to better visualize the connections among them.
@@ -237,7 +241,10 @@ This is one of the most important classes, it handles all the actions performed 
 Here we define all the constraints necessary for the safety of O in the presence of a working KUKA R around the layout, all the actions performed by R that could cause harm to O are avoided or limited as much as possible.
 
 \subsection{UML diagram}
-This diagram shows the connections and hierarchies among classes
+This diagram shows the connections and hierarchies among classes.
+\begin{center}
+    \includegraphics[width=16.5cm]{images/ArchiTRIO}
+\end{center}
 \clearpage
 \section{TRIO+ specification}
 

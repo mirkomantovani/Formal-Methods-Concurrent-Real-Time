@@ -1,7 +1,7 @@
 *.log
 *.toc
 *.aux
-*.pdf
+document.pdf
 *.gz
 *.out
 *.fdb_latexmk
