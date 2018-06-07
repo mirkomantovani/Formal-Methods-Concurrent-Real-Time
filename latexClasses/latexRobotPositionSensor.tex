@@ -45,7 +45,7 @@ class RobotPositionSensor
         -- both the end effector and the link
         armOnTopMovingCart: 
             $Cart.moved() \implies$
-                $\past(\forall x (Cart.position(x) \iff Arm.position(x)), 1) \land \forall x (Cart.position(x) \iff Arm.position(x)$
+                $\past(\forall x (Cart.position(x) \iff Arm.position(x)), 1) \land \forall x (Cart.position(x) \iff Arm.position(x))$
 
         --------------------
         -- CONTACT AXIOMS --

@@ -10,14 +10,13 @@ The most important safety property that we need to ensure is that the robot need
 
 The first two safety properties are ensured by the axioms \texttt{headSameAreaAsRobotArm}, \texttt{headCloseToRobotArm}, \texttt{sameAreaArms}, \texttt{sameAreaArmsWithContact} of the SafetyChecker class.
 
-Another important property is that the robot will not move if it is in the same zone as the operator and the area is a danger zone or a zone close to a wall:
 
-\begin{equation*}
-  \begin{array}{l}
-  \neg \exists x ((Grid.border(x) \lor Grid.danger(x)) \\
-  \qquad \land Robot.Cart.position(x) \land Operator.body(x) \land \neg RobotStatus.currentCartSpeed == None)
-  \end{array}
-\end{equation*}
+The second property we want to prove is the fact that the cart will never have a speed different from none if the operator is in the same area as the cart, and the area is a danger or border one.
+
+\begin{align*}
+  &\neg \exists x ((Grid.danger(x) \lor Grid.border(x)) \land Cart.position(x) \land Operator.body(x) \\
+  &\qquad \land RobotStatus.currentCartSpeed \neq None)
+\end{align*}
 
 The robot can only move slowly or stand still if it's in a transit zone with the operator:
 
@@ -27,6 +26,12 @@ The robot can only move slowly or stand still if it's in a transit zone with the
   \qquad \land Robot.Cart.position(x) \land Operator.body(x) \land RobotStatus.currentCartSpeed == Normal)
   \end{array}
 \end{equation*}
+
+The fourth property we want to prove is the fact that the cart does not move into a dangerous or border area already occupied by the operator
+
+\begin{align*}
+  &\neg \exists x ((Grid.danger (x) \lor Grid.border(x)) \land Cart.position(x) \land Operator.body(x) \land Cart.moved())
+\end{align*}
 
 % Another very important safety property is that the robot cannot move to a zone which is adjacent to a zone occupied by the operator: this property means that the cart of the robot will not move to a zone where there could be the operator in the future.
 
