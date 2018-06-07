@@ -8,6 +8,7 @@
 
 (load "zot/cart.lisp")
 (load "zot/arm.lisp")
+(load "zot/bin.lisp")
 
 (define-tvar touching *bool*)
 
@@ -62,12 +63,12 @@
            (-E- x areas (&& (arm-in x)
                             (operator-in x))))))
 
-(defconstant add-piece-needs-drop
-  (alw (-> (-V- add-piece)
+(defconstant piece-added-needs-drop
+  (alw (-> (-V- piece-added)
            (-V- drop))))
 
-(defconstant remove-piece-needs-pick
-  (alw (-> (-V- remove-piece)
+(defconstant piece-removed-needs-pick
+  (alw (-> (-V- piece-removed)
            (-V- pick))))
 
 (defconstant cart-cannot-move-if-arm-holding
@@ -75,6 +76,20 @@
             (-V- pick)
             (-V- drop))
            (cart-speed-is speed-none))))
+
+(defconstant piece-added-only-if-same-area
+  (alw (-> (-V- piece-added)
+           (-E- x areas
+                (&& (arm-in x)
+                    (cart-in x)))
+           )))
+
+(defconstant piece-removed-only-if-same-area
+  (alw (-> (-V- piece-removed)
+           (-E- x areas
+                (&& (arm-in x)
+                    (cart-in x))
+                ))))
 
 (defconstant robot-axioms
   (&& arm-connected-to-cart
@@ -84,7 +99,9 @@
       no-speed-while-touching
       arm-on-cart-if-moving
       operator-touching-arm
-      add-piece-needs-drop
-      remove-piece-needs-pick
+      piece-added-needs-drop
+      piece-removed-needs-pick
       cart-cannot-move-if-arm-holding
+      piece-added-only-if-same-area
+      piece-removed-only-if-same-area
       ))
