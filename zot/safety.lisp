@@ -27,8 +27,10 @@
                  (-A- z areas
                       (-> (&& (operator-in x)
                               (cart-in y)
-                              (are-adjacent x z)
-                              (are-adjacent z y)
+                              (|| (&& (are-adjacent x z)
+                                      (are-adjacent z y))
+                               (&& ([=] x z)
+                                   (are-adjacent x y)))
                               (-P- danger z))
                           (futr (!! (cart-in z)) 1)
                           ))))))
