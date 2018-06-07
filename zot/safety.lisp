@@ -74,6 +74,13 @@
                           (futr (!! (arm-in z)) 1)
                           ))))))
 
+(defconstant cannot-drop-with-operator-same-area
+  (alw (-A- x areas
+            (-> (&& (arm-in x)
+                    (operator-in x))
+                (|| (!! (-V- pick))
+                 (!! (-V- drop)))))))
+
 (defconstant safety-axioms
   (&& operator-close-to-wall
       do-not-squish-operator
@@ -81,4 +88,6 @@
       speed-when-in-transit-zone
       arm-cannot-move-if-operator-same-area
       arm-cannot-move-to-operators-area
-      arm-moves-slowly-if-operator-near))
+      arm-moves-slowly-if-operator-near
+      cannot-drop-with-operator-same-area
+      ))
