@@ -184,23 +184,30 @@ The workflow of KUKA can be described by a FSA, we divided the tasks that R has 
 Those atomic actions whose name is self-explaining are:
 
 \begin{enumerate}
-    \item \textbf{PickFromBinArea}:\@ 
-    \item \textbf{DropToLocalBin}:\@
-    \item \textbf{GoToTombstone}:\@ 
-    \item \textbf{PickFromLocalBin}:\@ 
-    \item \textbf{DropToTombstone}:\@ 
-    \item \textbf{PickFromLocalBin}:\@ 
-    \item \textbf{DropToTombstone}:\@ 
-    \item \textbf{PickFromTombstone}:\@ 
-    \item \textbf{GoToConveyorBelt}:\@ 
-    \item \textbf{DropToConveyorBelt}:\@ 
-    \item \textbf{GoToBinArea}:\@ 
+    \item \textbf{PickFromBinArea}\@ 
+    \item \textbf{DropToLocalBin}\@
+    \item \textbf{GoToTombstone}\@ 
+    \item \textbf{PickFromLocalBin}\@ 
+    \item \textbf{DropToTombstone}\@ 
+    \item \textbf{PickFromLocalBin}\@ 
+    \item \textbf{DropToTombstone}\@ 
+    \item \textbf{PickFromTombstone}\@ 
+    \item \textbf{GoToConveyorBelt}\@ 
+    \item \textbf{DropToConveyorBelt}\@ 
+    \item \textbf{GoToBinArea}\@ 
 \end{enumerate}
 
+\subsection{Petri Net of KUKA workflow}
+The following Petri net that represents the correct flow of actions that the robot has to perform.
+\begin{center}
+    \includegraphics[width=18cm]{images/PetriNetKuka}
+\end{center}
 
 \clearpage
 \section{Archi-TRIO model}
-
+\begin{center}
+    \includegraphics[width=17cm]{images/archiTRIOmodified}
+\end{center}
 
 \subsection{Class overview}
 We organized the model in 12 TRIO+ classes, here we provide an overview of each one and a UML-like diagram to better visualize the connections among them.
