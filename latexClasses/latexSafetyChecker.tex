@@ -80,9 +80,9 @@ class SafetyChecker
                     $((\future(RobotStatus.currentCardSpeed == None \land Cart.position(y) \land Operator.body(y), 1)) \lor$
                      $(\future(\exists w \exists z (z \neq w \land Cart.position(w) \land Operator.body(z)), 1))$    
 
-        -- The robot will not go to an area that is dangerous or an area near the border,
-        -- that may be occupied in the next time instant by the operator.
-        doNotSquishOperator:
+        -- The robot will not go to an area that is dangerous or an area near the 
+        -- border, that may be occupied in the next time instant by the operator.
+        doNotRunOverOperator:
             $\forall x \forall y \forall z (Operator.body(x) \land Cart.position(y) \land (Grid.border(z) \lor Grid.danger(z)) \land $
                  $((Grid.adjacent(x,z) \land Grid.adjacent(z,y) \lor (x = z \land Grid.adjacent(x,y))))  \limply$
                      $\future(\neg Cart.position(z), 1))$
