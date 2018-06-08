@@ -20,6 +20,7 @@ actions that are implemented in the model.
 The grid has been shrunk considerably, to have only 15 areas.
 
 |    |    |    | BA |
+|----|----|----|----|
 | 9  | 10 | 11 | 12 |
 | 5  |  6 | 7  | 8  |
 | 1  |  2 | 3  | 4  |
