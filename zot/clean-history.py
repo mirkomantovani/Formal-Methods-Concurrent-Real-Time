@@ -10,7 +10,7 @@ import sys
 # In[81]:
 
 
-hist = open('../output.hist.txt', 'r')
+hist = open('output.hist.txt', 'r')
 lines = hist.readlines()
 
 
