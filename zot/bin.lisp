@@ -12,9 +12,9 @@
   ([=] (-V- bin-status) 0))
 
 (defun bin-full ()
-  ([=] (-V- bin-status) 2))
+  ([=] (-V- bin-status) 1))
 
-(defconstant bin-status-set (list 0 1 2))
+(defconstant bin-status-set (list 0 1))
 
 (defconstant bin-status-definition
   (alw (-E- x bin-status-set (bin-has x))))

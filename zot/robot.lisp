@@ -64,32 +64,24 @@
                             (operator-in x))))))
 
 (defconstant piece-added-needs-drop
-  (alw (-> (-V- piece-added)
-           (-V- drop))))
+  (alw (<-> (-V- piece-added)
+            (&& (-V- drop)
+                (-E- x areas (&& (cart-in x)
+                                 (arm-in x)))
+                ))))
 
 (defconstant piece-removed-needs-pick
-  (alw (-> (-V- piece-removed)
-           (-V- pick))))
+  (alw (<-> (-V- piece-removed)
+            (&& (-V- pick)
+                (-E- x areas (&& (cart-in x)
+                                 (arm-in x)))
+                ))))
 
 (defconstant cart-cannot-move-if-arm-holding
   (alw (-> (|| (-V- holding)
             (-V- pick)
             (-V- drop))
            (cart-speed-is speed-none))))
-
-(defconstant piece-added-only-if-same-area
-  (alw (-> (-V- piece-added)
-           (-E- x areas
-                (&& (arm-in x)
-                    (cart-in x)))
-           )))
-
-(defconstant piece-removed-only-if-same-area
-  (alw (-> (-V- piece-removed)
-           (-E- x areas
-                (&& (arm-in x)
-                    (cart-in x))
-                ))))
 
 (defconstant robot-axioms
   (&& arm-connected-to-cart
@@ -102,6 +94,4 @@
       piece-added-needs-drop
       piece-removed-needs-pick
       cart-cannot-move-if-arm-holding
-      piece-added-only-if-same-area
-      piece-removed-only-if-same-area
       ))
